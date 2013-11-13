@@ -1,0 +1,9 @@
+{
+  "name": "taleblazer_analytics",
+  "description": "Analytics webapp for TaleBlazer",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.4.4"
+  }
+}
