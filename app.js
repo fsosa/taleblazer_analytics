@@ -3,12 +3,13 @@ var Sequelize = require('sequelize')
 
 var app = express();
 
-// NOTE:
-// For dev, uncomment 'skip-networking' in XAMPP_DIR/etc/my.cnf
-// Or update sequelize with socket-passthrough
 var sequelize = new Sequelize('test', 'root', 'itllbeok', {
 	host:'localhost',
-	dialect: 'mysql'
+	dialect: 'mysql', 
+	dialectOptions: {
+		// Necessary for XAMPP-specific local development - Update with the path to your mysql socket (XAMPP_DIR/etc/my.conf)
+		socketPath: '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'	
+	}
 })
 
 app.get('/', function(req, res) {
