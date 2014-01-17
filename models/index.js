@@ -1,7 +1,6 @@
 if (!global.hasOwnProperty('db')) {
   var Sequelize = require('sequelize');
 
-  // TODO: Update to use local configuration file
   var sequelize = new Sequelize('test', 'root', 'itllbeok', {
     host          : 'localhost',
     dialect       : 'mysql', 
