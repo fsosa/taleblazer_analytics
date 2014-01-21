@@ -1,40 +1,49 @@
-var express = require('express')
-  , db		= require('./models') 
+/**
+ * Module Dependencies
+ * Please note that the module load order matters!
+ */
+
+var express = require('express');
+
+// Environment Configuration
+var env = process.env.NODE_ENV || 'development';
+var config = require('./config/config')[env];
+
+// Database
+var db = require('./app/models')(config, env);
 
 var app = express();
 
-console.log(global.db);
+// Express Middleware Configuration - TODO: Consider moving to own configuration file
+app.use(express.favicon());
+app.use(express.logger());
 
-app.get('/', function(req, res) {
+app.use(express.json());
+app.use(express.methodOverride());
 
-	db.Event.findAll().success(function(events) {
-		console.log(events);
-		res.send(events);
-	}).failure(function(error) {
-		res.send(error);
-	});
+// Router should be the last to load (might need other middleware to register before the router - be safe)
+app.use(app.router); 
 
-});
+if (env == 'development') {
+  app.use(express.errorHandler());
+}
 
-// app.get('/event', function(req, res) {
+// Define the port for the server to listen on - TODO: Consider adding to configuration file.
+var PORT = 3000;
 
-// 	db.Event.create({
-// 		name: 'Agent Bump',
-// 		occurred: new Date()
-// 	}).success(function(event) {
-// 		res.send(event);
-// 	}).failure(function(err) {
-// 		res.send(err);
-// 	});
-// })
+// Sync the database and launch the server
+db
+  .sequelize
+  .sync()
+  .complete(function(err) {
+    if (err) {
+      throw err;
+    } else {
+      app.listen(PORT);
+      console.log('Listening on port %d', PORT);
+    }
+  });
 
-db.sequelize.sync().complete(function(err) {
-	if (err) {
-		throw err;
-	} else {
-		app.listen(3000);
-		console.log('Listening on port 3000');
-	}
-});
+
 
 
