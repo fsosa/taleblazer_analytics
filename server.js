@@ -11,6 +11,7 @@ var config = require('./config/config')[env];
 
 // Database
 var db = require('./app/models')(config, env);
+var api = require('./app/controllers/api');
 
 var app = express();
 
@@ -20,6 +21,7 @@ app.use(express.logger());
 
 app.use(express.json());
 app.use(express.methodOverride());
+app.use(express.cookieParser());
 
 // Router should be the last to load (might need other middleware to register before the router - be safe)
 app.use(app.router); 
@@ -27,6 +29,10 @@ app.use(app.router);
 if (env == 'development') {
   app.use(express.errorHandler());
 }
+
+/** ROUTES GO HERE UNTIL I EXTRACT THEM TO ANOTHER FILE **/
+app.post('/api/track', api.track);
+app.get('/api/identify', api.identify);
 
 // Define the port for the server to listen on - TODO: Consider adding to configuration file.
 var PORT = 3000;
