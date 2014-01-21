@@ -3,6 +3,8 @@ var express = require('express')
 
 var app = express();
 
+console.log(global.db);
+
 app.get('/', function(req, res) {
 
 	db.Event.findAll().success(function(events) {
@@ -14,17 +16,17 @@ app.get('/', function(req, res) {
 
 });
 
-app.get('/event', function(req, res) {
+// app.get('/event', function(req, res) {
 
-	db.Event.create({
-		name: 'Agent Bump',
-		occurred: new Date()
-	}).success(function(event) {
-		res.send(event);
-	}).failure(function(err) {
-		res.send(err);
-	});
-})
+// 	db.Event.create({
+// 		name: 'Agent Bump',
+// 		occurred: new Date()
+// 	}).success(function(event) {
+// 		res.send(event);
+// 	}).failure(function(err) {
+// 		res.send(err);
+// 	});
+// })
 
 db.sequelize.sync().complete(function(err) {
 	if (err) {
