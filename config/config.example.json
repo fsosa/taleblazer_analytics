@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "analytics_development",
+    "host": "127.0.0.1",
+    "dialectOptions": {
+      "socketPath": "If using XAMPP, update with path to mysql socket (in XAMPP_DIR/etc/my.conf) - Leave null otherwise"  
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "analytics_test",
+    "host": "127.0.0.1",
+    "dialectOptions": {
+      "socketPath": "If using XAMPP, update with path to mysql socket (in XAMPP_DIR/etc/my.conf) - Leave null otherwise"  
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "analytics",
+    "host": "127.0.0.1",
+    "dialectOptions": {
+      "socketPath": "If using XAMPP, update with path to mysql socket (in XAMPP_DIR/etc/my.conf) - Leave null otherwise"  
+    }
+  }
+}

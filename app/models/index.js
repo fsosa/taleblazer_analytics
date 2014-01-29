@@ -3,26 +3,22 @@
  */
 
 module.exports = function(config, env) {
-  if (!global.hasOwnProperty('db')) {
+  if (!GLOBAL.hasOwnProperty('db')) {
     var Sequelize = require('sequelize');
 
     // Configure the options hash
     var options = {
       host: config.db.host,
       dialect: 'mysql',
-      dialectOptions: {
-        socketPath: config.db.socketPath
-      }
+      dialectOptions: config.db.dialectOptions
     };
-
-    if (env == 'production') {
-      options.logging = false;
-    }
+    
+    options.logging = (env == 'production') ? false : console.log;
 
 
     var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);
 
-    global.db = {
+    GLOBAL.db = {
       Sequelize: Sequelize,
       sequelize: sequelize,
       Event:              sequelize.import(__dirname + '/event'),
@@ -33,16 +29,16 @@ module.exports = function(config, env) {
 
     /*
       Associations can be defined here. e.g. like this:
-      global.db.User.hasMany(global.db.OtherTable)
+      GLOBAL.db.User.hasMany(GLOBAL.db.OtherTable)
     */
-    global.db.Event
-                .hasMany(global.db.EventAttrValueInt)
-                .hasMany(global.db.EventAttrValueChar);
+    GLOBAL.db.Event
+                .hasMany(GLOBAL.db.EventAttrValueInt)
+                .hasMany(GLOBAL.db.EventAttrValueChar);
 
-    global.db.EventType
-                .hasMany(global.db.Event);
+    GLOBAL.db.EventType
+                .hasMany(GLOBAL.db.Event);
 
   }
 
-  return global.db;
+  return GLOBAL.db;
 };

@@ -2,3 +2,4 @@
 *.sublime-project
 *.bak
 config.js
+config.json

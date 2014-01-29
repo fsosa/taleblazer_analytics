@@ -43,10 +43,11 @@ db
   .sync()
   .complete(function(err) {
     if (err) {
-      throw err;
+      console.log(err);
     } else {
       app.listen(PORT);
       console.log('Listening on port %d', PORT);
+      })
     }
   });
 
