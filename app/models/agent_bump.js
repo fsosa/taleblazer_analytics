@@ -1,29 +1,38 @@
 /**
- * Agent Bumps
+ * Agent Bump
  * ===========
  * id, bump_type, occurred_at, session_id (FK), agent_id (FK)
  *
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var AgentBump = sequelize.define('Agent Bump', {
-		bump_type: DataTypes.ENUM('INV', 'GPS', 'TAP', 'HUD'),
-		occurred_at: DataTypes.DATE
-	}, {
-
-		classMethods: {
-			associate: function(models) {
-				models.Session.hasMany(AgentBump); // adds session_id ?
-				models.Agent.hasMany(AgentBump);   // adds agent_id ?
+	var AgentBump = sequelize.define('Agent Bump',
+		// Column definitions
+		{
+			bump_type: {
+				type: DataTypes.ENUM('INV', 'GPS', 'TAP', 'HUD'),
+				allowNull: false
+			},
+			occurred_at: {
+				type: DataTypes.DATE,
+				allowNull: false
 			}
 		},
+		// Configuration options
+		{
+			classMethods: {
+				associate: function(models) {
+					models.Session.hasMany(AgentBump); // session_id (FK)
+					models.Agent.hasMany(AgentBump); // agent_id (FK)
+				}
+			},
 
-		// Timestamp attributes are underscored
-		underscored: true,
+			// Timestamp attributes are underscored
+			underscored: true,
 
-		// Database table name
-		tableName: 'agent_bumps'
-	});
+			// Database table name
+			tableName: 'agent_bumps'
+		});
 
 	return AgentBump;
 };
