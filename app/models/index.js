@@ -42,7 +42,7 @@ module.exports = function(config, env) {
 		}
 	});
 
-	// Extend the db object with references to the db connection and Sequelize
+	// Extend the db object with references to the db connection (sequelize) and Sequelize
 	db = Sequelize.Utils._.extend({
 		sequelize: sequelize,
 		Sequelize: Sequelize
