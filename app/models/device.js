@@ -5,7 +5,7 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Device',
+	var Device = sequelize.define('Device',
 		// Column definitions
 		{
 			device_id: {
@@ -30,10 +30,12 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		// Configuration options
 		{
-			// Timestamp attributes are underscored
+			// Automatically added attributes are underscored
 			underscored: true,
 
 			// Database table name
 			tableName: 'devices'
 		});
+
+	return Device;
 };

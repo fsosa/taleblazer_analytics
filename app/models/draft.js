@@ -1,37 +1,42 @@
 /**
- * Region
+ * Draft
  * ===========
- * id, in_game_id, name
+ * id, draft_number, name, published_at, game_id (FK)
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var Region = sequelize.define('Region',
-		// Column definition
+	var Draft = sequelize.define('Draft',
+		// Column definitions
 		{
-			in_game_id: {
+			draft_number: {
 				type: DataTypes.INTEGER,
 				allowNull: false
 			},
-
 			name: {
 				type: DataTypes.STRING,
 				allowNull: false
+			},
+			published_at: {
+				type: DataTypes.DATE
 			}
 		},
 		// Configuration options
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(RegionSwitch); // session_id (FK)
-					models.Region.hasMany(RegionSwitch); // region_id (FK)
+					models.Game.hasMany(Draft); // game_id (FK)
+
+					// Set up one-way of the Agent-Draft n-m relationship
+					Draft.hasMany(models.Agent, {through: 'draft_agents'}) 
 				}
 			},
+
 			// Automatically added attributes are underscored
 			underscored: true,
 
 			// Database table name
-			tableName: 'regions'
+			tableName: 'drafts'
 		});
 
-	return Region;
+	return Draft;
 };

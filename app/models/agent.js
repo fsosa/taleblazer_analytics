@@ -5,11 +5,33 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Agent', {
-		in_game_id: DataTypes.INTEGER,
-		name: DataTypes.STRING
-	}, {
-		// Database table name
-		tableName: 'agents'
-	});
+	var Agent = sequelize.define('Agent',
+		// Column definitions
+		{
+			in_game_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			name: {
+				type: DataTypes.STRING,
+				allowNull: false
+			}
+		},
+		// Configuration options
+		{
+			classMethods: {
+				associate: function(models) {
+					// Set up one-way of the Agent-Draft n-m relationship
+					Agent.hasMany(models.Draft, {through: 'draft_agents'}); 
+				}
+			},
+
+			// Automatically added attributes are underscored
+			underscored: true,
+
+			// Database table name
+			tableName: 'agents'
+		});
+
+	return Agent;
 };

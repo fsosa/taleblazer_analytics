@@ -5,11 +5,25 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Game', {
-		user_id: DataTypes.INTEGER,
-		organization_id: DataTypes.INTEGER
-	}, {
-		// Database table name
-		tableName: 'games'
-	});
+	var Game = sequelize.define('Game',
+		// Column definitions
+		{
+			user_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			organization_id: {
+				type: DataTypes.INTEGER
+			}
+		},
+		// Configuration options
+		{
+			// Automatically added attributes are underscored
+			underscored: true,
+
+			// Database table name
+			tableName: 'games'
+		});
+
+	return Game;
 };

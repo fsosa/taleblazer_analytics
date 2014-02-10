@@ -5,13 +5,27 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Game Completion', {
-		occurred_at: DataTypes.DATE
-	}, {
-		// Timestamp attributes are underscored
-		underscored: true,
+	var GameCompletion = sequelize.define('Game Completion',
+		// Column definition
+		{
+			occurred_at: {
+				type: DataTypes.DATE,
+				allowNull: false
+			}
+		},
+		// Configuration options
+		{
+			classMethods: {
+				associate: function(models) {
+					models.Session.hasOne(GameCompletion); // session_id (FK)
+				}
+			},
+			// Timestamp attributes are underscored
+			underscored: true,
 
-		// Database table name
-		tableName: 'game_completions'
-	});
+			// Database table name
+			tableName: 'game_completions'
+		});
+
+	return GameCompletion;
 };

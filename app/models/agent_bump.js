@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
 				}
 			},
 
-			// Timestamp attributes are underscored
+			// Automatically added attributes are underscored
 			underscored: true,
 
 			// Database table name
