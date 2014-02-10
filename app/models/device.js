@@ -5,14 +5,35 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Device', {
-		device_id: DataTypes.STRING,
-		os_type: DataTypes.ENUM('android', 'ios'),
-		os_version: DataTypes.STRING,
-		screen_resolution: DataTypes.STRING,
-		model: DataTypes.STRING
-	}, {
-		// Database table name
-		tableName: 'devices'
-	});
+	return sequelize.define('Device',
+		// Column definitions
+		{
+			device_id: {
+				type: DataTypes.STRING,
+				allowNull: false
+			},
+			os_type: {
+				type: DataTypes.ENUM('android', 'ios'),
+				allowNull: false
+			}
+			os_version: {
+				type: DataTypes.STRING,
+				allowNull: false
+			},
+			model: {
+				type: DataTypes.STRING,
+				allowNull: false
+			}
+			screen_resolution: {
+				type: DataTypes.STRING
+			}
+		},
+		// Configuration options
+		{
+			// Timestamp attributes are underscored
+			underscored: true,
+
+			// Database table name
+			tableName: 'devices'
+		});
 };
