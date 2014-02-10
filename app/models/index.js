@@ -1,46 +1,52 @@
 /**
-* This module configures the database connection and collects all model definitions.
+ * This module configures the database connection and collects all model definitions.
  */
 
+var fs = require('fs'),
+	path = require('path'),
+	Sequelize = require('sequelize'),
+	db = {};
+
 module.exports = function(config, env) {
-  if (!GLOBAL.hasOwnProperty('db')) {
-    var Sequelize = require('sequelize');
+	// Configure the options hash
+	var options = {
+		host: config.db.host,
+		dialect: 'mysql',
+		dialectOptions: config.db.dialectOptions
+	};
 
-    // Configure the options hash
-    var options = {
-      host: config.db.host,
-      dialect: 'mysql',
-      dialectOptions: config.db.dialectOptions
-    };
-    
-    // Disables logging if in production
-    options.logging = (env == 'production') ? false : console.log;
+	// Disable logging if in production
+	options.logging = (env == 'production') ? false : console.log;
+
+	// Initialize the database connection
+	var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);
 
 
-    var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);
+	// Load model definitions
+	// Find all the model files, import them, and assign them to the db object
+	fs
+		.readdirSync(__dirname)
+		.filter(function(file) {
+			return (file.indexOf('.') !== 0) && (file !== 'index.js');
+		})
+		.forEach(function(file) {
+			var model = sequelize.import(path.join(__dirname, file));
+			db[model.name] = model;
+		});
 
-    GLOBAL.db = {
-      Sequelize: Sequelize,
-      sequelize: sequelize,
-      Event:              sequelize.import(__dirname + '/event'),
-      EventType:          sequelize.import(__dirname + '/eventType'),
-      EventAttrValueChar: sequelize.import(__dirname + '/eventAttrValueChar'),
-      EventAttrValueInt:  sequelize.import(__dirname + '/eventAttrValueInt')
-    };
-    
 
-    /*
-      Associations can be defined here. e.g. like this:
-      GLOBAL.db.User.hasMany(GLOBAL.db.OtherTable)
-    */
-    GLOBAL.db.Event
-                .hasMany(GLOBAL.db.EventAttrValueInt)
-                .hasMany(GLOBAL.db.EventAttrValueChar);
+	// Run the model associations via each model's `associate` class method
+	Object.keys(db).forEach(function(modelName) {
+		if ('associate' in db[modelName]) {
+			db[modelName].associate(db);
+		}
+	});
 
-    GLOBAL.db.EventType
-                .hasMany(GLOBAL.db.Event);
+	// Extend the db object with references to the db connection and Sequelize
+	db = Sequelize.Utils._.extend({
+		sequelize: sequelize,
+		Sequelize: Sequelize
+	}, db);
 
-  }
-
-  return GLOBAL.db;
+	return db;
 };
