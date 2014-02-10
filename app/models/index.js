@@ -13,6 +13,7 @@ module.exports = function(config, env) {
       dialectOptions: config.db.dialectOptions
     };
     
+    // Disables logging if in production
     options.logging = (env == 'production') ? false : console.log;
 
 
@@ -26,6 +27,7 @@ module.exports = function(config, env) {
       EventAttrValueChar: sequelize.import(__dirname + '/eventAttrValueChar'),
       EventAttrValueInt:  sequelize.import(__dirname + '/eventAttrValueInt')
     };
+    
 
     /*
       Associations can be defined here. e.g. like this:
