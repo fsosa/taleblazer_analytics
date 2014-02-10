@@ -6,7 +6,7 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var AgentBump = sequelize.define('Agent Bump',
+	var AgentBump = sequelize.define('AgentBump',
 		// Column definitions
 		{
 			bump_type: {

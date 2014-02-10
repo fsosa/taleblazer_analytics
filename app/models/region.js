@@ -22,8 +22,8 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(RegionSwitch); // session_id (FK)
-					models.Region.hasMany(RegionSwitch); // region_id (FK)
+					models.Session.hasMany(Region); // session_id (FK)
+					models.Region.hasMany(Region); // region_id (FK)
 				}
 			},
 			// Automatically added attributes are underscored

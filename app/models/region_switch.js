@@ -5,7 +5,7 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var RegionSwitch = sequelize.define('Region Switch',
+	var RegionSwitch = sequelize.define('RegionSwitch',
 		// Column definitions
 		{
 			occurred_at: {

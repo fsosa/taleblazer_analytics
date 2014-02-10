@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
 			os_type: {
 				type: DataTypes.ENUM('android', 'ios'),
 				allowNull: false
-			}
+			},
 			os_version: {
 				type: DataTypes.STRING,
 				allowNull: false
@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
 			model: {
 				type: DataTypes.STRING,
 				allowNull: false
-			}
+			},
 			screen_resolution: {
 				type: DataTypes.STRING
 			}

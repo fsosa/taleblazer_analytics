@@ -5,7 +5,7 @@
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var GameCompletion = sequelize.define('Game Completion',
+	var GameCompletion = sequelize.define('GameCompletion',
 		// Column definition
 		{
 			occurred_at: {
@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
 					models.Session.hasOne(GameCompletion); // session_id (FK)
 				}
 			},
-			// Timestamp attributes are underscored
+			// Automatically added attributes are underscored
 			underscored: true,
 
 			// Database table name
