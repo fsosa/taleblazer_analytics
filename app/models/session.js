@@ -1,11 +1,11 @@
 /**
- * Sessions
+ * Session
  * ===========
  * id, started_at, ended_at, role, scenario, tap_to_visit, device_id (FK), game_id (FK)
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Sessions', {
+	var Session = sequelize.define('Session', {
 		started_at: DataTypes.DATE,
 		ended_at: DataTypes.DATE,
 		role: DataTypes.STRING,
@@ -18,4 +18,6 @@ module.exports = function(sequelize, DataTypes) {
 		// Database table name
 		tableName: 'sessions'
 	});
+
+	return Session;
 };

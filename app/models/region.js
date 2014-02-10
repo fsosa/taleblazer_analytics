@@ -1,11 +1,11 @@
 /**
- * Regions
+ * Region
  * ===========
  * id, in_game_id, name
  */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Regions', {
+	return sequelize.define('Region', {
 		in_game_id: DataTypes.INTEGER,
 		name: DataTypes.STRING
 	}, {
