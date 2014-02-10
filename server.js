@@ -47,7 +47,6 @@ db
     } else {
       app.listen(PORT);
       console.log('Listening on port %d', PORT);
-      })
     }
   });
 
