@@ -1,0 +1,409 @@
+{
+  "created": {
+    "app": {
+      "name": "TaleBlazer Editor",
+      "version": {
+        "major": 1,
+        "minor": 0,
+        "build": 0
+      }
+    },
+    "date": "2013-06-06T18:47:28.512Z"
+  },
+  "lastModified": {
+    "app": {
+      "name": "TaleBlazer Editor",
+      "version": {
+        "major": 1,
+        "minor": 0,
+        "build": 0
+      }
+    },
+    "date": "2013-07-09T18:36:30.652Z"
+  },
+  "gameVersion": {
+    "major": 0,
+    "minor": 9,
+    "build": 3
+  },
+  "imageID": -1,
+  "intro": "",
+  "passwordProtectAdminMode": false,
+  "adminPassword": "",
+  "ccKeyboard": "full",
+  "pwKeyboard": "full",
+  "visitSettings": {
+    "autoVisitDistance": 1,
+    "mapTapToVisitDistance": 2.5,
+    "JSONType": "ar.VisitSettings"
+  },
+  "bumpSettings": null,
+  "proximitySettings": null,
+  "assets": [
+    {
+      "name": "Capture.PNG",
+      "id": 26,
+      "url": "/img/uploads/Capture0.PNG",
+      "thumbURL": "",
+      "isRelativePath": true,
+      "assetType": "image",
+      "refs": 1,
+      "serverID": -1,
+      "height": 300,
+      "width": 253.700787402,
+      "JSONType": "ar.Asset"
+    }
+  ],
+  "world": {
+    "name": "Fidel's World!",
+    "id": "world",
+    "description": "Excellent",
+    "imageID": 26,
+    "dashboardTemplate": {
+      "passwordProtected": false,
+      "password": "",
+      "traitOrder": "default",
+      "traits": [],
+      "actionOrder": "default",
+      "actions": [],
+      "JSONType": "ar.DashboardTemplate"
+    },
+    "JSONType": "ar.World"
+  },
+  "regions": [
+    {
+      "name": "Main",
+      "id": 4,
+      "description": "",
+      "imageID": -1,
+      "dashboardTemplate": {
+        "passwordProtected": false,
+        "password": "",
+        "traitOrder": "default",
+        "traits": [],
+        "actionOrder": "default",
+        "actions": [],
+        "JSONType": "ar.DashboardTemplate"
+      },
+      "JSONType": "ar.Region",
+      "latLongBounds": {
+        "top": 42.361881,
+        "left": -71.088813,
+        "bottom": 42.360006,
+        "right": -71.086294
+      },
+      "gameBounds": {
+        "top": 200,
+        "left": 0,
+        "bottom": 0,
+        "right": 200
+      },
+      "navigation": 1,
+      "enforceBoundaries": true,
+      "heightwidthratio": 1.0073461462399775
+    }
+  ],
+  "defaultRegionID": 4,
+  "layers": [],
+  "samples": [],
+  "scripts": [
+    {
+      "name": "ar.Worldworld",
+      "id": 7,
+      "parentID": "world",
+      "parentType": "ar.World",
+      "JSONType": "ar.Script",
+      "rootNodes": []
+    },
+    {
+      "name": "ar.Agent6",
+      "id": 18,
+      "parentID": 6,
+      "parentType": "ar.Agent",
+      "JSONType": "ar.Script",
+      "rootNodes": [
+        {
+          "name": "onCollide",
+          "label": "when player bumps Agent1",
+          "position": {
+            "x": 29,
+            "y": 42
+          },
+          "next": {
+            "name": "showText",
+            "label": "say @text",
+            "position": null,
+            "next": {
+              "name": "alert",
+              "label": "alert @alertText with title @titleText \nand require tap to dismiss @isModal",
+              "position": null,
+              "next": null,
+              "args": {
+                "alertText": "Here's a rather long notification that should hopefully get parsed well",
+                "titleText": "Notification",
+                "isModal": "false"
+              }
+            },
+            "args": {
+              "text": "here's the text of the say block"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "name": "Role1",
+      "id": 5,
+      "description": "",
+      "imageID": -1,
+      "dashboardTemplate": {
+        "passwordProtected": false,
+        "password": "",
+        "traitOrder": "default",
+        "traits": [],
+        "actionOrder": "default",
+        "actions": [],
+        "JSONType": "ar.DashboardTemplate"
+      },
+      "JSONType": "ar.Role",
+      "supportsMultiplePlayers": true
+    }
+  ],
+  "agents": [
+    {
+      "name": "Agent1",
+      "id": 6,
+      "description": "Here's the description of this agent!",
+      "imageID": -1,
+      "dashboardTemplate": {
+        "passwordProtected": false,
+        "password": "",
+        "traitOrder": "default",
+        "traits": [],
+        "actionOrder": "default",
+        "actions": [
+          {
+            "actionDefID": "pickup",
+            "visible": false,
+            "JSONType": "ar.Action",
+            "actionDef": {
+              "name": "Pick Up",
+              "id": "pickup",
+              "parentID": -2,
+              "parentType": "ar.Agent",
+              "JSONType": "ar.ActionDef",
+              "actionType": "builtin",
+              "visible": false,
+              "builtIn": true,
+              "zIndex": 100,
+              "resourceID": -1,
+              "html": ""
+            }
+          },
+          {
+            "actionDefID": "drop",
+            "visible": false,
+            "JSONType": "ar.Action",
+            "actionDef": {
+              "name": "Drop",
+              "id": "drop",
+              "parentID": -2,
+              "parentType": "ar.Agent",
+              "JSONType": "ar.ActionDef",
+              "actionType": "builtin",
+              "visible": false,
+              "builtIn": true,
+              "zIndex": 200,
+              "resourceID": -1,
+              "html": ""
+            }
+          },
+          {
+            "actionDefID": "give",
+            "visible": false,
+            "JSONType": "ar.Action",
+            "actionDef": {
+              "name": "Give",
+              "id": "give",
+              "parentID": -2,
+              "parentType": "ar.Agent",
+              "JSONType": "ar.ActionDef",
+              "actionType": "builtin",
+              "visible": false,
+              "builtIn": true,
+              "zIndex": 300,
+              "resourceID": -1,
+              "html": ""
+            }
+          },
+          {
+            "actionDefID": 27,
+            "visible": true,
+            "JSONType": "ar.Action",
+            "actionDef": {
+              "name": "Launch Rocket",
+              "id": 27,
+              "parentID": 6,
+              "parentType": "ar.Agent",
+              "JSONType": "ar.ActionDef",
+              "actionType": "html",
+              "visible": true,
+              "builtIn": false,
+              "zIndex": 0,
+              "resourceID": -1,
+              "html": "You launched a nuclear missile.&nbsp;"
+            }
+          }
+        ],
+        "JSONType": "ar.DashboardTemplate"
+      },
+      "JSONType": "ar.Agent",
+      "location": {
+        "regionID": 4,
+        "x": 123,
+        "y": 127,
+        "JSONType": "ar.PointLocation"
+      },
+      "visible": true,
+      "useGameBumpSettings": true,
+      "bumpSettings": null,
+      "iconShape": "circle",
+      "iconColor": "dark red",
+      "inInventory": false,
+      "iconGrayOutAfterVisit": true
+    }
+  ],
+  "teams": [],
+  "drones": [],
+  "scenarios": [],
+  "traitDefs": [],
+  "actionDefs": [
+    {
+      "name": "Pick Up",
+      "id": "pickup",
+      "parentID": -2,
+      "parentType": "ar.Agent",
+      "JSONType": "ar.ActionDef",
+      "actionType": "builtin",
+      "visible": false,
+      "builtIn": true,
+      "zIndex": 100,
+      "resourceID": -1,
+      "html": ""
+    },
+    {
+      "name": "Drop",
+      "id": "drop",
+      "parentID": -2,
+      "parentType": "ar.Agent",
+      "JSONType": "ar.ActionDef",
+      "actionType": "builtin",
+      "visible": false,
+      "builtIn": true,
+      "zIndex": 200,
+      "resourceID": -1,
+      "html": ""
+    },
+    {
+      "name": "Give",
+      "id": "give",
+      "parentID": -2,
+      "parentType": "ar.Agent",
+      "JSONType": "ar.ActionDef",
+      "actionType": "builtin",
+      "visible": false,
+      "builtIn": true,
+      "zIndex": 300,
+      "resourceID": -1,
+      "html": ""
+    },
+    {
+      "name": "Launch Rocket",
+      "id": 27,
+      "parentID": 6,
+      "parentType": "ar.Agent",
+      "JSONType": "ar.ActionDef",
+      "actionType": "html",
+      "visible": true,
+      "builtIn": false,
+      "zIndex": 0,
+      "resourceID": -1,
+      "html": "You launched a nuclear missile.&nbsp;"
+    }
+  ],
+  "tabOrder": "default",
+  "tabs": [
+    {
+      "id": "game",
+      "visible": true,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "map",
+      "visible": true,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "player",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "team",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "world",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "clueCode",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "samples",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "messages",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "headsUp",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "inventory",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "history",
+      "visible": false,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "admin",
+      "visible": true,
+      "JSONType": "ar.Tab"
+    },
+    {
+      "id": "log",
+      "visible": true,
+      "JSONType": "ar.Tab"
+    }
+  ],
+  "multiplayer": false,
+  "players": [],
+  "scenarioId": -1,
+  "started": false,
+  "JSONType": "ar.Game"
+}
