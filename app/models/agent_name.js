@@ -31,8 +31,8 @@ module.exports = function(sequelize, DataTypes) {
 			underscored: true,
 
 			// Database table name
-			tableName: 'agents'
+			tableName: 'agent_names'
 		});
 
-	return Agent;
+	return AgentName;
 };

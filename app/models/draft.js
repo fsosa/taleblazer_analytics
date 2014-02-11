@@ -83,7 +83,7 @@ module.exports = function(sequelize, DataTypes) {
 			tableName: 'drafts',
 
 			// This table uses MyISAM
-			engine: 'MYISAM'
+			engine: 'MYISAM', 
 		});
 
 	return Draft;

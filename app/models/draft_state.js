@@ -52,7 +52,7 @@ module.exports = function(sequelize, DataTypes) {
 				allowNull: false
 			},
 			previous_draft_state_id: {
-				type: DataTypes.INTEGER
+				type: DataTypes.INTEGER,
 				allowNull: false
 			}
 
