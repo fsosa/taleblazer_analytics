@@ -1,0 +1,16 @@
+
+// Find all agents from a particular draft
+select * from agents, draft_agents where agents.id = draft_agents.agent_id AND draft_agents.draft_id = DRAFT_ID
+
+// Find all drafts pertaining to a game (1)
+select * from drafts where game_id = GAME_ID
+
+// Find all drafts pertaining to a game within a time period (2)
+select * from drafts where game_id= GAME_ID and published_at between TIME and TIME
+
+// Find all agents pertaning to a game
+select * from agents, draft_agents where agents.id = draft_agents.agent_id AND draft_agents.draft_id in (1)
+
+// Find all agents within a certain time range
+select * from agents, draft_agents where agents.id = draft_agents.agent_id AND draft_agents.draft_id in (2)
+
