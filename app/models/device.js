@@ -10,22 +10,39 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			device_id: {
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false,
+				unique: true,
+				validate: {
+					notEmpty: true
+				}
 			},
 			os_type: {
 				type: DataTypes.ENUM('android', 'ios'),
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notEmpty: true, 
+					isIn: [['android', 'ios']]
+				}
 			},
 			os_version: {
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notEmpty: true
+				}
 			},
 			model: {
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notEmpty: true
+				}
 			},
 			screen_resolution: {
-				type: DataTypes.STRING
+				type: DataTypes.STRING,
+				validate: {
+					notEmpty: true
+				}
 			}
 		},
 		// Configuration options
