@@ -1,18 +1,17 @@
 /**
- * Region
+ * Agent Name
  * ===========
- * id, in_game_id, name
+ * agent_id, agent_name
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var Region = sequelize.define('Region',
-		// Column definition
+	var AgentName = sequelize.define('AgentName',
+		// Column definitions
 		{
-			in_game_id: {
+			agent_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false
 			},
-
 			name: {
 				type: DataTypes.STRING,
 				allowNull: false
@@ -22,16 +21,18 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(Region); // session_id (FK)
-					models.Region.hasMany(Region); // region_id (FK)
+					models.Agent.hasMany(AgentName, {
+						foreignKey: 'agent_id'
+					});
 				}
 			},
+
 			// Automatically added attributes are underscored
 			underscored: true,
 
 			// Database table name
-			tableName: 'regions'
+			tableName: 'agents'
 		});
 
-	return Region;
+	return Agent;
 };

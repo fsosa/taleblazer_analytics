@@ -19,13 +19,6 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		// Configuration options
 		{
-			classMethods: {
-				associate: function(models) {
-					// Set up one-way of the Agent-Draft n-m relationship
-					Agent.hasMany(models.Draft, {through: 'draft_agents'}); 
-				}
-			},
-
 			// Automatically added attributes are underscored
 			underscored: true,
 

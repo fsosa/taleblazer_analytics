@@ -11,13 +11,19 @@ module.exports = function(sequelize, DataTypes) {
 			occurred_at: {
 				type: DataTypes.DATE,
 				allowNull: false
+			},
+			session_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
 			}
 		},
 		// Configuration options
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasOne(GameCompletion); // session_id (FK)
+					models.Session.hasOne(GameCompletion, {
+						foreignKey: 'session_id'
+					});
 				}
 			},
 			// Automatically added attributes are underscored

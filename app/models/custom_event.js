@@ -16,14 +16,26 @@ module.exports = function(sequelize, DataTypes) {
 			occurred_at: {
 				type: DataTypes.DATE,
 				allowNull: false
+			},
+			session_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			event_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
 			}
 		},
 		// Configuration options
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(CustomEvent); // session_id (FK)
-					models.Event.hasMany(CustomEvent); // event_id (FK)
+					models.Session.hasMany(CustomEvent, {
+						foreignKey: 'session_id'
+					});
+					models.Event.hasMany(CustomEvent, {
+						foreignKey: 'event_id'
+					});
 				}
 			},
 

@@ -1,15 +1,27 @@
 /**
  * Region Switch
  * ===========
- * id, occurred_at, session_id (FK), region_id (FK)
+ * id, region_id, region_name, occurred_at, session_id (FK)
  */
 
 module.exports = function(sequelize, DataTypes) {
 	var RegionSwitch = sequelize.define('RegionSwitch',
 		// Column definitions
 		{
+			region_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			region_name: {
+				type: DataTypes.STRING,
+				allowNull: false
+			},
 			occurred_at: {
 				type: DataTypes.DATE,
+				allowNull: false
+			},
+			session_id: {
+				type: DataTypes.INTEGER,
 				allowNull: false
 			}
 		},
@@ -17,8 +29,9 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(RegionSwitch); // session_id (FK)
-					models.Region.hasMany(RegionSwitch); // region_id (FK)
+					models.Session.hasMany(RegionSwitch, {
+						foreignKey: 'session_id'
+					});
 				}
 			},
 

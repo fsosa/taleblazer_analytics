@@ -11,6 +11,8 @@ var config = require('./config/config')[env];
 
 // Database
 var db = require('./app/models')(config, env);
+
+// API / Routes
 var api = require('./app/controllers/api');
 
 var app = express();

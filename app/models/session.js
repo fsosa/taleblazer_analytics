@@ -1,7 +1,7 @@
 /**
  * Session
  * ===========
- * id, started_at, last_event_at, role, scenario, tap_to_visit, device_id (FK), draft_id (FK), completion_id (FK)
+ * id, started_at, last_event_at, role, scenario, tap_to_visit, device_id (FK), draft_state_id (FK), completion_id (FK)
  */
 
 module.exports = function(sequelize, DataTypes) {
@@ -25,15 +25,33 @@ module.exports = function(sequelize, DataTypes) {
 			tap_to_visit: {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false
+			},
+			device_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			draft_state_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
+			},
+			completion_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false
 			}
 		},
 		// Configuration options
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Device.hasMany(Session); // device_id (FK)
-					models.Draft.hasMany(Session); // draft_id (FK)
-					models.GameCompletion.hasOne(Session); // completion_id (FK)
+					models.Device.hasMany(Session, {
+						foreignKey: 'device_id'
+					});
+					models.DraftState.hasMany(Session, {
+						foreignKey: 'draft_state_id'
+					});
+					models.GameCompletion.hasOne(Session, {
+						foreignKey: 'completion_id'
+					});
 
 				}
 			},
