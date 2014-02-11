@@ -2,20 +2,19 @@
  * Module Dependencies
  * Please note that the module load order matters!
  */
-
 var express = require('express');
 
 // Environment Configuration
 var env = process.env.NODE_ENV || 'development';
-var config = require('./config/config')[env];
 
 // Database
-var db = require('./app/models')(config, env);
+var db = require('./app/models');
 
 // API / Routes
 var api = require('./app/controllers/api');
 
 var app = express();
+
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
