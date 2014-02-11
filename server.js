@@ -12,6 +12,7 @@ var db = require('./app/models');
 
 // API / Routes
 var api = require('./app/controllers/api');
+var device = require('./app/controllers/device')
 
 var app = express();
 
@@ -34,6 +35,9 @@ if (env == 'development') {
 /** ROUTES GO HERE UNTIL I EXTRACT THEM TO ANOTHER FILE **/
 app.post('/api/track', api.track);
 app.get('/api/identify', api.identify);
+
+app.get('/device', device.index);
+app.post('/device', device.create);
 
 // Define the port for the server to listen on - TODO: Consider adding to configuration file.
 var PORT = 3000;
