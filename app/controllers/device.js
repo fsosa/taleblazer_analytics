@@ -6,7 +6,9 @@ exports.index = function(req, res) {
 		.success(function(devices) {
 			response = {
 				status: 'success',
-				data: { "devices": devices}
+				data: {
+					'devices': devices
+				}
 			};
 
 			res.send(response);
@@ -36,49 +38,46 @@ exports.index = function(req, res) {
  *
  */
 exports.create = function(req, res) {
-	// Verify that the device is not already in the database
-	db.Device.find({
-		where: {
-			device_id: req.body.device_id
-		}
-	}).success(function(device) {
-		console.log(device);
-		// Found an existing device so let the API consumer know
-		if (device != null) {
-			response = {
-				status: 'error',
-				message: 'Device already exists with device_id: ' + req.body.device_id
-			};
+	// Create an object with the required fields for the device
+	device_fields = {
+		device_id: req.body.device_id,
+		os_type: req.body.os_type,
+		os_version: req.body.os_version,
+		screen_resolution: req.body.screen_resolution,
+		model: req.body.model
+	};
 
-			res.status(409);
-			res.send(response);
-		} else {
-			// Create the new object since it doesn't already exist
-			db.Device.create({
-				device_id: req.body.device_id,
-				os_type: req.body.os_type,
-				os_version: req.body.os_version,
-				screen_resolution: req.body.screen_resolution,
-				model: req.body.model
-			}).success(function(device) {
+	db.Device
+		.findOrCreate(device_fields)
+		.success(function(device, created) {
+			// No device with matching device_id found, so new one was created
+			if (created) {
 				response = {
 					status: 'success',
 					data: device
 				};
+			}
+			// Found an existing device so let the API consumer know
+			else {
 
-				res.send(response);
-			}).error(function(error) {
 				response = {
-					status: 'error',
-					message: error
+					status: 'failure',
+					message: 'Device already exists with device_id: ' + device.device_id
 				};
 
-				res.status(400);
-				res.send(response);
-			});
-		}
+				res.status(409);
+			}
 
-	});
-	//
+			res.send(response);
+		})
+		.error(function(error) {
+			response = {
+				status: 'error',
+				message: error
+			};
+
+			res.status(400);
+			res.send(response);
+		});
 
 };
