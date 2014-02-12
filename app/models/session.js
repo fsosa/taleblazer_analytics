@@ -10,11 +10,24 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			started_at: {
 				type: DataTypes.DATE,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isDate: true,
+					isFirstDate: function(start_date) {
+						if (start_date > this.last_event_at) {
+							throw new Error('started_at must be less than or equal to last_event_at');
+						}
+					}
+				}
 			},
 			last_event_at: {
 				type: DataTypes.DATE,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isDate: true
+				}
 			},
 			role: {
 				type: DataTypes.STRING
@@ -28,15 +41,26 @@ module.exports = function(sequelize, DataTypes) {
 			},
 			device_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			},
 			draft_state_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			},
 			completion_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: true,
+				validate: {
+					isInt: true
+				}
 			}
 		},
 		// Configuration options

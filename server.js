@@ -20,8 +20,12 @@ app.use(express.json());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 
+
 // Router should be the last to load (might need other middleware to register before the router - be safe)
-app.use(app.router); 
+// The order that middleware is passed to app.use is the order that requests will be handled
+// e.g. static -> router serves static file; router -> static serves the defined route
+// http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
+app.use(app.router);
 
 if (env == 'development') {
   app.use(express.errorHandler());
@@ -46,7 +50,3 @@ db
       console.log('Listening on port %d', PORT);
     }
   });
-
-
-
-
