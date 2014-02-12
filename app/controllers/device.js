@@ -22,23 +22,18 @@ exports.index = function(req, res) {
 		});
 };
 
-/**
- * POST /device
- * Content-Type: application/json
- *
- * Example Payload:
- 	{
-		device_id: STRING,
-		os_type: 'android'/'ios',
-		os_version: STRING,
-		screen_resolution: STRING,
-		model: STRING
-	}
- *
- *
- */
+// Example payload:
+//
+// {
+// 	device_id: STRING,
+// 	os_type: 'android'/'ios',
+// 	os_version: STRING,
+// 	screen_resolution: STRING,
+// 	model: STRING
+// }
+//
 exports.create = function(req, res) {
-	// Create an object with the required fields for the device
+	// Create an object with the required fields for the device from the request
 	device_fields = {
 		device_id: req.body.device_id,
 		os_type: req.body.os_type,

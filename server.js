@@ -10,12 +10,7 @@ var env = process.env.NODE_ENV || 'development';
 // Database
 var db = require('./app/models');
 
-// API / Routes
-var api = require('./app/controllers/api');
-var device = require('./app/controllers/device')
-
 var app = express();
-
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
@@ -32,12 +27,9 @@ if (env == 'development') {
   app.use(express.errorHandler());
 }
 
-/** ROUTES GO HERE UNTIL I EXTRACT THEM TO ANOTHER FILE **/
-app.post('/api/track', api.track);
-app.get('/api/identify', api.identify);
+// Setup routes
+require('./routes')(app);
 
-app.get('/device', device.index);
-app.post('/device', device.create);
 
 // Define the port for the server to listen on - TODO: Consider adding to configuration file.
 var PORT = 3000;
@@ -48,7 +40,7 @@ db
   .sync()
   .complete(function(err) {
     if (err) {
-      console.log(err);
+      throw err;
     } else {
       app.listen(PORT);
       console.log('Listening on port %d', PORT);

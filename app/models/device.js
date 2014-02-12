@@ -20,8 +20,11 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.ENUM('android', 'ios'),
 				allowNull: false,
 				validate: {
-					notEmpty: true, 
-					isIn: [['android', 'ios']]
+					notEmpty: true,
+					isIn: {
+						args: [['android', 'ios']],
+						msg: 'os_type must be either \'android\' or \'ios\''
+					}
 				}
 			},
 			os_version: {
