@@ -3,21 +3,9 @@ var db = require('../models');
 exports.index = function(req, res) {
 	db.Session.findAll()
 		.success(function(sessions) {
-			response = {
-				status: 'success',
-				data: {
-					'sessions': sessions
-				}
-			};
-
-			res.send(response);
+			res.jsend(sessions);
 		}).error(function(error) {
-			response = {
-				status: 'error',
-				message: error
-			};
-
-			res.send(response);
+			res.jerror(error);
 		});
 };
 
@@ -26,7 +14,7 @@ exports.index = function(req, res) {
 // Example payload:
 // 	 {
 //		session_id: INT / null,
-// 	 	started_at: DATE (ONLY unix timestamp int), 
+// 	 	started_at: DATE (ONLY unix timestamp int),
 // 	 	last_event_at: DATE,
 // 	 	role: STRING,
 // 	 	scenario: STRING,
@@ -34,6 +22,7 @@ exports.index = function(req, res) {
 // 	 	device_id: STRING,
 // 	 	draft_state_id: INT,
 // 	 }
+
 exports.create = function(req, res) {
 	session_fields = {
 		id: req.body.session_id,
@@ -43,7 +32,7 @@ exports.create = function(req, res) {
 		scenario: req.body.scenario,
 		tap_to_visit: req.body.tap_to_visit,
 		device_id: req.body.device_id,
-		draft_state_id: req.body.draft_state_id, 
+		draft_state_id: req.body.draft_state_id
 	};
 
 	// Ensure that this device does not have an existing session
@@ -52,28 +41,16 @@ exports.create = function(req, res) {
 		.success(function(session, created) {
 			// Created new session, respond with session id
 			if (created) {
-				response = {
-					status: 'success',
-					data: session
-				};
+				res.jsend(session);
 			} else {
-				response = {
-					status: 'failure',
-					message: 'Session with id ' + session.id + ' already exists'
-				};
+				message = 'Session with id ' + session.id + ' already exists';
 				res.status(409);
+				res.jerror(message);
 			}
-
-			res.send(response);
 		})
 		.error(function(error) {
-			response = {
-				status: 'error',
-				message: error
-			};
-
 			res.status(400);
-			res.send(response);
+			res.jerror(error);
 		});
 
 
