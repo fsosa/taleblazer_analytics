@@ -17,7 +17,7 @@ exports.index = function(req, res) {
 // 	 	started_at: DATE (ONLY unix timestamp int),
 // 	 	last_event_at: DATE,
 // 	 	role: STRING,
-// 	 	scenario: STRING,
+// 	 	scenario: STRING,	
 // 	 	tap_to_visit: BOOLEAN,
 // 	 	device_id: STRING,
 // 	 	draft_state_id: INT,

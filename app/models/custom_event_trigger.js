@@ -1,12 +1,12 @@
 /**
- * Custom Event
+ * Custom Event Triggers
  * ===========
  * id, value, occurred_at, session_id (FK), event_id (FK)
  *
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var CustomEvent = sequelize.define('CustomEvent',
+	var CustomEventTriggers = sequelize.define('CustomEventTriggers',
 		// Column definitions
 		{
 			value: {
@@ -30,10 +30,10 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(CustomEvent, {
+					models.Session.hasMany(CustomEventTriggers, {
 						foreignKey: 'session_id'
 					});
-					models.Event.hasMany(CustomEvent, {
+					models.CustomEvent.hasMany(CustomEventTriggers, {
 						foreignKey: 'event_id'
 					});
 				}
@@ -43,8 +43,8 @@ module.exports = function(sequelize, DataTypes) {
 			underscored: true,
 
 			// Database table name
-			tableName: 'custom_events'
+			tableName: 'custom_event_triggers'
 		});
 
-	return CustomEvent;
+	return CustomEventTriggers;
 };

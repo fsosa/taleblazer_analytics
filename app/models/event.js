@@ -1,11 +1,11 @@
 /**
- * Event
+ * Custom Event
  * ===========
  * id, name
  */
 
 module.exports = function(sequelize, DataTypes) {
-	var Event = sequelize.define('Event',
+	var CustomEvent = sequelize.define('CustomEvent',
 		// Column definitions
 		{
 			name: {
@@ -19,8 +19,8 @@ module.exports = function(sequelize, DataTypes) {
 			underscored: true,
 
 			// Database table name
-			tableName: 'events'
+			tableName: 'custom_events'
 		});
 
-	return Event;
+	return CustomEvent;
 };

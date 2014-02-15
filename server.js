@@ -53,3 +53,6 @@ db
       console.log('Listening on port %d', PORT);
     }
   });
+
+// Export the app object for testing purposes
+module.exports = app;
