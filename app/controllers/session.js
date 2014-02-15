@@ -9,23 +9,16 @@ exports.index = function(req, res) {
 		});
 };
 
-// Creates a new unique session with given parameters
-//
-// Example payload:
-// 	 {
-//		session_id: INT / null,
-// 	 	started_at: DATE (ONLY unix timestamp int),
-// 	 	last_event_at: DATE,
-// 	 	role: STRING,
-// 	 	scenario: STRING,	
-// 	 	tap_to_visit: BOOLEAN,
-// 	 	device_id: STRING,
-// 	 	draft_state_id: INT,
-// 	 }
-
 exports.create = function(req, res) {
+	createSession(req, res);
+};
+
+/////////////////////
+// Utility Methods //
+/////////////////////
+
+var createSession = function(req, res) {
 	session_fields = {
-		id: req.body.session_id,
 		started_at: new Date(parseInt(req.body.started_at)),
 		last_event_at: new Date(parseInt(req.body.last_event_at)),
 		role: req.body.role,
@@ -35,23 +28,14 @@ exports.create = function(req, res) {
 		draft_state_id: req.body.draft_state_id
 	};
 
-	// Ensure that this device does not have an existing session
 	db.Session
-		.findOrCreate(session_fields)
-		.success(function(session, created) {
-			// Created new session, respond with session id
-			if (created) {
-				res.jsend(session);
-			} else {
-				message = 'Session with id ' + session.id + ' already exists';
-				res.status(409);
-				res.jerror(message);
-			}
+		.create(session_fields)
+		.success(function(session) {
+			res.jsend(201, session);
 		})
 		.error(function(error) {
-			res.status(400);
-			res.jerror(error);
+			// Session creation error e.g. model validation failed
+			res.jerror(400, error);
 		});
 
-
-};
+}
