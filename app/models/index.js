@@ -22,7 +22,7 @@ var options = {
 };
 
 // Disable logging if in production
-options.logging = (env == 'production') ? false : console.log;
+options.logging = (env == 'development') ? console.log : false;
 
 // Initialize the database connection
 var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);

@@ -48,8 +48,7 @@ module.exports = function(sequelize, DataTypes) {
 				type: DataTypes.STRING,
 				allowNull: false,
 				validat: {
-					notNull: true,
-					isString: true
+					notNull: true
 				}
 			}
 		},

@@ -10,11 +10,19 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			occurred_at: {
 				type: DataTypes.DATE,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isDate: true
+				}
 			},
 			session_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			}
 		},
 		// Configuration options

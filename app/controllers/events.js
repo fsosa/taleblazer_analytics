@@ -5,8 +5,8 @@ var _ = require('underscore');
 var EVENT_TYPES = {
 	AGENT_BUMP: 'AGENT_BUMP',
 	REGION_SWITCH: 'REGION_SWITCH',
-	GAME_END: 'GAME_END',
-	CUSTOM_EVENT: 'CUSTOM_EVENT'
+	GAME_COMPLETION: 'GAME_COMPLETION',
+	CUSTOM_EVENT_TRIGGER: 'CUSTOM_EVENT_TRIGGER'
 };
 
 exports.create = function(req, res) {
@@ -17,28 +17,34 @@ exports.create = function(req, res) {
 	// Validate required fields and types
 	if (session_id == null) {
 		res.jerror(400, 'Session id is required');
+		return;
 	}
 
 	if (last_event_at == null) {
 		res.jerror(400, "Field \'last_event_at\' is required");
+		return;
 	}
-
 
 	if (util.isArray(events) == false) {
 		res.jerror(400, 'Events should be an array');
+		return;
 	}
 
 	var chainer = new db.Sequelize.Utils.QueryChainer;
-	for (i = 0; i < events.length; i++) {
-		var event_type = events[i].event_type;
 
-		switch (event_type) {
-			case EVENT_TYPES.AGENT_BUMP:
-				chainer.add(createAgentBump(session_id, events[i]));
-				break;
-		}
+	// Loop through all events and chain the event creation queries
+	// to run them all at once and get a callback when all are complete
+	for (i = 0; i < events.length; i++) {
+		var raw_event = events[i];
+
+		var creationQuery = getEventCreationQuery(session_id, raw_event);
+		chainer.add(creationQuery);
 	}
 
+	// TODO: UPDATE SESSION WITH COMPLETION_ID
+	// UPDATE SESSION WITH LAST_EVENT_AT
+	
+	// Chaining complete. Run the queries and callback once they're done
 	chainer
 		.run()
 		.success(function(results) {
@@ -47,7 +53,8 @@ exports.create = function(req, res) {
 		.error(function(error) {
 			res.jerror(500, error);
 		});
-
+	
+	
 
 };
 
@@ -56,35 +63,61 @@ exports.create = function(req, res) {
 // Utility Methods //
 /////////////////////
 
-var createAgentBump = function(session_id, fields) {
-	console.log('running');
+var getEventCreationQuery = function(session_id, raw_event) {
+	var event_fields = null;
+	var event_type = raw_event.event_type;
+	var query = null;
+
+	switch (event_type) {
+		case EVENT_TYPES.AGENT_BUMP:
+			event_fields = parseAgentBumpFields(session_id, raw_event);
+			query = db.AgentBump.create(event_fields);
+			break;
+		case EVENT_TYPES.REGION_SWITCH:
+			event_fields = parseRegionSwitchFields(session_id, raw_event);
+			query = db.RegionSwitch.create(event_fields);
+			break;
+		case EVENT_TYPES.GAME_COMPLETION:
+			event_fields = parseGameCompletionFields(session_id, raw_event);
+			query = db.GameCompletion.create(event_fields);
+			break;
+		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
+			event_fields = parseCustomEventFields(session_id, raw_event);
+			// query = db.CustomEventTrigger.create(event_fields);
+			break;
+	}
+
+	return query;
+};
+
+var parseAgentBumpFields = function(session_id, event) {
 	agent_fields = {
-		bump_type: fields.bump_type,
-		agent_id: fields.agent_id,
-		agent_name: fields.agent_name,
-		occurred_at: new Date(parseInt(fields.occurred_at)),
+		bump_type: event.bump_type,
+		agent_id: event.agent_id,
+		agent_name: event.agent_name,
+		occurred_at: new Date(parseInt(event.occurred_at)),
 		session_id: session_id
 	};
 
-	db.Agent.create(agent_fields);
+	return agent_fields;
 };
 
-var createRegionSwitch = function(session_id, fields) {
+var parseRegionSwitchFields = function(session_id, event) {
 	region_fields = {
-		region_id: fields.region_id,
-		name: fields.name,
-		occurred_at: new Date(parseInt(fields.occurred_at)),
+		region_id: event.region_id,
+		region_name: event.region_name,
+		occurred_at: new Date(parseInt(event.occurred_at)),
 		session_id: session_id
 	};
 
-	db.RegionSwitch.create(region_fields);
+	return region_fields;
 };
 
-var createGameCompletion = function(session_id, fields) {
+var parseGameCompletionFields = function(session_id, event) {
 	completion_fields = {
-		occurred_at: new Date(parseInt(fields.occurred_at)),
+		occurred_at: new Date(parseInt(event.occurred_at)),
 		session_id: session_id
 	};
 
-	db.GameCompletion.create(completion_fields);
+	return completion_fields;
 };

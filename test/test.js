@@ -3,6 +3,8 @@ var should = require('chai').should();
 var crypto = require('crypto');
 var _ = require('underscore');
 
+process.env.NODE_ENV = 'test'
+
 var app = require('../server.js');
 
 
@@ -23,6 +25,8 @@ var isErrorResponseFormat = function(res) {
 	res.body.should.have.property('status', 'error');
 	res.body.should.have.property('message');
 };
+
+
 
 ///////////////
 // API Tests //
@@ -201,38 +205,37 @@ describe('Events API', function() {
 	events = {
 		session_id: 13,
 		last_event_at: Date.now(),
-		events: [
-		{
-			event_type: 'AGENT_BUMP',
-			bump_type: 'GPS',
-			agent_id: 6,
-			agent_name: 'Bobby Beetle',
-			occurred: (new Date() - 120)
-		}, {
-			event_type: 'REGION_SWITCH',
-			region_id: 7,
-			name: 'Jurassic Park',
-			occurred: (new Date() - 60)
-		}, {
-			event_type: 'GAME_END',
-			occurred: Date.now()
-		}
+		events: [{
+				event_type: 'AGENT_BUMP',
+				bump_type: 'GPS',
+				agent_id: 6,
+				agent_name: 'Bobby Beetle',
+				occurred_at: (new Date() - 120)
+			}, {
+				event_type: 'REGION_SWITCH',
+				region_id: 7,
+				region_name: 'Jurassic Park',
+				occurred_at: (new Date() - 60)
+			}, {
+				event_type: 'GAME_COMPLETION',
+				occurred_at: Date.now()
+			}
 
-		// {
-		// 	event_type: 'CUSTOM',
-		// 	event_id: 8,
-		// 	name: 'RAPTOR ATE PEOPLE',
-		// 	value: '4',
-		// 	occurred: (new Date() - 400)
-		// }, 
+			// {
+			// 	event_type: 'CUSTOM_EVENT_TRIGGER',
+			// 	event_id: 8,
+			// 	name: 'RAPTOR ATE PEOPLE',
+			// 	value: '4',
+			// 	occurred_at: (new Date() - 400)
+			// },
 
-		// {
-		// 	event_type: 'CUSTOM',
-		// 	event_id: 8,
-		// 	name: 'RAPTOR ATE PEOPLE',
-		// 	value: '4',
-		// 	occurred: (new Date() - 1000)
-		// }
+			// {
+			// 	event_type: 'CUSTOM_EVENT_TRIGGER',
+			// 	event_id: 8,
+			// 	name: 'RAPTOR ATE PEOPLE',
+			// 	value: '4',
+			// 	occurred_at: (new Date() - 1000)
+			// }
 
 		]
 	};
@@ -244,11 +247,7 @@ describe('Events API', function() {
 				.send(events)
 				.expect(201)
 				.expect(isSuccessResponseFormat)
-				.end(function(err, res) {
-					// console.log(res.body);
-					if (err) return done(err);
-					done();
-				});
+				.end(done);
 		});
 
 		it('errors if session_id is missing from the request', function(done) {
