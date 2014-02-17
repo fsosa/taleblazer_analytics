@@ -10,19 +10,35 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			region_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false, 
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			},
 			region_name: {
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false, 
+				validate: {
+					notNull: true, 
+					isString: true, 
+				}
 			},
 			occurred_at: {
 				type: DataTypes.DATE,
-				allowNull: false
+				allowNull: false, 
+				validate: {
+					notNull: true, 
+					isDate: true, 
+				}
 			},
 			session_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false, 
+				validate: {
+					notNull: true, 
+					isInt: true, 
+				}
 			}
 		},
 		// Configuration options
