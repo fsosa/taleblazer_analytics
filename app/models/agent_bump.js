@@ -11,35 +11,45 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			bump_type: {
 				type: DataTypes.ENUM('INV', 'GPS', 'TAP', 'HUD'),
-				allowNull: false, 
+				allowNull: false,
 				validate: {
 					notNull: true,
-					notEmpty: true, 
-					isIn: [['INV', 'GPS', 'TAP', 'HUD']],
+					notEmpty: true,
+					isIn: [
+						['INV', 'GPS', 'TAP', 'HUD']
+					]
 				}
 			},
 			occurred_at: {
 				type: DataTypes.DATE,
-				allowNull: false, 
+				allowNull: false,
 				validate: {
 					notNull: true,
-					isDate: true, 
+					isDate: true
 				}
 			},
 			session_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false, 
+				allowNull: false,
 				validate: {
 					notNull: true,
-					isInt: true, 
+					isInt: true
 				}
 			},
 			agent_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false, 
+				allowNull: false,
 				validate: {
-					notNull: true, 
-					isInt: true, 
+					notNull: true,
+					isInt: true
+				}
+			},
+			agent_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				validat: {
+					notNull: true,
+					isString: true
 				}
 			}
 		},

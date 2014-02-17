@@ -5,6 +5,7 @@ var _ = require('underscore');
 
 var app = require('../server.js');
 
+
 request = request(app);
 
 /////////////////////
@@ -124,8 +125,6 @@ describe('Device API', function() {
 // Session //
 /////////////
 
-var saved_session_id = null;
-
 describe('Session API', function() {
 
 	describe('GET /session', function() {
@@ -158,11 +157,7 @@ describe('Session API', function() {
 				.send(session)
 				.expect(201)
 				.expect(isSuccessResponseFormat)
-				.end(function(err, res) {
-					if (err) return done(err);
-					saved_session_id = res.body.data.id;
-					done();
-				});
+				.end(done);
 		});
 
 		it('errors if a parameter is missing or invalid', function(done) {
@@ -204,13 +199,14 @@ describe('Session API', function() {
 describe('Events API', function() {
 
 	events = {
-		session_id: saved_session_id,
+		session_id: 13,
 		last_event_at: Date.now(),
-		events: [{
+		events: [
+		{
 			event_type: 'AGENT_BUMP',
 			bump_type: 'GPS',
 			agent_id: 6,
-			name: 'Bobby Beetle',
+			agent_name: 'Bobby Beetle',
 			occurred: (new Date() - 120)
 		}, {
 			event_type: 'REGION_SWITCH',
@@ -220,19 +216,25 @@ describe('Events API', function() {
 		}, {
 			event_type: 'GAME_END',
 			occurred: Date.now()
-		}, {
-			event_type: 'CUSTOM',
-			event_id: 8,
-			name: 'RAPTOR ATE PEOPLE',
-			value: '4',
-			occurred: (new Date() - 400)
-		}, {
-			event_type: 'CUSTOM',
-			event_id: 8,
-			name: 'RAPTOR ATE PEOPLE',
-			value: '4',
-			occurred: (new Date() - 1000)
-		}]
+		}
+
+		// {
+		// 	event_type: 'CUSTOM',
+		// 	event_id: 8,
+		// 	name: 'RAPTOR ATE PEOPLE',
+		// 	value: '4',
+		// 	occurred: (new Date() - 400)
+		// }, 
+
+		// {
+		// 	event_type: 'CUSTOM',
+		// 	event_id: 8,
+		// 	name: 'RAPTOR ATE PEOPLE',
+		// 	value: '4',
+		// 	occurred: (new Date() - 1000)
+		// }
+
+		]
 	};
 
 	describe('POST /events', function() {
@@ -242,21 +244,27 @@ describe('Events API', function() {
 				.send(events)
 				.expect(201)
 				.expect(isSuccessResponseFormat)
-				.end(done);
+				.end(function(err, res) {
+					// console.log(res.body);
+					if (err) return done(err);
+					done();
+				});
 		});
 
-		it('errors if parameters is missing from the request', function(done) {
-			missing_session_id = _.extend({}, events);
-			missing_session_id.session_id = null;
+		it('errors if session_id is missing from the request', function(done) {
+			missing_session_id = _.omit(events, 'session_id')
 
 			request
 				.post('/events')
 				.send(missing_session_id)
 				.expect(400)
-				.expect(isErrorResponseFormat);
+				.expect(isErrorResponseFormat)
+				.end(done);
 
-			missing_last_event_at = _.extend({}, events);
-			missing_last_event_at.last_event_at = null;
+		});
+
+		it('errors if last_event_at is missing from the request', function(done) {
+			missing_last_event_at = _.omit(events, 'last_event_at');
 
 			request
 				.post('/events')
@@ -265,7 +273,7 @@ describe('Events API', function() {
 				.expect(isErrorResponseFormat)
 				.end(done);
 
-		});
+		})
 
 		it('errors if events.data is not an array of events', function(done) {
 			wrong_events = _.extend({}, events);
@@ -273,7 +281,7 @@ describe('Events API', function() {
 
 			request
 				.post('/events')
-				.send(events)
+				.send(wrong_events)
 				.expect(400)
 				.expect(isErrorResponseFormat)
 				.end(done);
