@@ -32,6 +32,19 @@ var isErrorResponseFormat = function(res) {
 // API Tests //
 ///////////////
 
+//////////////////////////
+// Global Preconditions //
+//////////////////////////
+
+before(function(done) {
+	// Synchronize the database before we start
+	app.get('db').sequelize.sync().complete(function(err) {
+		console.log('--- Database synchronized ---');
+		if (err) return done(err);
+		done();
+	})
+})
+
 ////////////
 // Device //
 ////////////
@@ -44,7 +57,6 @@ describe('Device API', function() {
 			request
 				.get('/device')
 				.expect(200)
-				.expect('Content-Type', /json/)
 				.expect(isSuccessResponseFormat)
 				.end(done);
 		});
@@ -274,7 +286,7 @@ describe('Events API', function() {
 
 		})
 
-		it('errors if events.data is not an array of events', function(done) {
+		it('errors if data is not an array of events', function(done) {
 			wrong_events = _.extend({}, events);
 			wrong_events.events = {};
 

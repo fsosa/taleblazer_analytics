@@ -14,6 +14,7 @@ var env = process.env.NODE_ENV || 'development';
 var db = require('./app/models');
 
 var app = express();
+app.set('db', db);
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
