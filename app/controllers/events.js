@@ -1,6 +1,5 @@
 var db = require('../models');
 var util = require('util');
-var _ = require('underscore');
 
 var EVENT_TYPES = {
 	AGENT_BUMP: 'AGENT_BUMP',
@@ -65,11 +64,11 @@ exports.create = function(req, res) {
 
 var getSessionUpdateQuery = function(session_id, last_event_at) {
 	var updateQuery = db.Session.update(
-		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value */
-		{ id: session_id } /* `where` criteria */
+		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value(s) */
+		{ id: session_id } /* `where` criteria */ 
 	);
 
-	return updateQuery
+	return updateQuery;
 };
 
 var getEventCreationQuery = function(session_id, raw_event) {
@@ -92,7 +91,7 @@ var getEventCreationQuery = function(session_id, raw_event) {
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(session_id, raw_event);
-			// query = db.CustomEventTrigger.create(event_fields);
+			query = db.CustomEventTrigger.create(event_fields);
 			break;
 	}
 
@@ -129,4 +128,16 @@ var parseGameCompletionFields = function(session_id, event) {
 	};
 
 	return completion_fields;
+};
+
+var parseCustomEventFields = function(session_id, event) {
+	trigger_fields = {
+		event_id: event.event_id,
+		event_name: event.event_name,
+		value: event.value,
+		occurred_at: new Date(parseInt(event.occurred_at)),
+		session_id: session_id
+	};
+
+	return trigger_fields;
 };

@@ -3,7 +3,7 @@ var should = require('chai').should();
 var crypto = require('crypto');
 var _ = require('underscore');
 
-process.env.NODE_ENV = 'test'
+process.env.NODE_ENV = 'test';
 
 var app = require('../server.js');
 
@@ -42,8 +42,8 @@ before(function(done) {
 		console.log('--- Database synchronized ---');
 		if (err) return done(err);
 		done();
-	})
-})
+	});
+});
 
 ////////////
 // Device //
@@ -231,23 +231,19 @@ describe('Events API', function() {
 			}, {
 				event_type: 'GAME_COMPLETION',
 				occurred_at: Date.now()
+			}, {
+				event_type: 'CUSTOM_EVENT_TRIGGER',
+				event_id: 8,
+				event_name: 'RAPTOR ATE PEOPLE',
+				value: '4',
+				occurred_at: (new Date() - 400)
+			}, {
+				event_type: 'CUSTOM_EVENT_TRIGGER',
+				event_id: 8,
+				event_name: 'RAPTOR ATE PEOPLE',
+				value: '4',
+				occurred_at: (new Date() - 1000)
 			}
-
-			// {
-			// 	event_type: 'CUSTOM_EVENT_TRIGGER',
-			// 	event_id: 8,
-			// 	name: 'RAPTOR ATE PEOPLE',
-			// 	value: '4',
-			// 	occurred_at: (new Date() - 400)
-			// },
-
-			// {
-			// 	event_type: 'CUSTOM_EVENT_TRIGGER',
-			// 	event_id: 8,
-			// 	name: 'RAPTOR ATE PEOPLE',
-			// 	value: '4',
-			// 	occurred_at: (new Date() - 1000)
-			// }
 
 		]
 	};
@@ -263,7 +259,7 @@ describe('Events API', function() {
 		});
 
 		it('errors if session_id is missing from the request', function(done) {
-			missing_session_id = _.omit(events, 'session_id')
+			missing_session_id = _.omit(events, 'session_id');
 
 			request
 				.post('/events')
@@ -284,7 +280,7 @@ describe('Events API', function() {
 				.expect(isErrorResponseFormat)
 				.end(done);
 
-		})
+		});
 
 		it('errors if data is not an array of events', function(done) {
 			wrong_events = _.extend({}, events);

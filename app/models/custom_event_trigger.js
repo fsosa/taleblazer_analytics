@@ -11,19 +11,42 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			value: {
 				type: DataTypes.STRING,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true
+				}
 			},
+			event_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
+					notNull: true,
+					notEmpty: true
+				}
+			}, 
 			occurred_at: {
 				type: DataTypes.DATE,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isDate: true
+				}
 			},
 			session_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			},
 			event_id: {
 				type: DataTypes.INTEGER,
-				allowNull: false
+				allowNull: false,
+				validate: {
+					notNull: true,
+					isInt: true
+				}
 			}
 		},
 		// Configuration options
