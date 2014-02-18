@@ -62,6 +62,10 @@ module.exports = function(sequelize, DataTypes) {
 					models.Agent.hasMany(AgentBump, {
 						foreignKey: 'agent_id'
 					});
+
+					AgentBump.belongsTo(models.Session, {
+						foreignKey: 'session_id'
+					});
 				}
 			},
 

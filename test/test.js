@@ -203,7 +203,7 @@ describe('Session API', function() {
 describe('Events API', function() {
 
 	events = {
-		session_id: 13,
+		session_id: 1,
 		last_event_at: Date.now(),
 		events: [{
 				event_type: 'AGENT_BUMP',

@@ -41,27 +41,36 @@ exports.create = function(req, res) {
 		chainer.add(creationQuery);
 	}
 
-	// TODO: UPDATE SESSION WITH COMPLETION_ID
-	// UPDATE SESSION WITH LAST_EVENT_AT
-	
-	// Chaining complete. Run the queries and callback once they're done
+	// Update the session with the updated last_event_at timestamp
+	var sessionUpdateQuery = getSessionUpdateQuery(session_id, last_event_at);
+	chainer.add(sessionUpdateQuery);
+
+	// Run the queries and callback once they're done
+	// NOTE: Chained queries occur in parallel
 	chainer
 		.run()
 		.success(function(results) {
 			res.jsend(201, results);
 		})
 		.error(function(error) {
+			console.log(error);
 			res.jerror(500, error);
 		});
-	
-	
-
 };
 
 
 /////////////////////
 // Utility Methods //
 /////////////////////
+
+var getSessionUpdateQuery = function(session_id, last_event_at) {
+	var updateQuery = db.Session.update(
+		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value */
+		{ id: session_id } /* `where` criteria */
+	);
+
+	return updateQuery
+};
 
 var getEventCreationQuery = function(session_id, raw_event) {
 	var event_fields = null;

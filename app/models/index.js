@@ -45,8 +45,11 @@ Object.keys(db).forEach(function(modelName) {
 	if ('associate' in db[modelName]) {
 		db[modelName].associate(db);
 	}
-});
 
+	if ('setupHooks' in db[modelName]) {
+		db[modelName].setupHooks(db);
+	}
+});
 
 // Extend the db object with references to the db connection (sequelize) and Sequelize
 db = Sequelize.Utils._.extend({

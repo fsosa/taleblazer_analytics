@@ -32,6 +32,23 @@ module.exports = function(sequelize, DataTypes) {
 					models.Session.hasOne(GameCompletion, {
 						foreignKey: 'session_id'
 					});
+				},
+				setupHooks: function(models) {
+					// On successful creation of a game completion event, 
+					// we update the session with the id of the event so as to
+					// note that analytics for the session have been finalized
+
+					GameCompletion.afterCreate(function(game_completion, callback) {
+						models.Session
+							.update(
+								{ completion_id: game_completion.id },
+								{ id: game_completion.session_id }
+							).success(function(session) {
+								callback(null, session);
+							}).error(function(error) {
+								callback(error, null);
+							})
+					});
 				}
 			},
 			// Automatically added attributes are underscored
