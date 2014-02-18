@@ -17,7 +17,6 @@ var app = express();
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
-app.use(express.logger());
 
 app.use(express.json());
 app.use(express.methodOverride());
@@ -32,6 +31,7 @@ app.use(app.router);
 
 if (env == 'development') {
   app.use(express.errorHandler());
+  app.use(express.logger());
 }
 
 // Setup routes
