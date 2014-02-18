@@ -56,13 +56,8 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(AgentBump, {
-						foreignKey: 'session_id'
-					});
-					models.Agent.hasMany(AgentBump, {
-						foreignKey: 'agent_id'
-					});
-
+					// Foreign keys from AgentBump to other models
+					// agent_bump.session_id
 					AgentBump.belongsTo(models.Session, {
 						foreignKey: 'session_id'
 					});

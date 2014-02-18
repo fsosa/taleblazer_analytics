@@ -44,7 +44,9 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(RegionSwitch, {
+					// Foreign keys from RegionSwitch to other models
+					// region_switch.session_id
+					RegionSwitch.belongsTo(models.Session, {
 						foreignKey: 'session_id'
 					});
 				}

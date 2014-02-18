@@ -73,6 +73,19 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		// Configuration options
 		{
+			classMethods: {
+				associate: function(models) {
+					// Foreign keys from other models to Draft (i.e. they exist on the other models)
+					Draft.hasMany(models.DraftState, {
+						foreignKey: 'draft_id'
+					});
+
+					Draft.hasMany(models.CustomEvent, {
+						foreignKey: 'draft_id'
+					});
+				}
+			}, 
+			
 			// Disable automatically added timestamp attributes
 			timestamps: false,
 

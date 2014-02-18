@@ -61,8 +61,9 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Draft.hasMany(DraftState, {
-						foreignKey: 'draft_id'
+					// Foreign keys from other models to DraftState (i.e. they exist on the other models)
+					DraftState.hasMany(models.Session, {
+						foreignKey: 'draft_state_id'
 					});
 				}
 			},

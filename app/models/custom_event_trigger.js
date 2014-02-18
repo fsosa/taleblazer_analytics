@@ -30,13 +30,8 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Session.hasMany(CustomEventTrigger, {
-						foreignKey: 'session_id'
-					});
-					models.CustomEvent.hasMany(CustomEventTrigger, {
-						foreignKey: 'event_id'
-					});
-
+					// Foreign keys from CustomEventTrigger to other models
+					// custom_event_trigger.event_id
 					CustomEventTrigger.belongsTo(models.CustomEvent, {
 						foreignKey: 'event_id'
 					});

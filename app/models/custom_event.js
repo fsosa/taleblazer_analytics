@@ -29,13 +29,18 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Draft.hasMany(CustomEvent, {
-						foreignKey: 'draft_id'
+					// Foreign keys from other models to CustomEvent (i.e. they exist on the other models)
+					CustomEvent.hasMany(models.CustomEventTrigger, {
+						foreignKey: 'event_id'
 					});
 
+					// Foreign keys from CustomEvent to other models
+					// custom_event.draft_id
 					CustomEvent.belongsTo(models.Draft, {
 						foreignKey: 'draft_id'
 					});
+
+
 				}
 			},
 

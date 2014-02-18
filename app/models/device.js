@@ -22,7 +22,9 @@ module.exports = function(sequelize, DataTypes) {
 				validate: {
 					notEmpty: true,
 					isIn: {
-						args: [['android', 'ios']],
+						args: [
+							['android', 'ios']
+						],
 						msg: 'os_type must be either \'android\' or \'ios\''
 					}
 				}
@@ -50,6 +52,15 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		// Configuration options
 		{
+			classMethods: {
+				associate: function(models) {
+					// Foreign keys from other models to Device (i.e. they exist on the other models)
+					Device.hasMany(models.Session, {
+						foreignKey: 'device_id'
+					});
+				}
+			},
+
 			// Automatically added attributes are underscored
 			underscored: true,
 

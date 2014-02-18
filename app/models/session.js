@@ -67,15 +67,34 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			classMethods: {
 				associate: function(models) {
-					models.Device.hasMany(Session, {
+					// Foreign keys from other models to Session (i.e. they exist on the other models)
+					Session.hasMany(models.AgentBump, {
+						foreignKey: 'session_id'
+					});
+
+					Session.hasMany(models.RegionSwitch, {
+						foreignKey: 'session_id'
+					});
+
+					Session.hasOne(models.GameCompletion, {
+						foreignKey: 'session_id'
+					});
+
+					Session.hasMany(models.CustomEventTrigger, {
+						foreignKey: 'session_id'
+					});
+
+					// Foreign keys from Session to other models
+					// session.device_id
+					Session.belongsTo(models.Device, {
 						foreignKey: 'device_id'
 					});
-					models.DraftState.hasMany(Session, {
+
+					// session.draft_state_id
+					Session.belongsTo(models.DraftState, {
 						foreignKey: 'draft_state_id'
 					});
-					models.GameCompletion.hasOne(Session, {
-						foreignKey: 'completion_id'
-					});
+
 
 				}
 			},
