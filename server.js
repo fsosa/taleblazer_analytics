@@ -9,6 +9,7 @@ require('./lib/jsend.js')(express);
 
 // Environment Configuration
 var env = process.env.NODE_ENV || 'development';
+console.log("Environment: " + env);
 
 // Database
 var db = require('./app/models');
@@ -18,6 +19,11 @@ app.set('db', db);
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
+
+if (env == 'development') { 
+  app.use(express.logger());  
+}
+
 
 app.use(express.json());
 app.use(express.methodOverride());
@@ -32,7 +38,6 @@ app.use(app.router);
 
 if (env == 'development') {
   app.use(express.errorHandler());
-  app.use(express.logger());
 }
 
 // Setup routes
