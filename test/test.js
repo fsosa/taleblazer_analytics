@@ -38,7 +38,9 @@ var isErrorResponseFormat = function(res) {
 
 before(function(done) {
 	// Synchronize the database before we start
-	app.get('db').sequelize.sync().complete(function(err) {
+	// {force: true} drops the tables and recreates them each test run
+	app.get('db').sequelize.sync({ force:true }).complete(function(err) {
+		console.log('--- Test DB tables dropped ---');
 		console.log('--- Database synchronized ---');
 		if (err) return done(err);
 		done();
@@ -154,7 +156,28 @@ describe('Session API', function() {
 		});
 	});
 
+
 	describe('POST /session', function() {
+
+		// Create the device that we use in the first test
+		// NOTE: Runs before all tests in this describe block
+		before(function(done) {
+			device = {
+				device_id: "TE-STING-DEV1CE-1D3",
+				os_type: 'ios',
+				os_version: '1.5.2',
+				screen_resolution: '640x400',
+				model: 'iPhone 10'
+			};
+			app.get('db').Device.create(device)
+				.success(function(device) {
+					done();
+				})
+				.error(function(error) {
+					done(error);
+				});
+		});
+
 		it('creates a new session', function(done) {
 			session = {
 				started_at: Date.now(),
@@ -162,7 +185,7 @@ describe('Session API', function() {
 				role: 'Tester',
 				scenario: 'Testing Scenario',
 				tap_to_visit: false,
-				device_id: 1,
+				device_id: "TE-STING-DEV1CE-1D3",
 				draft_state_id: 42
 			};
 
@@ -174,6 +197,28 @@ describe('Session API', function() {
 				.expect(201)
 				.expect(isSuccessResponseFormat)
 				.end(done);
+		});
+
+		it('errors if there is no matching device in the db', function(done) {
+				session = {
+				started_at: Date.now(),
+				last_event_at: Date.now(),
+				role: 'Tester',
+				scenario: 'Testing Scenario',
+				tap_to_visit: false,
+				device_id: "OBVIOUSLY-FAKE-ID",
+				draft_state_id: 42
+			};
+
+			request
+				.post('/session')
+				.set('Content-Type', 'application/json')
+				.set('Accept', 'application/json')
+				.send(session)
+				.expect(400)
+				.expect(isErrorResponseFormat)
+				.end(done);
+
 		});
 
 		it('errors if a parameter is missing or invalid', function(done) {

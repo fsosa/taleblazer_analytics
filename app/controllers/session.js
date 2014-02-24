@@ -24,18 +24,41 @@ var createSession = function(req, res) {
 		role: req.body.role,
 		scenario: req.body.scenario,
 		tap_to_visit: req.body.tap_to_visit,
-		device_id: req.body.device_id,
 		draft_state_id: req.body.draft_state_id
 	};
 
-	db.Session
-		.create(session_fields)
-		.success(function(session) {
-			res.jsend(201, session);
+
+	// First look up the device with the client's device_id
+	db.Device
+		.find({
+			where: {
+				device_id: req.body.device_id
+			}
+		})
+		.success(function(device) {
+			if (device == null) {
+				message = 'Device with id{' + req.body.device_id + '} not registered. Must register device first.';
+				res.jerror(400, message);
+				return;
+			}
+
+			// Then, create the new session with a FK to the device we just found
+			session_fields.device_id = device.id;
+
+			db.Session
+				.create(session_fields)
+				.success(function(session) {
+					res.jsend(201, session);
+				})
+				.error(function(error) {
+					// Session creation error e.g. model validation failed
+					res.jerror(400, error);
+				});
 		})
 		.error(function(error) {
-			// Session creation error e.g. model validation failed
 			res.jerror(400, error);
 		});
 
-}
+
+
+};

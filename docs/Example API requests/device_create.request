@@ -6,7 +6,7 @@
 	<string>http://localhost:3000/device</string>
 	<key>bodyString</key>
 	<string> 	{
-		"device_id": "ffdsaffd!dda#@!",
+		"device_id": "TE-STING-DEV1CE-1D3",
 		"os_type": "ios",
 		"os_version": "1.4.2",
 		"screen_resolution": "640x600",
