@@ -19,7 +19,7 @@ exports.create = function(req, res) {
 
 var createSession = function(req, res) {
 	if (req.body.draft_state_id == null || req.body.device_id == null || req.body.started_at == null) {
-		res.jsend(400, "Missing required parameter");
+		res.jerror(400, "Missing required parameter");
 		return;
 	}
 

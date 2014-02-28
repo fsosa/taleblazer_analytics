@@ -1,5 +1,6 @@
 var request = require('supertest');
 var should = require('chai').should();
+var assert = require('assert')
 var crypto = require('crypto');
 var _ = require('underscore');
 
@@ -256,73 +257,93 @@ describe('Session API', function() {
 ////////////
 
 describe('Events API', function() {
-
-	events = {
-		session_id: 1,
-		last_event_at: Date.now(),
+	var latest_time = Date.now();
+	var events = {
 		events: [{
 				event_type: 'AGENT_BUMP',
 				bump_type: 'GPS',
 				agent_id: 6,
 				agent_name: 'Bobby Beetle',
-				occurred_at: (new Date() - 120)
+				session_id: 1,
+				occurred_at: (new Date() - 10000)
 			}, {
 				event_type: 'REGION_SWITCH',
 				region_id: 7,
 				region_name: 'Jurassic Park',
-				occurred_at: (new Date() - 60)
+				session_id: 1,
+				occurred_at: (new Date() - 4000)
 			}, {
 				event_type: 'GAME_COMPLETION',
-				occurred_at: Date.now()
+				occurred_at: (new Date() - 2000),
+				session_id: 3,
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 8,
 				event_name: 'RAPTOR ATE PEOPLE',
 				value: '4',
-				occurred_at: (new Date() - 400)
+				occurred_at: (new Date() - 1000),
+				session_id: 2,
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 8,
 				event_name: 'RAPTOR ATE PEOPLE',
 				value: '4',
-				occurred_at: (new Date() - 1000)
+				occurred_at: latest_time,
+				session_id: 1,
 			}
 
 		]
 	};
 
 	describe('POST /events', function() {
+		before(function(done) {
+			session = {
+				started_at: Date.now(),
+				last_event_at: Date.now(),
+				role_id: 52, 
+				role_name: 'Tester',
+				scenario_id: 90,
+				scenario_name: 'Testing Scenario',
+				tap_to_visit: false,
+				device_id: "TE-STING-DEV1CE-1D3",
+				draft_state_id: 42
+			};
+
+			app.get('db').Session.bulkCreate([
+				session, 
+				session, 
+				session, 
+				session, 
+				session
+			]).success(function() {
+				done();
+			}).error(function(err) {
+				done(err);
+			})
+		});
+
 		it('creates a list of events', function(done) {
 			request
 				.post('/events')
+				.set('Content-Type', 'application/json')
+				.set('Accept', 'application/json')
 				.send(events)
 				.expect(201)
 				.expect(isSuccessResponseFormat)
 				.end(done);
 		});
 
-		it('errors if session_id is missing from the request', function(done) {
-			missing_session_id = _.omit(events, 'session_id');
 
-			request
-				.post('/events')
-				.send(missing_session_id)
-				.expect(400)
-				.expect(isErrorResponseFormat)
-				.end(done);
-
-		});
-
-		it('errors if last_event_at is missing from the request', function(done) {
-			missing_last_event_at = _.omit(events, 'last_event_at');
-
-			request
-				.post('/events')
-				.send(missing_last_event_at)
-				.expect(400)
-				.expect(isErrorResponseFormat)
-				.end(done);
-
+		it('correctly updates the session with the latest event', function(done) {
+			app.get('db').Session
+				.find({ where: { id: 1} })
+				.success(function(session) {
+					assert.equal(session.last_event_at.toString(), new Date(latest_time).toString(), "Session date and latest time should be equal");
+					done();
+				})
+				.error(function(err) {
+					done(err);
+				})
 		});
 
 		it('errors if data is not an array of events', function(done) {

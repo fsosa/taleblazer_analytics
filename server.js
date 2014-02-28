@@ -36,7 +36,7 @@ app.use(express.cookieParser());
 // http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
 app.use(app.router);
 
-if (env == 'development') {
+if (env == 'development' || env == 'test') {
   app.use(express.errorHandler());
 }
 
