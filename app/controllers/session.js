@@ -18,11 +18,18 @@ exports.create = function(req, res) {
 /////////////////////
 
 var createSession = function(req, res) {
+	if (req.body.draft_state_id == null || req.body.device_id == null || req.body.started_at == null) {
+		res.jsend(400, "Missing required parameter");
+		return;
+	}
+
 	session_fields = {
 		started_at: new Date(parseInt(req.body.started_at)),
 		last_event_at: new Date(parseInt(req.body.last_event_at)),
-		role: req.body.role,
-		scenario: req.body.scenario,
+		role_id: req.body.role_id,
+		role_name: req.body.role_name,
+		scenario_id: req.body.scenario_id,
+		scenario_name: req.body.scenario_name,
 		tap_to_visit: req.body.tap_to_visit,
 		draft_state_id: req.body.draft_state_id
 	};

@@ -1,0 +1,5204 @@
+{
+  "ui": {
+    "messages": {},
+    "playerSelect": {},
+    "sample": {},
+    "sampleChart": {},
+    "sampleMap": {},
+    "admin": {
+      "view": null
+    }
+  },
+  "ctr": {
+    "headsup": {},
+    "video": {},
+    "gameSetup": {},
+    "game": {
+      "bSettings": {
+        "showDashboardOnBump": true,
+        "autoBump": true,
+        "autoRebump": false,
+        "showOnMap": true,
+        "useProximityToShowOnMap": false,
+        "tapOnMapToBump": true,
+        "useProximityToTapOnMap": true,
+        "showOnHud": true,
+        "useProximityToShowOnHud": false,
+        "tapOnHudToBump": true,
+        "useProximityToTapOnHud": true,
+        "showOnInventory": true,
+        "tapOnInventoryToBump": true,
+        "showOnHistory": true,
+        "JSONType": "ar.BumpSettings"
+      },
+      "pSettings": {
+        "unit": "game",
+        "bumpDist": 10,
+        "rebumpDist": 20,
+        "showOnMapDist": 30,
+        "tapOnMapDist": 20,
+        "showOnHudDist": 30,
+        "tapOnHudDist": 30,
+        "JSONType": "ar.ProximitySettings"
+      },
+      "agentUIObjects": [
+        {
+          "id": 6,
+          "regionId": 4,
+          "x": 5,
+          "y": 195,
+          "onMap": false,
+          "tapToBump": false,
+          "bumped": false,
+          "suppressAutoBump": false,
+          "annotation": null
+        }
+      ],
+      "playerUIObjects": [
+        {
+          "id": 12,
+          "x": 100,
+          "y": 100,
+          "image": "/Media/Images/playerIconYellow_30.png",
+          "onMap": false,
+          "annotation": null
+        }
+      ],
+      "samples": [],
+      "agentUIObjectsDict": {
+        "6": {
+          "id": 6,
+          "regionId": 4,
+          "x": 5,
+          "y": 195,
+          "onMap": false,
+          "tapToBump": false,
+          "bumped": false,
+          "suppressAutoBump": false,
+          "annotation": null
+        }
+      },
+      "region": {
+        "name": "Main",
+        "id": 4,
+        "description": "",
+        "imageID": -1,
+        "dashboardTemplate": {
+          "passwordProtected": false,
+          "password": "",
+          "traitOrder": "default",
+          "traits": [],
+          "actionOrder": "default",
+          "actions": [],
+          "JSONType": "ar.DashboardTemplate"
+        },
+        "JSONType": "ar.Region",
+        "latLongBounds": {
+          "top": 42.361881,
+          "left": -71.088813,
+          "bottom": 42.360006,
+          "right": -71.086294
+        },
+        "gameBounds": {
+          "top": 200,
+          "left": 0,
+          "bottom": 0,
+          "right": 200
+        },
+        "navigation": 1,
+        "enforceBoundaries": true,
+        "heightwidthratio": 1.0073461462399775
+      },
+      "regionType": "dynamic"
+    },
+    "proximity": {},
+    "messages": {
+      "receivedMessages": []
+    },
+    "playerSelect": {},
+    "sample": {},
+    "admin": {
+      "tapToVisit": false
+    }
+  },
+  "alloy": {
+    "gameInfo": {
+      "__iamalloy": true,
+      "__views": {
+        "gameInfoView": {
+          "horizontalWrap": true,
+          "id": "gameInfoView"
+        },
+        "__alloyId13": {
+          "id": "__alloyId13",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "bottom": 65
+        },
+        "gameNameLabel": {
+          "text": "Test Game",
+          "textAlign": 1,
+          "id": "gameNameLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "top": 16,
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          }
+        },
+        "scrollView": {
+          "id": "scrollView",
+          "horizontalWrap": true,
+          "minZoomScale": 1,
+          "contentHeight": "auto",
+          "maxZoomScale": 1,
+          "bottom": 0,
+          "scrollType": "vertical",
+          "layout": "vertical",
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "showVertialScrollIndicator": "true",
+          "canCancelEvents": true,
+          "top": 10
+        },
+        "imageHolder": {
+          "left": 12,
+          "id": "imageHolder",
+          "horizontalWrap": true,
+          "right": 12,
+          "height": 175
+        },
+        "image": {
+          "paused": false,
+          "height": "SIZE",
+          "image": "/Images/Unknown.jpg",
+          "id": "image",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": "SIZE",
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "gameCodeHolder": {
+          "left": 12,
+          "layout": "horizontal",
+          "id": "gameCodeHolder",
+          "horizontalWrap": true,
+          "right": 12,
+          "top": 10,
+          "height": "SIZE"
+        },
+        "__alloyId14": {
+          "text": "Game Code",
+          "bottom": 0,
+          "id": "__alloyId14",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 80,
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "gameCodeLabel": {
+          "text": "glkslxv",
+          "left": 6,
+          "bottom": 0,
+          "id": "gameCodeLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "instanceCodeHolder": {
+          "visible": false,
+          "left": 0,
+          "layout": "horizontal",
+          "id": "instanceCodeHolder",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "top": 0,
+          "height": 0,
+          "width": 0
+        },
+        "__alloyId15": {
+          "text": "Instance Code",
+          "bottom": 0,
+          "id": "__alloyId15",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 80,
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "instanceLabel": {
+          "left": 6,
+          "bottom": 0,
+          "id": "instanceLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "roleHolder": {
+          "visible": false,
+          "left": 0,
+          "layout": "horizontal",
+          "id": "roleHolder",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "top": 0,
+          "height": 0,
+          "width": 0
+        },
+        "__alloyId16": {
+          "text": "Role",
+          "bottom": 0,
+          "id": "__alloyId16",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 80,
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "roleLabel": {
+          "left": 6,
+          "bottom": 0,
+          "id": "roleLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "scenarioHolder": {
+          "visible": false,
+          "left": 0,
+          "layout": "horizontal",
+          "id": "scenarioHolder",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "top": 0,
+          "height": 0,
+          "width": 0
+        },
+        "__alloyId17": {
+          "text": "Scenario",
+          "bottom": 0,
+          "id": "__alloyId17",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 80,
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "scenarioLabel": {
+          "left": 6,
+          "bottom": 0,
+          "id": "scenarioLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "descriptionLabel": {
+          "text": "",
+          "left": 12,
+          "layout": "horizontal",
+          "id": "descriptionLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "right": 12,
+          "top": 10,
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "__alloyId18": {
+          "layout": "horizontal",
+          "id": "__alloyId18",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "width": "SIZE",
+          "height": 65
+        },
+        "aboutButton": {
+          "id": "aboutButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "About",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": "SIZE",
+          "horizontalWrap": true
+        },
+        "leaveButton": {
+          "id": "leaveButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "Leave Game",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": "SIZE",
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/gameInfo",
+      "gameInfoView": {
+        "horizontalWrap": true,
+        "id": "gameInfoView"
+      },
+      "__alloyId13": {
+        "id": "__alloyId13",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "bottom": 65
+      },
+      "gameNameLabel": {
+        "text": "Test Game",
+        "textAlign": 1,
+        "id": "gameNameLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "top": 16,
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        }
+      },
+      "scrollView": {
+        "id": "scrollView",
+        "horizontalWrap": true,
+        "minZoomScale": 1,
+        "contentHeight": "auto",
+        "maxZoomScale": 1,
+        "bottom": 0,
+        "scrollType": "vertical",
+        "layout": "vertical",
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "showVertialScrollIndicator": "true",
+        "canCancelEvents": true,
+        "top": 10
+      },
+      "imageHolder": {
+        "left": 12,
+        "id": "imageHolder",
+        "horizontalWrap": true,
+        "right": 12,
+        "height": 175
+      },
+      "image": {
+        "paused": false,
+        "height": "SIZE",
+        "image": "/Images/Unknown.jpg",
+        "id": "image",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": "SIZE",
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "gameCodeHolder": {
+        "left": 12,
+        "layout": "horizontal",
+        "id": "gameCodeHolder",
+        "horizontalWrap": true,
+        "right": 12,
+        "top": 10,
+        "height": "SIZE"
+      },
+      "__alloyId14": {
+        "text": "Game Code",
+        "bottom": 0,
+        "id": "__alloyId14",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 80,
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "gameCodeLabel": {
+        "text": "glkslxv",
+        "left": 6,
+        "bottom": 0,
+        "id": "gameCodeLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "instanceCodeHolder": {
+        "visible": false,
+        "left": 0,
+        "layout": "horizontal",
+        "id": "instanceCodeHolder",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "__alloyId15": {
+        "text": "Instance Code",
+        "bottom": 0,
+        "id": "__alloyId15",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 80,
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "instanceLabel": {
+        "left": 6,
+        "bottom": 0,
+        "id": "instanceLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "roleHolder": {
+        "visible": false,
+        "left": 0,
+        "layout": "horizontal",
+        "id": "roleHolder",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "__alloyId16": {
+        "text": "Role",
+        "bottom": 0,
+        "id": "__alloyId16",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 80,
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "roleLabel": {
+        "left": 6,
+        "bottom": 0,
+        "id": "roleLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "scenarioHolder": {
+        "visible": false,
+        "left": 0,
+        "layout": "horizontal",
+        "id": "scenarioHolder",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "top": 0,
+        "height": 0,
+        "width": 0
+      },
+      "__alloyId17": {
+        "text": "Scenario",
+        "bottom": 0,
+        "id": "__alloyId17",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 80,
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "scenarioLabel": {
+        "left": 6,
+        "bottom": 0,
+        "id": "scenarioLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "descriptionLabel": {
+        "text": "",
+        "left": 12,
+        "layout": "horizontal",
+        "id": "descriptionLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "right": 12,
+        "top": 10,
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "__alloyId18": {
+        "layout": "horizontal",
+        "id": "__alloyId18",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "width": "SIZE",
+        "height": 65
+      },
+      "aboutButton": {
+        "id": "aboutButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "About",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": "SIZE",
+        "horizontalWrap": true
+      },
+      "leaveButton": {
+        "id": "leaveButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "Leave Game",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": "SIZE",
+        "horizontalWrap": true
+      }
+    },
+    "kioskView": {
+      "__iamalloy": true,
+      "__views": {
+        "kioskView": {
+          "horizontalWrap": true,
+          "id": "kioskView",
+          "backgroundColor": "#0090D2"
+        },
+        "__alloyId25": {
+          "horizontalWrap": true,
+          "id": "__alloyId25",
+          "backgroundImage": "/Images/footprints.png"
+        },
+        "containerView": {
+          "horizontalWrap": true,
+          "id": "containerView",
+          "bottom": 65
+        },
+        "__alloyId26": {
+          "backgroundColor": "white",
+          "layout": "vertical",
+          "borderRadius": 16,
+          "id": "__alloyId26",
+          "horizontalWrap": true,
+          "width": 288,
+          "height": "SIZE"
+        },
+        "__alloyId27": {
+          "left": 12,
+          "layout": "vertical",
+          "id": "__alloyId27",
+          "bottom": 16,
+          "horizontalWrap": true,
+          "right": 12,
+          "top": 16,
+          "height": "SIZE"
+        },
+        "__alloyId28": {
+          "text": "Enter the kiosk password in order to exit the game.",
+          "id": "__alloyId28",
+          "horizontalWrap": true,
+          "color": "black",
+          "top": 16,
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "__alloyId29": {
+          "width": "SIZE",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "top": 16,
+          "id": "__alloyId29"
+        },
+        "textField": {
+          "id": "textField",
+          "returnKeyType": 9,
+          "autocorrect": false,
+          "borderStyle": 3,
+          "horizontalWrap": true,
+          "width": 96,
+          "autocapitalization": 0,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "btnLeaveGame": {
+          "id": "btnLeaveGame",
+          "color": "black",
+          "backgroundColor": "white",
+          "title": "Exit Game",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": 43,
+          "borderWidth": 1,
+          "width": "SIZE",
+          "horizontalWrap": true
+        },
+        "__alloyId30": {
+          "horizontalWrap": true,
+          "id": "__alloyId30",
+          "height": 10
+        },
+        "__alloyId31": {
+          "layout": "horizontal",
+          "id": "__alloyId31",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "width": "SIZE",
+          "height": 65
+        },
+        "btnReturnToGame": {
+          "id": "btnReturnToGame",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "Return to Game",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": "SIZE",
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/kioskView",
+      "kioskView": {
+        "horizontalWrap": true,
+        "id": "kioskView",
+        "backgroundColor": "#0090D2"
+      },
+      "__alloyId25": {
+        "horizontalWrap": true,
+        "id": "__alloyId25",
+        "backgroundImage": "/Images/footprints.png"
+      },
+      "containerView": {
+        "horizontalWrap": true,
+        "id": "containerView",
+        "bottom": 65
+      },
+      "__alloyId26": {
+        "backgroundColor": "white",
+        "layout": "vertical",
+        "borderRadius": 16,
+        "id": "__alloyId26",
+        "horizontalWrap": true,
+        "width": 288,
+        "height": "SIZE"
+      },
+      "__alloyId27": {
+        "left": 12,
+        "layout": "vertical",
+        "id": "__alloyId27",
+        "bottom": 16,
+        "horizontalWrap": true,
+        "right": 12,
+        "top": 16,
+        "height": "SIZE"
+      },
+      "__alloyId28": {
+        "text": "Enter the kiosk password in order to exit the game.",
+        "id": "__alloyId28",
+        "horizontalWrap": true,
+        "color": "black",
+        "top": 16,
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "__alloyId29": {
+        "width": "SIZE",
+        "layout": "horizontal",
+        "horizontalWrap": true,
+        "top": 16,
+        "id": "__alloyId29"
+      },
+      "textField": {
+        "id": "textField",
+        "returnKeyType": 9,
+        "autocorrect": false,
+        "borderStyle": 3,
+        "horizontalWrap": true,
+        "width": 96,
+        "autocapitalization": 0,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "btnLeaveGame": {
+        "id": "btnLeaveGame",
+        "color": "black",
+        "backgroundColor": "white",
+        "title": "Exit Game",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": 43,
+        "borderWidth": 1,
+        "width": "SIZE",
+        "horizontalWrap": true
+      },
+      "__alloyId30": {
+        "horizontalWrap": true,
+        "id": "__alloyId30",
+        "height": 10
+      },
+      "__alloyId31": {
+        "layout": "horizontal",
+        "id": "__alloyId31",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "width": "SIZE",
+        "height": 65
+      },
+      "btnReturnToGame": {
+        "id": "btnReturnToGame",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "Return to Game",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": "SIZE",
+        "horizontalWrap": true
+      }
+    },
+    "gameView": {
+      "__iamalloy": true,
+      "__views": {
+        "gameViewView": {
+          "horizontalWrap": true,
+          "id": "gameViewView",
+          "layout": "vertical"
+        },
+        "__alloyId19": {
+          "width": "SIZE",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "left": "0",
+          "id": "__alloyId19",
+          "height": "SIZE"
+        },
+        "gameTabScroller": {
+          "id": "gameTabScroller",
+          "minZoomScale": 1,
+          "maxZoomScale": 1,
+          "backgroundImage": "/Images/mapButtons/tabBg.png",
+          "scrollType": "horizontal",
+          "contentWidth": "auto",
+          "height": "SIZE",
+          "showHorizontalScrollIndicator": "true",
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "width": 281,
+          "canCancelEvents": true,
+          "horizontalWrap": true
+        },
+        "gameTabBar": {
+          "width": 281,
+          "left": 0,
+          "horizontalWrap": true,
+          "layout": "horizontal",
+          "id": "gameTabBar",
+          "height": 82
+        },
+        "expandButton": {
+          "borderColor": "#d1d1d1",
+          "visible": false,
+          "backgroundColor": "black",
+          "id": "expandButton",
+          "borderRadius": 6,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "top": 5,
+          "width": 35,
+          "height": 65
+        },
+        "expandImage": {
+          "paused": false,
+          "image": "/buttons/plus.png",
+          "id": "expandImage",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "contentView": {
+          "horizontalWrap": true,
+          "id": "contentView",
+          "layout": "vertical"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/gameView",
+      "gameViewView": {
+        "horizontalWrap": true,
+        "id": "gameViewView",
+        "layout": "vertical"
+      },
+      "__alloyId19": {
+        "width": "SIZE",
+        "layout": "horizontal",
+        "horizontalWrap": true,
+        "left": "0",
+        "id": "__alloyId19",
+        "height": "SIZE"
+      },
+      "gameTabScroller": {
+        "id": "gameTabScroller",
+        "minZoomScale": 1,
+        "maxZoomScale": 1,
+        "backgroundImage": "/Images/mapButtons/tabBg.png",
+        "scrollType": "horizontal",
+        "contentWidth": "auto",
+        "height": "SIZE",
+        "showHorizontalScrollIndicator": "true",
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "width": 281,
+        "canCancelEvents": true,
+        "horizontalWrap": true
+      },
+      "gameTabBar": {
+        "width": 281,
+        "left": 0,
+        "horizontalWrap": true,
+        "layout": "horizontal",
+        "id": "gameTabBar",
+        "height": 82
+      },
+      "expandButton": {
+        "borderColor": "#d1d1d1",
+        "visible": false,
+        "backgroundColor": "black",
+        "id": "expandButton",
+        "borderRadius": 6,
+        "borderWidth": 1,
+        "horizontalWrap": true,
+        "top": 5,
+        "width": 35,
+        "height": 65
+      },
+      "expandImage": {
+        "paused": false,
+        "image": "/buttons/plus.png",
+        "id": "expandImage",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "contentView": {
+        "horizontalWrap": true,
+        "id": "contentView",
+        "layout": "vertical"
+      }
+    },
+    "gameWindow": {
+      "__iamalloy": true,
+      "__views": {
+        "win": {
+          "horizontalWrap": true,
+          "translucent": null,
+          "id": "win",
+          "topMost": true,
+          "backgroundColor": "#fff",
+          "top": 20,
+          "navTintColor": null,
+          "title": "Game Home",
+          "tabBarHidden": false,
+          "barImage": null,
+          "titleAttributes": null,
+          "navBarHidden": true,
+          "orientationModes": [
+            1
+          ],
+          "barColor": null
+        },
+        "fullScreenView": {
+          "width": 320,
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "fullScreenView"
+        },
+        "gameHeaderView": {
+          "width": 320,
+          "backgroundColor": "#CCEEFF",
+          "horizontalWrap": true,
+          "id": "gameHeaderView",
+          "height": 27
+        },
+        "nameLabel": {
+          "text": "Test Game",
+          "left": "1%",
+          "textAlign": "left",
+          "id": "nameLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 320,
+          "height": 27,
+          "top": 0,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "statusImage": {
+          "id": "statusImage",
+          "duration": 200,
+          "reverse": false,
+          "image": "/Images/status/gpsNone.png",
+          "autorotate": true,
+          "animating": false,
+          "height": 16,
+          "stopped": true,
+          "paused": false,
+          "left": 288,
+          "width": 28,
+          "horizontalWrap": true
+        },
+        "locationLabel": {
+          "left": 208,
+          "textAlign": "right",
+          "id": "locationLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": 80,
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "separatorLine": {
+          "width": "100%",
+          "backgroundColor": "#000",
+          "horizontalWrap": true,
+          "id": "separatorLine",
+          "height": 1
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/gameWindow",
+      "win": {
+        "horizontalWrap": true,
+        "translucent": null,
+        "id": "win",
+        "topMost": true,
+        "backgroundColor": "#fff",
+        "top": 20,
+        "navTintColor": null,
+        "title": "Game Home",
+        "tabBarHidden": false,
+        "barImage": null,
+        "titleAttributes": null,
+        "navBarHidden": true,
+        "orientationModes": [
+          1
+        ],
+        "barColor": null
+      },
+      "fullScreenView": {
+        "width": 320,
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "fullScreenView"
+      },
+      "gameHeaderView": {
+        "width": 320,
+        "backgroundColor": "#CCEEFF",
+        "horizontalWrap": true,
+        "id": "gameHeaderView",
+        "height": 27
+      },
+      "nameLabel": {
+        "text": "Test Game",
+        "left": "1%",
+        "textAlign": "left",
+        "id": "nameLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 320,
+        "height": 27,
+        "top": 0,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "statusImage": {
+        "id": "statusImage",
+        "duration": 200,
+        "reverse": false,
+        "image": "/Images/status/gpsNone.png",
+        "autorotate": true,
+        "animating": false,
+        "height": 16,
+        "stopped": true,
+        "paused": false,
+        "left": 288,
+        "width": 28,
+        "horizontalWrap": true
+      },
+      "locationLabel": {
+        "left": 208,
+        "textAlign": "right",
+        "id": "locationLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": 80,
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "separatorLine": {
+        "width": "100%",
+        "backgroundColor": "#000",
+        "horizontalWrap": true,
+        "id": "separatorLine",
+        "height": 1
+      }
+    },
+    "logView": {
+      "__iamalloy": true,
+      "__views": {
+        "logView": {
+          "width": "FILL",
+          "layout": "composite",
+          "horizontalWrap": true,
+          "id": "logView",
+          "height": "FILL"
+        },
+        "contents": {
+          "horizontalWrap": true,
+          "id": "contents",
+          "layout": "vertical"
+        },
+        "sortButton": {
+          "borderColor": "#d1d1d1",
+          "layout": "horizontal",
+          "id": "sortButton",
+          "backgroundColor": "#DCDCDC",
+          "borderRadius": 6,
+          "horizontalWrap": true,
+          "borderWidth": 1,
+          "width": "SIZE",
+          "height": "SIZE",
+          "top": 10
+        },
+        "sortImage": {
+          "id": "sortImage",
+          "duration": 200,
+          "reverse": false,
+          "image": "/buttons/up.png",
+          "autorotate": true,
+          "animating": false,
+          "height": 25,
+          "stopped": true,
+          "paused": false,
+          "left": 6,
+          "width": 25,
+          "horizontalWrap": true
+        },
+        "__alloyId36": {
+          "text": "Sort",
+          "left": 6,
+          "id": "__alloyId36",
+          "focusable": false,
+          "horizontalWrap": true,
+          "color": "black",
+          "right": 6,
+          "width": "SIZE",
+          "height": 43,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "logTableView": {
+          "id": "logTableView",
+          "horizontalWrap": true,
+          "minZoomScale": 1,
+          "contentHeight": "auto",
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "layout": "vertical",
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "showVertialScrollIndicator": "true",
+          "canCancelEvents": true,
+          "top": 10
+        },
+        "emptyWarningLabel": {
+          "width": "SIZE",
+          "id": "emptyWarningLabel",
+          "horizontalWrap": true,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          },
+          "color": "gray",
+          "height": "SIZE"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/logView",
+      "logView": {
+        "width": "FILL",
+        "layout": "composite",
+        "horizontalWrap": true,
+        "id": "logView",
+        "height": "FILL"
+      },
+      "contents": {
+        "horizontalWrap": true,
+        "id": "contents",
+        "layout": "vertical"
+      },
+      "sortButton": {
+        "borderColor": "#d1d1d1",
+        "layout": "horizontal",
+        "id": "sortButton",
+        "backgroundColor": "#DCDCDC",
+        "borderRadius": 6,
+        "horizontalWrap": true,
+        "borderWidth": 1,
+        "width": "SIZE",
+        "height": "SIZE",
+        "top": 10
+      },
+      "sortImage": {
+        "id": "sortImage",
+        "duration": 200,
+        "reverse": false,
+        "image": "/buttons/up.png",
+        "autorotate": true,
+        "animating": false,
+        "height": 25,
+        "stopped": true,
+        "paused": false,
+        "left": 6,
+        "width": 25,
+        "horizontalWrap": true
+      },
+      "__alloyId36": {
+        "text": "Sort",
+        "left": 6,
+        "id": "__alloyId36",
+        "focusable": false,
+        "horizontalWrap": true,
+        "color": "black",
+        "right": 6,
+        "width": "SIZE",
+        "height": 43,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "logTableView": {
+        "id": "logTableView",
+        "horizontalWrap": true,
+        "minZoomScale": 1,
+        "contentHeight": "auto",
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "layout": "vertical",
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "showVertialScrollIndicator": "true",
+        "canCancelEvents": true,
+        "top": 10
+      },
+      "emptyWarningLabel": {
+        "width": "SIZE",
+        "id": "emptyWarningLabel",
+        "horizontalWrap": true,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        },
+        "color": "gray",
+        "height": "SIZE"
+      }
+    },
+    "htmlView": {
+      "__iamalloy": true,
+      "__views": {
+        "view": {
+          "horizontalWrap": true,
+          "id": "view"
+        },
+        "webView": {
+          "width": 320,
+          "id": "webView",
+          "horizontalWrap": true,
+          "bottom": 65,
+          "autoDetect": [
+            1
+          ],
+          "willHandleTouches": true
+        },
+        "bottomBar": {
+          "layout": "horizontal",
+          "id": "bottomBar",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "width": "SIZE",
+          "height": 65
+        },
+        "backButton": {
+          "id": "backButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "OK",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": 64,
+          "horizontalWrap": true
+        },
+        "goBackButton": {
+          "id": "goBackButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "Back",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": 64,
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/htmlView",
+      "view": {
+        "horizontalWrap": true,
+        "id": "view"
+      },
+      "webView": {
+        "width": 320,
+        "id": "webView",
+        "horizontalWrap": true,
+        "bottom": 65,
+        "autoDetect": [
+          1
+        ],
+        "willHandleTouches": true
+      },
+      "bottomBar": {
+        "layout": "horizontal",
+        "id": "bottomBar",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "width": "SIZE",
+        "height": 65
+      },
+      "backButton": {
+        "id": "backButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "OK",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": 64,
+        "horizontalWrap": true
+      },
+      "goBackButton": {
+        "id": "goBackButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "Back",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": 64,
+        "horizontalWrap": true
+      }
+    },
+    "map": {
+      "__iamalloy": true,
+      "__views": {
+        "mapView": {
+          "width": "FILL",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "mapView",
+          "height": "FILL"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/map",
+      "mapView": {
+        "width": "FILL",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "mapView",
+        "height": "FILL"
+      }
+    },
+    "dynamicMap": {
+      "__iamalloy": true,
+      "__views": {
+        "dynamicMapView": {
+          "horizontalWrap": true,
+          "id": "dynamicMapView"
+        },
+        "mapViewContainer": {
+          "horizontalWrap": true,
+          "id": "mapViewContainer"
+        },
+        "centerOnPlayerButton": {
+          "id": "centerOnPlayerButton",
+          "backgroundColor": "white",
+          "vzIndex": 60,
+          "bottom": 10,
+          "borderColor": "black",
+          "zindex_": 60,
+          "borderRadius": 10,
+          "height": 32,
+          "borderWidth": 1,
+          "left": 6,
+          "width": 32,
+          "horizontalWrap": true
+        },
+        "__alloyId11": {
+          "paused": false,
+          "height": 25,
+          "image": "/Images/mapButtons/player.png",
+          "id": "__alloyId11",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": 25,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "centerOnGameButton": {
+          "id": "centerOnGameButton",
+          "vzIndex": 60,
+          "backgroundColor": "white",
+          "bottom": 10,
+          "borderColor": "black",
+          "zindex_": 60,
+          "borderRadius": 10,
+          "height": 32,
+          "borderWidth": 1,
+          "right": 6,
+          "width": 32,
+          "horizontalWrap": true
+        },
+        "__alloyId12": {
+          "paused": false,
+          "height": 25,
+          "image": "/Images/mapButtons/game.png",
+          "id": "__alloyId12",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": 25,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/dynamicMap",
+      "dynamicMapView": {
+        "horizontalWrap": true,
+        "id": "dynamicMapView"
+      },
+      "mapViewContainer": {
+        "horizontalWrap": true,
+        "id": "mapViewContainer"
+      },
+      "centerOnPlayerButton": {
+        "id": "centerOnPlayerButton",
+        "backgroundColor": "white",
+        "vzIndex": 60,
+        "bottom": 10,
+        "borderColor": "black",
+        "zindex_": 60,
+        "borderRadius": 10,
+        "height": 32,
+        "borderWidth": 1,
+        "left": 6,
+        "width": 32,
+        "horizontalWrap": true
+      },
+      "__alloyId11": {
+        "paused": false,
+        "height": 25,
+        "image": "/Images/mapButtons/player.png",
+        "id": "__alloyId11",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": 25,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "centerOnGameButton": {
+        "id": "centerOnGameButton",
+        "vzIndex": 60,
+        "backgroundColor": "white",
+        "bottom": 10,
+        "borderColor": "black",
+        "zindex_": 60,
+        "borderRadius": 10,
+        "height": 32,
+        "borderWidth": 1,
+        "right": 6,
+        "width": 32,
+        "horizontalWrap": true
+      },
+      "__alloyId12": {
+        "paused": false,
+        "height": 25,
+        "image": "/Images/mapButtons/game.png",
+        "id": "__alloyId12",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": 25,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      }
+    },
+    "staticMap": {
+      "__iamalloy": true,
+      "__views": {
+        "staticMapView": {
+          "width": 320,
+          "id": "staticMapView",
+          "horizontalWrap": true,
+          "maxZoomScale": 150
+        },
+        "staticMapScrollView": {
+          "horizontalWrap": true,
+          "id": "staticMapScrollView",
+          "height": 438
+        },
+        "staticMapImage": {
+          "paused": false,
+          "touchEnabled": false,
+          "animating": false,
+          "id": "staticMapImage",
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": 320,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "agentLabel": {
+          "id": "agentLabel",
+          "color": "black",
+          "visible": false,
+          "vzIndex": 50,
+          "backgroundColor": "white",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          },
+          "textAlign": "center",
+          "zindex_": 50,
+          "height": "SIZE",
+          "touchEnabled": false,
+          "width": "SIZE",
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/staticMap",
+      "staticMapView": {
+        "width": 320,
+        "id": "staticMapView",
+        "horizontalWrap": true,
+        "maxZoomScale": 150
+      },
+      "staticMapScrollView": {
+        "horizontalWrap": true,
+        "id": "staticMapScrollView",
+        "height": 438
+      },
+      "staticMapImage": {
+        "paused": false,
+        "touchEnabled": false,
+        "animating": false,
+        "id": "staticMapImage",
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": 320,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "agentLabel": {
+        "id": "agentLabel",
+        "color": "black",
+        "visible": false,
+        "vzIndex": 50,
+        "backgroundColor": "white",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        },
+        "textAlign": "center",
+        "zindex_": 50,
+        "height": "SIZE",
+        "touchEnabled": false,
+        "width": "SIZE",
+        "horizontalWrap": true
+      }
+    },
+    "inventory": {
+      "__iamalloy": true,
+      "__views": {
+        "agentList": {
+          "width": "FILL",
+          "layout": "composite",
+          "horizontalWrap": true,
+          "id": "agentList",
+          "height": "FILL"
+        },
+        "agentTable": {
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "layout": "vertical",
+          "showVertialScrollIndicator": "true",
+          "id": "agentTable",
+          "contentHeight": "auto",
+          "horizontalWrap": true,
+          "zoomScale": 1,
+          "canCancelEvents": true,
+          "scrollingEnabled": true,
+          "minZoomScale": 1
+        },
+        "emptyWarningLabel": {
+          "width": "SIZE",
+          "id": "emptyWarningLabel",
+          "horizontalWrap": true,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          },
+          "color": "gray",
+          "height": "SIZE"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/agentList",
+      "agentList": {
+        "width": "FILL",
+        "layout": "composite",
+        "horizontalWrap": true,
+        "id": "agentList",
+        "height": "FILL"
+      },
+      "agentTable": {
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "layout": "vertical",
+        "showVertialScrollIndicator": "true",
+        "id": "agentTable",
+        "contentHeight": "auto",
+        "horizontalWrap": true,
+        "zoomScale": 1,
+        "canCancelEvents": true,
+        "scrollingEnabled": true,
+        "minZoomScale": 1
+      },
+      "emptyWarningLabel": {
+        "width": "SIZE",
+        "id": "emptyWarningLabel",
+        "horizontalWrap": true,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        },
+        "color": "gray",
+        "height": "SIZE"
+      }
+    },
+    "history": {
+      "__iamalloy": true,
+      "__views": {
+        "agentList": {
+          "width": "FILL",
+          "layout": "composite",
+          "horizontalWrap": true,
+          "id": "agentList",
+          "height": "FILL"
+        },
+        "agentTable": {
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "layout": "vertical",
+          "showVertialScrollIndicator": "true",
+          "id": "agentTable",
+          "contentHeight": "auto",
+          "horizontalWrap": true,
+          "zoomScale": 1,
+          "canCancelEvents": true,
+          "scrollingEnabled": true,
+          "minZoomScale": 1
+        },
+        "emptyWarningLabel": {
+          "width": "SIZE",
+          "id": "emptyWarningLabel",
+          "horizontalWrap": true,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          },
+          "color": "gray",
+          "height": "SIZE"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/agentList",
+      "agentList": {
+        "width": "FILL",
+        "layout": "composite",
+        "horizontalWrap": true,
+        "id": "agentList",
+        "height": "FILL"
+      },
+      "agentTable": {
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "layout": "vertical",
+        "showVertialScrollIndicator": "true",
+        "id": "agentTable",
+        "contentHeight": "auto",
+        "horizontalWrap": true,
+        "zoomScale": 1,
+        "canCancelEvents": true,
+        "scrollingEnabled": true,
+        "minZoomScale": 1
+      },
+      "emptyWarningLabel": {
+        "width": "SIZE",
+        "id": "emptyWarningLabel",
+        "horizontalWrap": true,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        },
+        "color": "gray",
+        "height": "SIZE"
+      }
+    },
+    "dashboard": {
+      "__iamalloy": true,
+      "__views": {
+        "dashboardView": {
+          "horizontalWrap": true,
+          "id": "dashboardView"
+        },
+        "scrollView": {
+          "id": "scrollView",
+          "minZoomScale": 1,
+          "contentHeight": "auto",
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "bottom": 65,
+          "layout": "vertical",
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "showVertialScrollIndicator": "true",
+          "canCancelEvents": true,
+          "horizontalWrap": true
+        },
+        "titleLabel": {
+          "textAlign": "center",
+          "id": "titleLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          }
+        },
+        "passwordView": {
+          "width": "SIZE",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "passwordView",
+          "visible": false,
+          "height": "SIZE"
+        },
+        "pwhbar": {
+          "width": "SIZE",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "top": 10,
+          "id": "pwhbar",
+          "height": "SIZE"
+        },
+        "passwordTextField": {
+          "id": "passwordTextField",
+          "returnKeyType": 9,
+          "autocorrect": false,
+          "borderStyle": 3,
+          "horizontalWrap": true,
+          "width": 160,
+          "height": 54,
+          "autocapitalization": 0,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "passwordButton": {
+          "id": "passwordButton",
+          "color": "black",
+          "backgroundColor": "white",
+          "title": "Submit",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": 43,
+          "borderWidth": 1,
+          "left": 6,
+          "horizontalWrap": true
+        },
+        "cancelButton": {
+          "id": "cancelButton",
+          "color": "black",
+          "backgroundColor": "white",
+          "title": "Cancel",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": 43,
+          "borderWidth": 1,
+          "width": 160,
+          "horizontalWrap": true
+        },
+        "passwordErrorLabel": {
+          "text": "Incorrect Password",
+          "textAlign": "center",
+          "id": "passwordErrorLabel",
+          "horizontalWrap": true,
+          "color": "red",
+          "width": "100%",
+          "height": "SIZE",
+          "top": 10,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "imageHolder": {
+          "left": 12,
+          "top": 10,
+          "horizontalWrap": true,
+          "id": "imageHolder",
+          "right": 12,
+          "height": 175
+        },
+        "image": {
+          "paused": false,
+          "id": "image",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "descriptionLabel": {
+          "text": "This is the description of the agent.",
+          "left": 9,
+          "id": "descriptionLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "right": 9,
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "traitTable": {
+          "id": "traitTable",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "visible": false,
+          "height": "SIZE"
+        },
+        "bottomButtons": {
+          "width": 320,
+          "id": "bottomButtons",
+          "horizontalWrap": true,
+          "bottom": 0,
+          "height": 65
+        },
+        "actionBar": {
+          "id": "actionBar",
+          "minZoomScale": 1,
+          "maxZoomScale": 1,
+          "scrollType": "horizontal",
+          "contentWidth": "auto",
+          "height": 65,
+          "showHorizontalScrollIndicator": "true",
+          "right": 0,
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "canCancelEvents": true,
+          "horizontalWrap": true
+        },
+        "backButton": {
+          "id": "backButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "OK",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": 64,
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/dashboard",
+      "dashboardView": {
+        "horizontalWrap": true,
+        "id": "dashboardView"
+      },
+      "scrollView": {
+        "id": "scrollView",
+        "minZoomScale": 1,
+        "contentHeight": "auto",
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "bottom": 65,
+        "layout": "vertical",
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "showVertialScrollIndicator": "true",
+        "canCancelEvents": true,
+        "horizontalWrap": true
+      },
+      "titleLabel": {
+        "textAlign": "center",
+        "id": "titleLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        }
+      },
+      "passwordView": {
+        "width": "SIZE",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "passwordView",
+        "visible": false,
+        "height": "SIZE"
+      },
+      "pwhbar": {
+        "width": "SIZE",
+        "layout": "horizontal",
+        "horizontalWrap": true,
+        "top": 10,
+        "id": "pwhbar",
+        "height": "SIZE"
+      },
+      "passwordTextField": {
+        "id": "passwordTextField",
+        "returnKeyType": 9,
+        "autocorrect": false,
+        "borderStyle": 3,
+        "horizontalWrap": true,
+        "width": 160,
+        "height": 54,
+        "autocapitalization": 0,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "passwordButton": {
+        "id": "passwordButton",
+        "color": "black",
+        "backgroundColor": "white",
+        "title": "Submit",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": 43,
+        "borderWidth": 1,
+        "left": 6,
+        "horizontalWrap": true
+      },
+      "cancelButton": {
+        "id": "cancelButton",
+        "color": "black",
+        "backgroundColor": "white",
+        "title": "Cancel",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": 43,
+        "borderWidth": 1,
+        "width": 160,
+        "horizontalWrap": true
+      },
+      "passwordErrorLabel": {
+        "text": "Incorrect Password",
+        "textAlign": "center",
+        "id": "passwordErrorLabel",
+        "horizontalWrap": true,
+        "color": "red",
+        "width": "100%",
+        "height": "SIZE",
+        "top": 10,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "imageHolder": {
+        "left": 12,
+        "top": 10,
+        "horizontalWrap": true,
+        "id": "imageHolder",
+        "right": 12,
+        "height": 175
+      },
+      "image": {
+        "paused": false,
+        "id": "image",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "descriptionLabel": {
+        "text": "This is the description of the agent.",
+        "left": 9,
+        "id": "descriptionLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "right": 9,
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "18sp"
+        }
+      },
+      "traitTable": {
+        "id": "traitTable",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "visible": false,
+        "height": "SIZE"
+      },
+      "bottomButtons": {
+        "width": 320,
+        "id": "bottomButtons",
+        "horizontalWrap": true,
+        "bottom": 0,
+        "height": 65
+      },
+      "actionBar": {
+        "id": "actionBar",
+        "minZoomScale": 1,
+        "maxZoomScale": 1,
+        "scrollType": "horizontal",
+        "contentWidth": "auto",
+        "height": 65,
+        "showHorizontalScrollIndicator": "true",
+        "right": 0,
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "canCancelEvents": true,
+        "horizontalWrap": true
+      },
+      "backButton": {
+        "id": "backButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "OK",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": 64,
+        "horizontalWrap": true
+      }
+    },
+    "headsup": {
+      "__iamalloy": true,
+      "__views": {
+        "win": {
+          "horizontalWrap": true,
+          "translucent": null,
+          "id": "win",
+          "top": 20,
+          "backgroundColor": "#FFFFFF",
+          "navTintColor": null,
+          "tabBarHidden": false,
+          "barImage": null,
+          "titleAttributes": null,
+          "exitOnClose": false,
+          "navBarHidden": true,
+          "height": "100%",
+          "modal": 0,
+          "width": "100%",
+          "orientationModes": [
+            4,
+            3
+          ],
+          "barColor": null
+        },
+        "labelTapToClose": {
+          "text": "Tap anywhere to return to game.",
+          "left": "5%",
+          "textAlign": "center",
+          "id": "labelTapToClose",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "90%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "30sp"
+          }
+        },
+        "tabView": {
+          "horizontalWrap": true,
+          "id": "tabView"
+        },
+        "lblWarning": {
+          "left": "5%",
+          "textAlign": "center",
+          "id": "lblWarning",
+          "horizontalWrap": true,
+          "color": "red",
+          "top": "30%",
+          "height": "SIZE",
+          "width": "90%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "lblLocation": {
+          "text": "GPS signal has not been received.  Make sure you are outdoors away from tall buildings or overhanging structures.",
+          "left": "5%",
+          "textAlign": "center",
+          "id": "lblLocation",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "90%",
+          "top": "50%",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "lblHeading": {
+          "text": "Compass signal has not been received.  Move away from interference or re-calibrate by moving device in figure 8 pattern.",
+          "left": "5%",
+          "textAlign": "center",
+          "id": "lblHeading",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "90%",
+          "top": "70%",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "overlayView": {
+          "horizontalWrap": true,
+          "id": "overlayView"
+        },
+        "rotateView": {
+          "width": 548,
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "id": "rotateView",
+          "height": 320
+        },
+        "thumbPanel": {
+          "left": 0,
+          "width": "80%",
+          "horizontalWrap": true,
+          "layout": "vertical",
+          "id": "thumbPanel"
+        },
+        "infoHolder": {
+          "id": "infoHolder",
+          "color": "white",
+          "top": 16,
+          "backgroundColor": "black",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "30sp"
+          },
+          "borderColor": "white",
+          "textAlign": 1,
+          "borderRadius": 5,
+          "layout": "vertical",
+          "borderWidth": 1,
+          "height": "SIZE",
+          "width": "SIZE",
+          "horizontalWrap": true
+        },
+        "__alloyId20": {
+          "horizontalWrap": true,
+          "id": "__alloyId20",
+          "height": 10
+        },
+        "__alloyId21": {
+          "width": "SIZE",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "id": "__alloyId21",
+          "height": "SIZE"
+        },
+        "__alloyId22": {
+          "width": 6,
+          "id": "__alloyId22",
+          "horizontalWrap": true,
+          "height": 1
+        },
+        "infoLabel": {
+          "width": "SIZE",
+          "id": "infoLabel",
+          "horizontalWrap": true,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "color": "white",
+          "height": "SIZE"
+        },
+        "__alloyId23": {
+          "width": 6,
+          "id": "__alloyId23",
+          "horizontalWrap": true,
+          "height": 1
+        },
+        "__alloyId24": {
+          "horizontalWrap": true,
+          "id": "__alloyId24",
+          "height": 10
+        },
+        "agentThumb0": {
+          "__iamalloy": true,
+          "__views": {
+            "agentThumb": {
+              "width": 160,
+              "top": 10,
+              "horizontalWrap": true,
+              "id": "agentThumb",
+              "height": 54
+            },
+            "bgView": {
+              "borderColor": "white",
+              "backgroundColor": "black",
+              "id": "bgView",
+              "borderRadius": 5,
+              "borderWidth": 1,
+              "horizontalWrap": true,
+              "opacity": 0.7
+            },
+            "contentHolder": {
+              "id": "contentHolder",
+              "layout": "horizontal",
+              "horizontalWrap": true,
+              "height": "SIZE"
+            },
+            "imageView": {
+              "paused": false,
+              "left": "2%",
+              "id": "imageView",
+              "animating": false,
+              "horizontalWrap": true,
+              "reverse": false,
+              "width": "20%",
+              "autorotate": true,
+              "duration": 200,
+              "stopped": true
+            },
+            "title": {
+              "left": "2%",
+              "textAlign": "left",
+              "id": "title",
+              "horizontalWrap": true,
+              "color": "#fff",
+              "width": "74%",
+              "height": "SIZE",
+              "font": {
+                "fontWeight": "bold",
+                "fontFamily": "Helvetica Neue",
+                "fontSize": "18sp"
+              }
+            }
+          },
+          "__proxyProperties": {},
+          "UI": {},
+          "__controllerPath": "Game/agentThumb",
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          },
+          "parent": {
+            "left": 0,
+            "width": "80%",
+            "horizontalWrap": true,
+            "layout": "vertical",
+            "id": "thumbPanel"
+          }
+        },
+        "agentThumb1": {
+          "__iamalloy": true,
+          "__views": {
+            "agentThumb": {
+              "width": 160,
+              "top": 10,
+              "horizontalWrap": true,
+              "id": "agentThumb",
+              "height": 54
+            },
+            "bgView": {
+              "borderColor": "white",
+              "backgroundColor": "black",
+              "id": "bgView",
+              "borderRadius": 5,
+              "borderWidth": 1,
+              "horizontalWrap": true,
+              "opacity": 0.7
+            },
+            "contentHolder": {
+              "id": "contentHolder",
+              "layout": "horizontal",
+              "horizontalWrap": true,
+              "height": "SIZE"
+            },
+            "imageView": {
+              "paused": false,
+              "left": "2%",
+              "id": "imageView",
+              "animating": false,
+              "horizontalWrap": true,
+              "reverse": false,
+              "width": "20%",
+              "autorotate": true,
+              "duration": 200,
+              "stopped": true
+            },
+            "title": {
+              "left": "2%",
+              "textAlign": "left",
+              "id": "title",
+              "horizontalWrap": true,
+              "color": "#fff",
+              "width": "74%",
+              "height": "SIZE",
+              "font": {
+                "fontWeight": "bold",
+                "fontFamily": "Helvetica Neue",
+                "fontSize": "18sp"
+              }
+            }
+          },
+          "__proxyProperties": {},
+          "UI": {},
+          "__controllerPath": "Game/agentThumb",
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          },
+          "parent": {
+            "left": 0,
+            "width": "80%",
+            "horizontalWrap": true,
+            "layout": "vertical",
+            "id": "thumbPanel"
+          }
+        },
+        "agentThumb2": {
+          "__iamalloy": true,
+          "__views": {
+            "agentThumb": {
+              "width": 160,
+              "top": 10,
+              "horizontalWrap": true,
+              "id": "agentThumb",
+              "height": 54
+            },
+            "bgView": {
+              "borderColor": "white",
+              "backgroundColor": "black",
+              "id": "bgView",
+              "borderRadius": 5,
+              "borderWidth": 1,
+              "horizontalWrap": true,
+              "opacity": 0.7
+            },
+            "contentHolder": {
+              "id": "contentHolder",
+              "layout": "horizontal",
+              "horizontalWrap": true,
+              "height": "SIZE"
+            },
+            "imageView": {
+              "paused": false,
+              "left": "2%",
+              "id": "imageView",
+              "animating": false,
+              "horizontalWrap": true,
+              "reverse": false,
+              "width": "20%",
+              "autorotate": true,
+              "duration": 200,
+              "stopped": true
+            },
+            "title": {
+              "left": "2%",
+              "textAlign": "left",
+              "id": "title",
+              "horizontalWrap": true,
+              "color": "#fff",
+              "width": "74%",
+              "height": "SIZE",
+              "font": {
+                "fontWeight": "bold",
+                "fontFamily": "Helvetica Neue",
+                "fontSize": "18sp"
+              }
+            }
+          },
+          "__proxyProperties": {},
+          "UI": {},
+          "__controllerPath": "Game/agentThumb",
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          },
+          "parent": {
+            "left": 0,
+            "width": "80%",
+            "horizontalWrap": true,
+            "layout": "vertical",
+            "id": "thumbPanel"
+          }
+        },
+        "agentThumb3": {
+          "__iamalloy": true,
+          "__views": {
+            "agentThumb": {
+              "width": 160,
+              "top": 10,
+              "horizontalWrap": true,
+              "id": "agentThumb",
+              "height": 54
+            },
+            "bgView": {
+              "borderColor": "white",
+              "backgroundColor": "black",
+              "id": "bgView",
+              "borderRadius": 5,
+              "borderWidth": 1,
+              "horizontalWrap": true,
+              "opacity": 0.7
+            },
+            "contentHolder": {
+              "id": "contentHolder",
+              "layout": "horizontal",
+              "horizontalWrap": true,
+              "height": "SIZE"
+            },
+            "imageView": {
+              "paused": false,
+              "left": "2%",
+              "id": "imageView",
+              "animating": false,
+              "horizontalWrap": true,
+              "reverse": false,
+              "width": "20%",
+              "autorotate": true,
+              "duration": 200,
+              "stopped": true
+            },
+            "title": {
+              "left": "2%",
+              "textAlign": "left",
+              "id": "title",
+              "horizontalWrap": true,
+              "color": "#fff",
+              "width": "74%",
+              "height": "SIZE",
+              "font": {
+                "fontWeight": "bold",
+                "fontFamily": "Helvetica Neue",
+                "fontSize": "18sp"
+              }
+            }
+          },
+          "__proxyProperties": {},
+          "UI": {},
+          "__controllerPath": "Game/agentThumb",
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          },
+          "parent": {
+            "left": 0,
+            "width": "80%",
+            "horizontalWrap": true,
+            "layout": "vertical",
+            "id": "thumbPanel"
+          }
+        },
+        "buttonPanel": {
+          "width": "20%",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "buttonPanel",
+          "right": 0,
+          "height": "100%"
+        },
+        "compass": {
+          "width": 82,
+          "top": 16,
+          "horizontalWrap": true,
+          "id": "compass",
+          "height": 82
+        },
+        "radarBackground": {
+          "paused": false,
+          "height": 82,
+          "image": "/Images/radar_background.png",
+          "id": "radarBackground",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": 82,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "radarForeground": {
+          "paused": false,
+          "height": 82,
+          "image": "/Images/radar_foreground.png",
+          "id": "radarForeground",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": 82,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "dir": {
+          "id": "dir",
+          "color": "white",
+          "top": 10,
+          "backgroundColor": "black",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "30sp"
+          },
+          "text": "N",
+          "borderColor": "white",
+          "textAlign": 1,
+          "borderRadius": 5,
+          "height": "SIZE",
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        },
+        "iosScanButton": {
+          "id": "iosScanButton",
+          "top": 10,
+          "backgroundColor": "white",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "textAlign": 1,
+          "borderRadius": 10,
+          "height": 76,
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        },
+        "iosScanLabel": {
+          "text": "Start Scan",
+          "textAlign": 1,
+          "id": "iosScanLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "scanButton": {
+          "id": "scanButton",
+          "color": "black",
+          "top": 0,
+          "visible": false,
+          "backgroundColor": "white",
+          "title": "Start Scan",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "bottom": 0,
+          "borderRadius": 10,
+          "height": 0,
+          "borderWidth": 1,
+          "right": 0,
+          "left": 0,
+          "width": 0,
+          "horizontalWrap": true
+        },
+        "backButton": {
+          "id": "backButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "Close",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": 43,
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/headsUp",
+      "win": {
+        "horizontalWrap": true,
+        "translucent": null,
+        "id": "win",
+        "top": 20,
+        "backgroundColor": "#FFFFFF",
+        "navTintColor": null,
+        "tabBarHidden": false,
+        "barImage": null,
+        "titleAttributes": null,
+        "exitOnClose": false,
+        "navBarHidden": true,
+        "height": "100%",
+        "modal": 0,
+        "width": "100%",
+        "orientationModes": [
+          4,
+          3
+        ],
+        "barColor": null
+      },
+      "labelTapToClose": {
+        "text": "Tap anywhere to return to game.",
+        "left": "5%",
+        "textAlign": "center",
+        "id": "labelTapToClose",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "90%",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "30sp"
+        }
+      },
+      "tabView": {
+        "horizontalWrap": true,
+        "id": "tabView"
+      },
+      "lblWarning": {
+        "left": "5%",
+        "textAlign": "center",
+        "id": "lblWarning",
+        "horizontalWrap": true,
+        "color": "red",
+        "top": "30%",
+        "height": "SIZE",
+        "width": "90%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "lblLocation": {
+        "text": "GPS signal has not been received.  Make sure you are outdoors away from tall buildings or overhanging structures.",
+        "left": "5%",
+        "textAlign": "center",
+        "id": "lblLocation",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "90%",
+        "top": "50%",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "lblHeading": {
+        "text": "Compass signal has not been received.  Move away from interference or re-calibrate by moving device in figure 8 pattern.",
+        "left": "5%",
+        "textAlign": "center",
+        "id": "lblHeading",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "90%",
+        "top": "70%",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "overlayView": {
+        "horizontalWrap": true,
+        "id": "overlayView"
+      },
+      "rotateView": {
+        "width": 548,
+        "layout": "horizontal",
+        "horizontalWrap": true,
+        "id": "rotateView",
+        "height": 320
+      },
+      "thumbPanel": {
+        "left": 0,
+        "width": "80%",
+        "horizontalWrap": true,
+        "layout": "vertical",
+        "id": "thumbPanel"
+      },
+      "infoHolder": {
+        "id": "infoHolder",
+        "color": "white",
+        "top": 16,
+        "backgroundColor": "black",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "30sp"
+        },
+        "borderColor": "white",
+        "textAlign": 1,
+        "borderRadius": 5,
+        "layout": "vertical",
+        "borderWidth": 1,
+        "height": "SIZE",
+        "width": "SIZE",
+        "horizontalWrap": true
+      },
+      "__alloyId20": {
+        "horizontalWrap": true,
+        "id": "__alloyId20",
+        "height": 10
+      },
+      "__alloyId21": {
+        "width": "SIZE",
+        "layout": "horizontal",
+        "horizontalWrap": true,
+        "id": "__alloyId21",
+        "height": "SIZE"
+      },
+      "__alloyId22": {
+        "width": 6,
+        "id": "__alloyId22",
+        "horizontalWrap": true,
+        "height": 1
+      },
+      "infoLabel": {
+        "width": "SIZE",
+        "id": "infoLabel",
+        "horizontalWrap": true,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "color": "white",
+        "height": "SIZE"
+      },
+      "__alloyId23": {
+        "width": 6,
+        "id": "__alloyId23",
+        "horizontalWrap": true,
+        "height": 1
+      },
+      "__alloyId24": {
+        "horizontalWrap": true,
+        "id": "__alloyId24",
+        "height": 10
+      },
+      "agentThumb0": {
+        "__iamalloy": true,
+        "__views": {
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          }
+        },
+        "__proxyProperties": {},
+        "UI": {},
+        "__controllerPath": "Game/agentThumb",
+        "agentThumb": {
+          "width": 160,
+          "top": 10,
+          "horizontalWrap": true,
+          "id": "agentThumb",
+          "height": 54
+        },
+        "bgView": {
+          "borderColor": "white",
+          "backgroundColor": "black",
+          "id": "bgView",
+          "borderRadius": 5,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "opacity": 0.7
+        },
+        "contentHolder": {
+          "id": "contentHolder",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "height": "SIZE"
+        },
+        "imageView": {
+          "paused": false,
+          "left": "2%",
+          "id": "imageView",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": "20%",
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "title": {
+          "left": "2%",
+          "textAlign": "left",
+          "id": "title",
+          "horizontalWrap": true,
+          "color": "#fff",
+          "width": "74%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "parent": {
+          "left": 0,
+          "width": "80%",
+          "horizontalWrap": true,
+          "layout": "vertical",
+          "id": "thumbPanel"
+        }
+      },
+      "agentThumb1": {
+        "__iamalloy": true,
+        "__views": {
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          }
+        },
+        "__proxyProperties": {},
+        "UI": {},
+        "__controllerPath": "Game/agentThumb",
+        "agentThumb": {
+          "width": 160,
+          "top": 10,
+          "horizontalWrap": true,
+          "id": "agentThumb",
+          "height": 54
+        },
+        "bgView": {
+          "borderColor": "white",
+          "backgroundColor": "black",
+          "id": "bgView",
+          "borderRadius": 5,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "opacity": 0.7
+        },
+        "contentHolder": {
+          "id": "contentHolder",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "height": "SIZE"
+        },
+        "imageView": {
+          "paused": false,
+          "left": "2%",
+          "id": "imageView",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": "20%",
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "title": {
+          "left": "2%",
+          "textAlign": "left",
+          "id": "title",
+          "horizontalWrap": true,
+          "color": "#fff",
+          "width": "74%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "parent": {
+          "left": 0,
+          "width": "80%",
+          "horizontalWrap": true,
+          "layout": "vertical",
+          "id": "thumbPanel"
+        }
+      },
+      "agentThumb2": {
+        "__iamalloy": true,
+        "__views": {
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          }
+        },
+        "__proxyProperties": {},
+        "UI": {},
+        "__controllerPath": "Game/agentThumb",
+        "agentThumb": {
+          "width": 160,
+          "top": 10,
+          "horizontalWrap": true,
+          "id": "agentThumb",
+          "height": 54
+        },
+        "bgView": {
+          "borderColor": "white",
+          "backgroundColor": "black",
+          "id": "bgView",
+          "borderRadius": 5,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "opacity": 0.7
+        },
+        "contentHolder": {
+          "id": "contentHolder",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "height": "SIZE"
+        },
+        "imageView": {
+          "paused": false,
+          "left": "2%",
+          "id": "imageView",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": "20%",
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "title": {
+          "left": "2%",
+          "textAlign": "left",
+          "id": "title",
+          "horizontalWrap": true,
+          "color": "#fff",
+          "width": "74%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "parent": {
+          "left": 0,
+          "width": "80%",
+          "horizontalWrap": true,
+          "layout": "vertical",
+          "id": "thumbPanel"
+        }
+      },
+      "agentThumb3": {
+        "__iamalloy": true,
+        "__views": {
+          "agentThumb": {
+            "width": 160,
+            "top": 10,
+            "horizontalWrap": true,
+            "id": "agentThumb",
+            "height": 54
+          },
+          "bgView": {
+            "borderColor": "white",
+            "backgroundColor": "black",
+            "id": "bgView",
+            "borderRadius": 5,
+            "borderWidth": 1,
+            "horizontalWrap": true,
+            "opacity": 0.7
+          },
+          "contentHolder": {
+            "id": "contentHolder",
+            "layout": "horizontal",
+            "horizontalWrap": true,
+            "height": "SIZE"
+          },
+          "imageView": {
+            "paused": false,
+            "left": "2%",
+            "id": "imageView",
+            "animating": false,
+            "horizontalWrap": true,
+            "reverse": false,
+            "width": "20%",
+            "autorotate": true,
+            "duration": 200,
+            "stopped": true
+          },
+          "title": {
+            "left": "2%",
+            "textAlign": "left",
+            "id": "title",
+            "horizontalWrap": true,
+            "color": "#fff",
+            "width": "74%",
+            "height": "SIZE",
+            "font": {
+              "fontWeight": "bold",
+              "fontFamily": "Helvetica Neue",
+              "fontSize": "18sp"
+            }
+          }
+        },
+        "__proxyProperties": {},
+        "UI": {},
+        "__controllerPath": "Game/agentThumb",
+        "agentThumb": {
+          "width": 160,
+          "top": 10,
+          "horizontalWrap": true,
+          "id": "agentThumb",
+          "height": 54
+        },
+        "bgView": {
+          "borderColor": "white",
+          "backgroundColor": "black",
+          "id": "bgView",
+          "borderRadius": 5,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "opacity": 0.7
+        },
+        "contentHolder": {
+          "id": "contentHolder",
+          "layout": "horizontal",
+          "horizontalWrap": true,
+          "height": "SIZE"
+        },
+        "imageView": {
+          "paused": false,
+          "left": "2%",
+          "id": "imageView",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "width": "20%",
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "title": {
+          "left": "2%",
+          "textAlign": "left",
+          "id": "title",
+          "horizontalWrap": true,
+          "color": "#fff",
+          "width": "74%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "18sp"
+          }
+        },
+        "parent": {
+          "left": 0,
+          "width": "80%",
+          "horizontalWrap": true,
+          "layout": "vertical",
+          "id": "thumbPanel"
+        }
+      },
+      "buttonPanel": {
+        "width": "20%",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "buttonPanel",
+        "right": 0,
+        "height": "100%"
+      },
+      "compass": {
+        "width": 82,
+        "top": 16,
+        "horizontalWrap": true,
+        "id": "compass",
+        "height": 82
+      },
+      "radarBackground": {
+        "paused": false,
+        "height": 82,
+        "image": "/Images/radar_background.png",
+        "id": "radarBackground",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": 82,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "radarForeground": {
+        "paused": false,
+        "height": 82,
+        "image": "/Images/radar_foreground.png",
+        "id": "radarForeground",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "width": 82,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "dir": {
+        "id": "dir",
+        "color": "white",
+        "top": 10,
+        "backgroundColor": "black",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "30sp"
+        },
+        "text": "N",
+        "borderColor": "white",
+        "textAlign": 1,
+        "borderRadius": 5,
+        "height": "SIZE",
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      },
+      "iosScanButton": {
+        "id": "iosScanButton",
+        "top": 10,
+        "backgroundColor": "white",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "textAlign": 1,
+        "borderRadius": 10,
+        "height": 76,
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      },
+      "iosScanLabel": {
+        "text": "Start Scan",
+        "textAlign": 1,
+        "id": "iosScanLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "scanButton": {
+        "id": "scanButton",
+        "color": "black",
+        "top": 0,
+        "visible": false,
+        "backgroundColor": "white",
+        "title": "Start Scan",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "bottom": 0,
+        "borderRadius": 10,
+        "height": 0,
+        "borderWidth": 1,
+        "right": 0,
+        "left": 0,
+        "width": 0,
+        "horizontalWrap": true
+      },
+      "backButton": {
+        "id": "backButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "Close",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": 43,
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      }
+    },
+    "video": {
+      "__iamalloy": true,
+      "__views": {
+        "view": {
+          "horizontalWrap": true,
+          "id": "view"
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/video",
+      "view": {
+        "horizontalWrap": true,
+        "id": "view"
+      }
+    },
+    "waiting": {
+      "__iamalloy": true,
+      "__views": {
+        "waitingView": {
+          "width": "100%",
+          "top": "5%",
+          "horizontalWrap": true,
+          "backgroundColor": "#fff",
+          "id": "waitingView",
+          "height": "95%"
+        },
+        "instanceCodeLabel": {
+          "text": "Loading Game...",
+          "id": "instanceCodeLabel",
+          "horizontalWrap": true,
+          "color": "#000",
+          "top": "6%",
+          "width": "100%",
+          "height": "10%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "errorLabel": {
+          "text": "Instance code not found",
+          "visible": false,
+          "id": "errorLabel",
+          "horizontalWrap": true,
+          "color": "#000",
+          "width": "100%",
+          "height": "10%",
+          "top": "15%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "roleLabel": {
+          "text": "Role: Not Selected",
+          "visible": false,
+          "id": "roleLabel",
+          "horizontalWrap": true,
+          "color": "#000",
+          "width": "100%",
+          "height": "10%",
+          "top": "35%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "scenarioLabel": {
+          "text": "Scenario: Not Selected",
+          "visible": false,
+          "id": "scenarioLabel",
+          "horizontalWrap": true,
+          "color": "#000",
+          "width": "100%",
+          "height": "10%",
+          "top": "45%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "changeRoleButton": {
+          "id": "changeRoleButton",
+          "color": "black",
+          "visible": false,
+          "top": "55%",
+          "backgroundColor": "white",
+          "title": "Change Role/Scenario",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": "10%",
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        },
+        "waitingForStartLabel": {
+          "text": "Waiting for first player to start...",
+          "visible": false,
+          "id": "waitingForStartLabel",
+          "horizontalWrap": true,
+          "color": "#000",
+          "width": "100%",
+          "height": "10%",
+          "top": "70%",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "startPlayButton": {
+          "id": "startPlayButton",
+          "color": "black",
+          "visible": false,
+          "top": "70%",
+          "backgroundColor": "white",
+          "title": "Start Game",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": "10%",
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        },
+        "backButton": {
+          "id": "backButton",
+          "color": "black",
+          "top": "85%",
+          "backgroundColor": "white",
+          "title": "Back",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": "10%",
+          "borderWidth": 1,
+          "left": "10%",
+          "width": "80%",
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/waiting",
+      "waitingView": {
+        "width": "100%",
+        "top": "5%",
+        "horizontalWrap": true,
+        "backgroundColor": "#fff",
+        "id": "waitingView",
+        "height": "95%"
+      },
+      "instanceCodeLabel": {
+        "text": "Loading Game...",
+        "id": "instanceCodeLabel",
+        "horizontalWrap": true,
+        "color": "#000",
+        "top": "6%",
+        "width": "100%",
+        "height": "10%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "errorLabel": {
+        "text": "Instance code not found",
+        "visible": false,
+        "id": "errorLabel",
+        "horizontalWrap": true,
+        "color": "#000",
+        "width": "100%",
+        "height": "10%",
+        "top": "15%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "roleLabel": {
+        "text": "Role: Not Selected",
+        "visible": false,
+        "id": "roleLabel",
+        "horizontalWrap": true,
+        "color": "#000",
+        "width": "100%",
+        "height": "10%",
+        "top": "35%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "scenarioLabel": {
+        "text": "Scenario: Not Selected",
+        "visible": false,
+        "id": "scenarioLabel",
+        "horizontalWrap": true,
+        "color": "#000",
+        "width": "100%",
+        "height": "10%",
+        "top": "45%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "changeRoleButton": {
+        "id": "changeRoleButton",
+        "color": "black",
+        "visible": false,
+        "top": "55%",
+        "backgroundColor": "white",
+        "title": "Change Role/Scenario",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": "10%",
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      },
+      "waitingForStartLabel": {
+        "text": "Waiting for first player to start...",
+        "visible": false,
+        "id": "waitingForStartLabel",
+        "horizontalWrap": true,
+        "color": "#000",
+        "width": "100%",
+        "height": "10%",
+        "top": "70%",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "startPlayButton": {
+        "id": "startPlayButton",
+        "color": "black",
+        "visible": false,
+        "top": "70%",
+        "backgroundColor": "white",
+        "title": "Start Game",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": "10%",
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      },
+      "backButton": {
+        "id": "backButton",
+        "color": "black",
+        "top": "85%",
+        "backgroundColor": "white",
+        "title": "Back",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": "10%",
+        "borderWidth": 1,
+        "left": "10%",
+        "width": "80%",
+        "horizontalWrap": true
+      }
+    },
+    "aboutView": {
+      "__iamalloy": true,
+      "__views": {
+        "aboutView": {
+          "horizontalWrap": true,
+          "id": "aboutView",
+          "backgroundColor": "#0090D2"
+        },
+        "__alloyId0": {
+          "horizontalWrap": true,
+          "id": "__alloyId0",
+          "backgroundImage": "/Images/footprints.png"
+        },
+        "scrollView": {
+          "id": "scrollView",
+          "minZoomScale": 1,
+          "contentHeight": "auto",
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "bottom": 65,
+          "layout": "composite",
+          "zoomScale": 1,
+          "scrollingEnabled": true,
+          "showVertialScrollIndicator": "true",
+          "canCancelEvents": true,
+          "horizontalWrap": true
+        },
+        "__alloyId1": {
+          "backgroundColor": "white",
+          "id": "__alloyId1",
+          "layout": "vertical",
+          "borderRadius": 16,
+          "horizontalWrap": true,
+          "width": 288,
+          "height": "SIZE",
+          "top": 16
+        },
+        "__alloyId2": {
+          "left": 12,
+          "layout": "vertical",
+          "id": "__alloyId2",
+          "bottom": 16,
+          "horizontalWrap": true,
+          "right": 12,
+          "top": 16,
+          "height": "SIZE"
+        },
+        "appDescription": {
+          "text": "A programmable location based augmented reality game platform.",
+          "id": "appDescription",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "100%",
+          "height": "SIZE",
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          }
+        },
+        "appID": {
+          "text": "TaleBlazer, Version 2.0.14",
+          "id": "appID",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "100%",
+          "height": "SIZE",
+          "top": 10,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "appCopyright": {
+          "text": "Copyright (c) 2011-2014 MIT Scheller Teacher Education Program. All rights reserved.",
+          "id": "appCopyright",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "100%",
+          "height": "SIZE",
+          "top": 0,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "websiteLabel": {
+          "text": "Visit http://127.0.0.1",
+          "id": "websiteLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "100%",
+          "height": "SIZE",
+          "top": 10,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "titaniumVerLabel": {
+          "text": "Titanium Version: 3.2.1",
+          "id": "titaniumVerLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "top": 10,
+          "width": "100%",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "creditsLabel": {
+          "text": "TaleBlazer is funded in part through the generous support of the Columbus Zoo and Aquarium.\n\nThis material is based upon work supported by the National Science Foundation under Grant No. AYS #0639638, ITEST #0833663 and AISL #1223407.  Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.",
+          "id": "creditsLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "top": 10,
+          "width": "100%",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "14sp"
+          }
+        },
+        "adminView": {
+          "width": "SIZE",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "adminView",
+          "height": "SIZE"
+        },
+        "__alloyId3": {
+          "horizontalWrap": true,
+          "id": "__alloyId3",
+          "height": 10
+        },
+        "adminPassword": {
+          "width": "SIZE",
+          "layout": "vertical",
+          "horizontalWrap": true,
+          "id": "adminPassword",
+          "height": "SIZE"
+        },
+        "__alloyId4": {
+          "text": "To hide or show the Settings Tab, enter the Admin Password",
+          "id": "__alloyId4",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "100%",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "__alloyId5": {
+          "horizontalWrap": true,
+          "id": "__alloyId5",
+          "layout": "horizontal"
+        },
+        "adminPasswordTextbox": {
+          "id": "adminPasswordTextbox",
+          "returnKeyType": 9,
+          "autocorrect": false,
+          "borderStyle": 3,
+          "horizontalWrap": true,
+          "width": 96,
+          "autocapitalization": 0,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "adminPasswordSubmitButton": {
+          "borderColor": "gray",
+          "enabled": true,
+          "backgroundColor": "white",
+          "id": "adminPasswordSubmitButton",
+          "borderRadius": 10,
+          "borderWidth": 1,
+          "horizontalWrap": true,
+          "color": "black",
+          "title": "Submit",
+          "height": 43,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "adminSettings": {
+          "horizontalWrap": true,
+          "id": "adminSettings",
+          "layout": "horizontal"
+        },
+        "adminSwitch": {
+          "width": "SIZE",
+          "value": false,
+          "horizontalWrap": true,
+          "id": "adminSwitch",
+          "height": "SIZE"
+        },
+        "adminLabel": {
+          "text": "Show Settings Tab",
+          "id": "adminLabel",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "__alloyId6": {
+          "horizontalWrap": true,
+          "id": "__alloyId6",
+          "height": 10
+        },
+        "__alloyId7": {
+          "width": 320,
+          "top": 16,
+          "horizontalWrap": true,
+          "id": "__alloyId7",
+          "height": "SIZE"
+        },
+        "image": {
+          "paused": false,
+          "height": "SIZE",
+          "image": "/Images/LogoLarge.png",
+          "id": "image",
+          "animating": false,
+          "horizontalWrap": true,
+          "reverse": false,
+          "top": 0,
+          "autorotate": true,
+          "duration": 200,
+          "stopped": true
+        },
+        "__alloyId8": {
+          "layout": "horizontal",
+          "id": "__alloyId8",
+          "bottom": 0,
+          "horizontalWrap": true,
+          "right": 0,
+          "width": "SIZE",
+          "height": 65
+        },
+        "backButton": {
+          "id": "backButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "OK",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "right": 12,
+          "borderWidth": 1,
+          "height": 43,
+          "width": 64,
+          "horizontalWrap": true
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/aboutView",
+      "aboutView": {
+        "horizontalWrap": true,
+        "id": "aboutView",
+        "backgroundColor": "#0090D2"
+      },
+      "__alloyId0": {
+        "horizontalWrap": true,
+        "id": "__alloyId0",
+        "backgroundImage": "/Images/footprints.png"
+      },
+      "scrollView": {
+        "id": "scrollView",
+        "minZoomScale": 1,
+        "contentHeight": "auto",
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "bottom": 65,
+        "layout": "composite",
+        "zoomScale": 1,
+        "scrollingEnabled": true,
+        "showVertialScrollIndicator": "true",
+        "canCancelEvents": true,
+        "horizontalWrap": true
+      },
+      "__alloyId1": {
+        "backgroundColor": "white",
+        "id": "__alloyId1",
+        "layout": "vertical",
+        "borderRadius": 16,
+        "horizontalWrap": true,
+        "width": 288,
+        "height": "SIZE",
+        "top": 16
+      },
+      "__alloyId2": {
+        "left": 12,
+        "layout": "vertical",
+        "id": "__alloyId2",
+        "bottom": 16,
+        "horizontalWrap": true,
+        "right": 12,
+        "top": 16,
+        "height": "SIZE"
+      },
+      "appDescription": {
+        "text": "A programmable location based augmented reality game platform.",
+        "id": "appDescription",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "100%",
+        "height": "SIZE",
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        }
+      },
+      "appID": {
+        "text": "TaleBlazer, Version 2.0.14",
+        "id": "appID",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "100%",
+        "height": "SIZE",
+        "top": 10,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "appCopyright": {
+        "text": "Copyright (c) 2011-2014 MIT Scheller Teacher Education Program. All rights reserved.",
+        "id": "appCopyright",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "100%",
+        "height": "SIZE",
+        "top": 0,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "websiteLabel": {
+        "text": "Visit http://127.0.0.1",
+        "id": "websiteLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "100%",
+        "height": "SIZE",
+        "top": 10,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "titaniumVerLabel": {
+        "text": "Titanium Version: 3.2.1",
+        "id": "titaniumVerLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "top": 10,
+        "width": "100%",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "creditsLabel": {
+        "text": "TaleBlazer is funded in part through the generous support of the Columbus Zoo and Aquarium.\n\nThis material is based upon work supported by the National Science Foundation under Grant No. AYS #0639638, ITEST #0833663 and AISL #1223407.  Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.",
+        "id": "creditsLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "top": 10,
+        "width": "100%",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "14sp"
+        }
+      },
+      "adminView": {
+        "width": "SIZE",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "adminView",
+        "height": "SIZE"
+      },
+      "__alloyId3": {
+        "horizontalWrap": true,
+        "id": "__alloyId3",
+        "height": 10
+      },
+      "adminPassword": {
+        "width": "SIZE",
+        "layout": "vertical",
+        "horizontalWrap": true,
+        "id": "adminPassword",
+        "height": "SIZE"
+      },
+      "__alloyId4": {
+        "text": "To hide or show the Settings Tab, enter the Admin Password",
+        "id": "__alloyId4",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "100%",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "__alloyId5": {
+        "horizontalWrap": true,
+        "id": "__alloyId5",
+        "layout": "horizontal"
+      },
+      "adminPasswordTextbox": {
+        "id": "adminPasswordTextbox",
+        "returnKeyType": 9,
+        "autocorrect": false,
+        "borderStyle": 3,
+        "horizontalWrap": true,
+        "width": 96,
+        "autocapitalization": 0,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "adminPasswordSubmitButton": {
+        "borderColor": "gray",
+        "enabled": true,
+        "backgroundColor": "white",
+        "id": "adminPasswordSubmitButton",
+        "borderRadius": 10,
+        "borderWidth": 1,
+        "horizontalWrap": true,
+        "color": "black",
+        "title": "Submit",
+        "height": 43,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "adminSettings": {
+        "horizontalWrap": true,
+        "id": "adminSettings",
+        "layout": "horizontal"
+      },
+      "adminSwitch": {
+        "width": "SIZE",
+        "value": false,
+        "horizontalWrap": true,
+        "id": "adminSwitch",
+        "height": "SIZE"
+      },
+      "adminLabel": {
+        "text": "Show Settings Tab",
+        "id": "adminLabel",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "__alloyId6": {
+        "horizontalWrap": true,
+        "id": "__alloyId6",
+        "height": 10
+      },
+      "__alloyId7": {
+        "width": 320,
+        "top": 16,
+        "horizontalWrap": true,
+        "id": "__alloyId7",
+        "height": "SIZE"
+      },
+      "image": {
+        "paused": false,
+        "height": "SIZE",
+        "image": "/Images/LogoLarge.png",
+        "id": "image",
+        "animating": false,
+        "horizontalWrap": true,
+        "reverse": false,
+        "top": 0,
+        "autorotate": true,
+        "duration": 200,
+        "stopped": true
+      },
+      "__alloyId8": {
+        "layout": "horizontal",
+        "id": "__alloyId8",
+        "bottom": 0,
+        "horizontalWrap": true,
+        "right": 0,
+        "width": "SIZE",
+        "height": 65
+      },
+      "backButton": {
+        "id": "backButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "OK",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "right": 12,
+        "borderWidth": 1,
+        "height": 43,
+        "width": 64,
+        "horizontalWrap": true
+      }
+    },
+    "cluecode": {
+      "__iamalloy": true,
+      "__views": {
+        "view": {
+          "maxZoomScale": 1,
+          "scrollType": "vertical",
+          "layout": "vertical",
+          "showVertialScrollIndicator": "true",
+          "id": "view",
+          "contentHeight": "auto",
+          "horizontalWrap": true,
+          "zoomScale": 1,
+          "canCancelEvents": true,
+          "scrollingEnabled": true,
+          "minZoomScale": 1
+        },
+        "title": {
+          "text": "Clue Code",
+          "textAlign": "center",
+          "id": "title",
+          "horizontalWrap": true,
+          "color": "black",
+          "width": "SIZE",
+          "height": 54,
+          "top": 16,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "22sp"
+          }
+        },
+        "prompt": {
+          "text": "Have a clue code?  Enter it here.",
+          "id": "prompt",
+          "horizontalWrap": true,
+          "color": "black",
+          "top": 5,
+          "width": "SIZE",
+          "height": "SIZE",
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        },
+        "enterButton": {
+          "id": "enterButton",
+          "color": "black",
+          "top": 10,
+          "backgroundColor": "white",
+          "title": "Submit",
+          "enabled": true,
+          "font": {
+            "fontWeight": "bold",
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          },
+          "borderColor": "gray",
+          "borderRadius": 10,
+          "height": 43,
+          "borderWidth": 1,
+          "width": "66%",
+          "horizontalWrap": true
+        },
+        "textField": {
+          "autocapitalization": 0,
+          "id": "textField",
+          "returnKeyType": 9,
+          "autocorrect": false,
+          "borderStyle": 3,
+          "horizontalWrap": true,
+          "width": "66%",
+          "top": 10,
+          "height": 54,
+          "font": {
+            "fontFamily": "Helvetica Neue",
+            "fontSize": "16sp"
+          }
+        }
+      },
+      "__proxyProperties": {},
+      "UI": {},
+      "__controllerPath": "Game/clueCode",
+      "view": {
+        "maxZoomScale": 1,
+        "scrollType": "vertical",
+        "layout": "vertical",
+        "showVertialScrollIndicator": "true",
+        "id": "view",
+        "contentHeight": "auto",
+        "horizontalWrap": true,
+        "zoomScale": 1,
+        "canCancelEvents": true,
+        "scrollingEnabled": true,
+        "minZoomScale": 1
+      },
+      "title": {
+        "text": "Clue Code",
+        "textAlign": "center",
+        "id": "title",
+        "horizontalWrap": true,
+        "color": "black",
+        "width": "SIZE",
+        "height": 54,
+        "top": 16,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "22sp"
+        }
+      },
+      "prompt": {
+        "text": "Have a clue code?  Enter it here.",
+        "id": "prompt",
+        "horizontalWrap": true,
+        "color": "black",
+        "top": 5,
+        "width": "SIZE",
+        "height": "SIZE",
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      },
+      "enterButton": {
+        "id": "enterButton",
+        "color": "black",
+        "top": 10,
+        "backgroundColor": "white",
+        "title": "Submit",
+        "enabled": true,
+        "font": {
+          "fontWeight": "bold",
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        },
+        "borderColor": "gray",
+        "borderRadius": 10,
+        "height": 43,
+        "borderWidth": 1,
+        "width": "66%",
+        "horizontalWrap": true
+      },
+      "textField": {
+        "autocapitalization": 0,
+        "id": "textField",
+        "returnKeyType": 9,
+        "autocorrect": false,
+        "borderStyle": 3,
+        "horizontalWrap": true,
+        "width": "66%",
+        "top": 10,
+        "height": 54,
+        "font": {
+          "fontFamily": "Helvetica Neue",
+          "fontSize": "16sp"
+        }
+      }
+    }
+  },
+  "playerId": -1,
+  "instance": null,
+  "log": {
+    "LOG_TYPE": {
+      "START": "start",
+      "AGENT": "agent",
+      "ALERT": "alert",
+      "ACTION": "action",
+      "SAY": "say"
+    },
+    "uri": "app://Storage/logStore.js",
+    "id": "Storage/logStore"
+  },
+  "server": {
+    "updateNum": -1,
+    "requestNum": 1,
+    "reconnectTimer": null,
+    "reconnectTimerCount": 0,
+    "pingTimer": null,
+    "pingTimerCount": 0,
+    "playingInstance": false,
+    "gameUpdateObjects": {},
+    "delayedUpdatesQueue": []
+  },
+  "event": {
+    "eventDictionary": {
+      "location": [
+        null
+      ]
+    }
+  },
+  "file": {
+    "created": {
+      "app": {
+        "name": "TaleBlazer Editor",
+        "version": {
+          "major": 1,
+          "minor": 0,
+          "build": 0
+        }
+      },
+      "date": "2014-02-11T02:25:32.344Z"
+    },
+    "lastModified": {
+      "app": {
+        "name": "TaleBlazer",
+        "version": {
+          "major": "2",
+          "minor": "0",
+          "build": "14"
+        }
+      },
+      "date": "2014-02-28T01:27:20.821Z"
+    },
+    "gameVersion": {
+      "major": 0,
+      "minor": 9,
+      "build": 3
+    },
+    "imageID": -1,
+    "intro": "",
+    "passwordProtectAdminMode": false,
+    "adminPassword": "",
+    "ccKeyboard": "full",
+    "pwKeyboard": "full",
+    "visitSettings": {
+      "autoVisitDistance": 1,
+      "mapTapToVisitDistance": 2.5,
+      "JSONType": "ar.VisitSettings"
+    },
+    "bumpSettings": null,
+    "proximitySettings": null,
+    "assets": [],
+    "world": {
+      "name": "Matrix",
+      "id": "world",
+      "description": "",
+      "imageID": -1,
+      "dashboardTemplate": {
+        "passwordProtected": false,
+        "password": "",
+        "traitOrder": "default",
+        "traits": [],
+        "actionOrder": "default",
+        "actions": [],
+        "JSONType": "ar.DashboardTemplate"
+      },
+      "JSONType": "ar.World"
+    },
+    "regions": [
+      {
+        "name": "Main",
+        "id": 4,
+        "description": "",
+        "imageID": -1,
+        "dashboardTemplate": {
+          "passwordProtected": false,
+          "password": "",
+          "traitOrder": "default",
+          "traits": [],
+          "actionOrder": "default",
+          "actions": [],
+          "JSONType": "ar.DashboardTemplate"
+        },
+        "JSONType": "ar.Region",
+        "latLongBounds": {
+          "top": 42.361881,
+          "left": -71.088813,
+          "bottom": 42.360006,
+          "right": -71.086294
+        },
+        "gameBounds": {
+          "top": 200,
+          "left": 0,
+          "bottom": 0,
+          "right": 200
+        },
+        "navigation": 1,
+        "enforceBoundaries": true,
+        "heightwidthratio": 1.0073461462399775
+      }
+    ],
+    "defaultRegionID": 4,
+    "layers": [],
+    "samples": [],
+    "scripts": [
+      {
+        "name": "ar.Worldworld",
+        "id": 7,
+        "parentID": "world",
+        "parentType": "ar.World",
+        "JSONType": "ar.Script",
+        "rootNodes": []
+      }
+    ],
+    "roles": [
+      {
+        "name": "Role1",
+        "id": 5,
+        "description": "",
+        "imageID": -1,
+        "dashboardTemplate": {
+          "passwordProtected": false,
+          "password": "",
+          "traitOrder": "default",
+          "traits": [],
+          "actionOrder": "default",
+          "actions": [],
+          "JSONType": "ar.DashboardTemplate"
+        },
+        "JSONType": "ar.Role",
+        "supportsMultiplePlayers": true
+      }
+    ],
+    "agents": [
+      {
+        "name": "Agent1",
+        "id": 6,
+        "description": "",
+        "imageID": -1,
+        "dashboardTemplate": {
+          "passwordProtected": false,
+          "password": "",
+          "traitOrder": "default",
+          "traits": [],
+          "actionOrder": "default",
+          "actions": [
+            {
+              "actionDefID": "pickup",
+              "visible": false,
+              "JSONType": "ar.Action"
+            },
+            {
+              "actionDefID": "drop",
+              "visible": false,
+              "JSONType": "ar.Action"
+            },
+            {
+              "actionDefID": "give",
+              "visible": false,
+              "JSONType": "ar.Action"
+            }
+          ],
+          "JSONType": "ar.DashboardTemplate"
+        },
+        "JSONType": "ar.Agent",
+        "location": {
+          "regionID": 4,
+          "x": 5,
+          "y": 195,
+          "JSONType": "ar.PointLocation"
+        },
+        "visible": true,
+        "useGameBumpSettings": true,
+        "bumpSettings": null,
+        "iconShape": "circle",
+        "iconColor": "dark red",
+        "inInventory": false,
+        "iconGrayOutAfterVisit": true
+      }
+    ],
+    "teams": [],
+    "drones": [],
+    "scenarios": [],
+    "traitDefs": [],
+    "actionDefs": [
+      {
+        "name": "Pick Up",
+        "id": "pickup",
+        "parentID": -2,
+        "parentType": "ar.Agent",
+        "JSONType": "ar.ActionDef",
+        "actionType": "builtin",
+        "visible": false,
+        "builtIn": true,
+        "zIndex": 100,
+        "resourceID": -1,
+        "html": ""
+      },
+      {
+        "name": "Drop",
+        "id": "drop",
+        "parentID": -2,
+        "parentType": "ar.Agent",
+        "JSONType": "ar.ActionDef",
+        "actionType": "builtin",
+        "visible": false,
+        "builtIn": true,
+        "zIndex": 200,
+        "resourceID": -1,
+        "html": ""
+      },
+      {
+        "name": "Give",
+        "id": "give",
+        "parentID": -2,
+        "parentType": "ar.Agent",
+        "JSONType": "ar.ActionDef",
+        "actionType": "builtin",
+        "visible": false,
+        "builtIn": true,
+        "zIndex": 300,
+        "resourceID": -1,
+        "html": ""
+      }
+    ],
+    "tabOrder": "default",
+    "tabs": [
+      {
+        "id": "game",
+        "visible": true,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "map",
+        "visible": true,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "player",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "team",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "world",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "clueCode",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "samples",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "messages",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "headsUp",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "inventory",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "history",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "admin",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      },
+      {
+        "id": "log",
+        "visible": false,
+        "JSONType": "ar.Tab"
+      }
+    ],
+    "multiplayer": false,
+    "players": [
+      {
+        "name": "Role1",
+        "id": 12,
+        "description": "",
+        "imageID": -1,
+        "dashboardTemplate": {
+          "passwordProtected": false,
+          "password": "",
+          "traitOrder": "default",
+          "traits": [],
+          "actionOrder": "default",
+          "actions": [],
+          "JSONType": "ar.DashboardTemplate"
+        },
+        "JSONType": "ar.Player",
+        "supportsMultiplePlayers": true,
+        "username": "Player username",
+        "traits": [],
+        "roleId": 5,
+        "teamId": -1,
+        "regionId": 4,
+        "x": -1,
+        "y": -1,
+        "userId": -1,
+        "isFirst": false,
+        "inventory": [],
+        "tabVisibility": {
+          "game": true,
+          "map": true,
+          "player": false,
+          "team": false,
+          "world": false,
+          "clueCode": false,
+          "samples": false,
+          "messages": false,
+          "headsUp": false,
+          "inventory": false,
+          "history": false,
+          "admin": false,
+          "log": false
+        },
+        "entityLockStates": {},
+        "entityLooks": {},
+        "agentHistory": {}
+      }
+    ],
+    "scenarioId": -1,
+    "started": true,
+    "JSONType": "ar.Game"
+  },
+  "gameInfo": {
+    "id": "1",
+    "name": "Test Game",
+    "description": "",
+    "image": "",
+    "draftStateId": "1",
+    "instanceId": -1,
+    "instanceCode": "",
+    "username": "test",
+    "userId": "2",
+    "mediaSize": "1",
+    "gameCode": "glkslxv",
+    "serverName": "127.0.0.1",
+    "serverURL": "http://127.0.0.1",
+    "multiPlayer": false,
+    "isInGameDB": true,
+    "timPlayed": 1393550840769,
+    "timDownloaded": 1393547954861,
+    "isUpdated": true,
+    "isProximityRequired": false,
+    "orgId": -1,
+    "lat": 0,
+    "lon": 0,
+    "requiredProximityInMeters": 0,
+    "userTypedInstanceCode": false
+  },
+  "filePlayerId": 12,
+  "currentlyColliding": false,
+  "currentTab": "game",
+  "currentPage": "game"
+}
