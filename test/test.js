@@ -182,8 +182,10 @@ describe('Session API', function() {
 			session = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
-				role: 'Tester',
-				scenario: 'Testing Scenario',
+				role_id: 52, 
+				role_name: 'Tester',
+				scenario_id: 90,
+				scenario_name: 'Testing Scenario',
 				tap_to_visit: false,
 				device_id: "TE-STING-DEV1CE-1D3",
 				draft_state_id: 42
@@ -203,8 +205,6 @@ describe('Session API', function() {
 				session = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
-				role: 'Tester',
-				scenario: 'Testing Scenario',
 				tap_to_visit: false,
 				device_id: "OBVIOUSLY-FAKE-ID",
 				draft_state_id: 42
@@ -221,12 +221,10 @@ describe('Session API', function() {
 
 		});
 
-		it('errors if a parameter is missing or invalid', function(done) {
+		it('errors if start_time or device_id are missing', function(done) {
 			session_missing_start_time = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
-				role: 'Tester',
-				scenario: 'Testing Scenario',
 				tap_to_visit: false,
 				device_id: 1,
 				draft_state_id: 42

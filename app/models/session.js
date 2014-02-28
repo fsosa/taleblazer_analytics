@@ -29,11 +29,27 @@ module.exports = function(sequelize, DataTypes) {
 					isDate: true
 				}
 			},
-			role: {
-				type: DataTypes.STRING
+			role_id: {
+				type: DataTypes.INTEGER,
+				allowNull: true,
+				validate: {
+					isInt: true
+				}
 			},
-			scenario: {
-				type: DataTypes.STRING
+			role_name: {
+				type: DataTypes.STRING,
+				allowNull: true
+			},
+			scenario_id: {
+				type: DataTypes.INTEGER,
+				allowNull: true,
+				validate: {
+					isInt: true
+				}
+			},
+			scenario_name: {
+				type: DataTypes.STRING,
+				allowNull: true
 			},
 			tap_to_visit: {
 				type: DataTypes.BOOLEAN,

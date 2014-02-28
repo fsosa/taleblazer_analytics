@@ -5,7 +5,7 @@
 var express = require('express');
 
 // Extend Express with JSend responses
-require('./lib/jsend.js')(express);
+require('./lib/jsend')(express);
 
 // Environment Configuration
 var env = process.env.NODE_ENV || 'development';
@@ -15,7 +15,7 @@ console.log("Environment: " + env);
 var db = require('./app/models');
 
 var app = express();
-app.set('db', db);
+app.set('db', db); // SINGLETON
 
 // Express Middleware Configuration - TODO: Consider moving to own configuration file
 app.use(express.favicon());
