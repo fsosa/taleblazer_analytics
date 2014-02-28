@@ -25,6 +25,9 @@ exports.create = function(req, res) {
 	// to run them all at once and get a callback when all are complete
 	// 
 	// Also keep track of the most recent event per session id to update the sessions accordingly
+	// 
+	// NOTE: If one of the events is missing a session ID, the others will be still be created but we will return an error. 
+	// The Mobile client should not send up those types of events. 
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 

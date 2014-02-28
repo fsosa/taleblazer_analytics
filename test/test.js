@@ -258,6 +258,7 @@ describe('Session API', function() {
 
 describe('Events API', function() {
 	var latest_time = Date.now();
+
 	var events = {
 		events: [{
 				event_type: 'AGENT_BUMP',
@@ -344,6 +345,18 @@ describe('Events API', function() {
 				.error(function(err) {
 					done(err);
 				})
+		});
+
+		it('errors if any of the events is missing a session_id (but creates the rest of the events)', function(done) {
+			events.events[0].session_id = null;
+			request
+				.post('/events')
+				.set('Content-Type', 'application/json')
+				.set('Accept', 'application/json')
+				.send(events)
+				.expect(500)
+				.expect(isErrorResponseFormat)
+				.end(done);
 		});
 
 		it('errors if data is not an array of events', function(done) {
