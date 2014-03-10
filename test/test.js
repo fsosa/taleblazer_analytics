@@ -324,6 +324,7 @@ describe('Events API', function() {
 		});
 
 		it('creates a list of events', function(done) {
+			this.timeout(5000);
 			request
 				.post('/events')
 				.set('Content-Type', 'application/json')
@@ -347,7 +348,7 @@ describe('Events API', function() {
 				})
 		});
 
-		it('errors if any of the events is missing a session_id (but creates the rest of the events)', function(done) {
+		it('errors if any of the events is missing a session_id', function(done) {
 			events.events[0].session_id = null;
 			request
 				.post('/events')

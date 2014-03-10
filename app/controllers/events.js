@@ -29,6 +29,9 @@ exports.create = function(req, res) {
 	// NOTE: If one of the events is missing a session ID, the others will be still be created but we will return an error. 
 	// The Mobile client should not send up those types of events. 
 	// TODO: This SHOULD fail if one of them is bad
+	// POSSIBLY ADD TRANSACTIONS
+	db.sequelize.transaction(function(transaction) {
+
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 
@@ -44,28 +47,37 @@ exports.create = function(req, res) {
 			last_session_event_times[session_id] = current_event_time;
 		}
 
-		var creationQuery = getEventCreationQuery(raw_event);
+		var creationQuery = getEventCreationQuery(raw_event, transaction);
 		chainer.add(creationQuery);
 	}
 
 	// Update the session with the updated last_event_at timestamp
 	for(var session_id in last_session_event_times) {
 		var last_event_at = last_session_event_times[session_id];
-		var sessionUpdateQuery = getSessionUpdateQuery(session_id, last_event_at);
+		var sessionUpdateQuery = getSessionUpdateQuery(session_id, last_event_at, transaction);
 		chainer.add(sessionUpdateQuery);
 	}
 	
 
 	// Run the queries and callback once they're done
 	// NOTE: Chained queries occur in parallel
-	chainer
-		.run()
-		.success(function(results) {
-			res.jsend(201, results);
-		})
-		.error(function(error) {
-			res.jerror(500, error);
-		});
+	// 
+		chainer
+			.run()
+			.success(function(results) {
+				transaction.commit().success(function() {
+					console.log("committed!");
+					res.jsend(201, results);
+				})
+			})
+			.error(function(error) {
+				res.jerror(500, error);	
+				transaction.rollback().success(function() {
+					console.log("rolled back");
+				})
+			});
+			
+	});
 };
 
 
@@ -73,16 +85,17 @@ exports.create = function(req, res) {
 // Utility Methods //
 /////////////////////
 
-var getSessionUpdateQuery = function(session_id, last_event_at) {
+var getSessionUpdateQuery = function(session_id, last_event_at, transaction) {
 	var updateQuery = db.Session.update(
 		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value(s) */
-		{ id: session_id } /* `where` criteria */ 
+		{ id: session_id }, /* `where` criteria */
+		{ transaction: transaction}
 	);
 
 	return updateQuery;
 };
 
-var getEventCreationQuery = function(raw_event) {
+var getEventCreationQuery = function(raw_event, transaction) {
 	var event_fields = null;
 	var event_type = raw_event.event_type;
 	var query = null;
@@ -90,19 +103,19 @@ var getEventCreationQuery = function(raw_event) {
 	switch (event_type) {
 		case EVENT_TYPES.AGENT_BUMP:
 			event_fields = parseAgentBumpFields(raw_event);
-			query = db.AgentBump.create(event_fields);
+			query = db.AgentBump.create(event_fields, { transaction: transaction} );
 			break;
 		case EVENT_TYPES.REGION_SWITCH:
 			event_fields = parseRegionSwitchFields(raw_event);
-			query = db.RegionSwitch.create(event_fields);
+			query = db.RegionSwitch.create(event_fields, { transaction: transaction});
 			break;
 		case EVENT_TYPES.GAME_COMPLETION:
 			event_fields = parseGameCompletionFields(raw_event);
-			query = db.GameCompletion.create(event_fields);
+			query = db.GameCompletion.create(event_fields, { transaction: transaction});
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(raw_event);
-			query = db.CustomEventTrigger.create(event_fields);
+			query = db.CustomEventTrigger.create(event_fields), { transaction: transaction};
 			break;
 	}
 
