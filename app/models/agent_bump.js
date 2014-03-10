@@ -10,13 +10,13 @@ module.exports = function(sequelize, DataTypes) {
 		// Column definitions
 		{
 			bump_type: {
-				type: DataTypes.ENUM('INV', 'GPS', 'TAP', 'HUD'),
+				type: DataTypes.STRING, // Change to not be an enum
 				allowNull: false,
 				validate: {
 					notNull: true,
 					notEmpty: true,
 					isIn: [
-						['INV', 'GPS', 'TAP', 'HUD']
+						['INV', 'GPS', 'TAP', 'HUD', 'CLUE']
 					]
 				}
 			},

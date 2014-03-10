@@ -28,6 +28,7 @@ exports.create = function(req, res) {
 	// 
 	// NOTE: If one of the events is missing a session ID, the others will be still be created but we will return an error. 
 	// The Mobile client should not send up those types of events. 
+	// TODO: This SHOULD fail if one of them is bad
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 
