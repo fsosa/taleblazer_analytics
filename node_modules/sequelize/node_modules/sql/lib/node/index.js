@@ -19,6 +19,12 @@ Node.prototype.add = function(node) {
   return this;
 };
 
+Node.prototype.unshift = function(node) {
+  assert(node, 'Error while trying to add a non-existant node to a query');
+  this.nodes.unshift(typeof node === 'string' ? new TextNode(node) : node.toNode());
+  return this;
+};
+
 // Before the change that introduced parallel dialects, every node could be turned
 // into a query. The parallel dialects change made it impossible to change some nodes
 // into a query because not all nodes are constructed with the sql instance.
@@ -42,6 +48,15 @@ var determineDialect = function(query, dialect) {
 Node.prototype.toQuery = function(dialect) {
   var Dialect = determineDialect(this, dialect);
   return new Dialect().getQuery(this);
+};
+
+Node.prototype.toNamedQuery = function(name, dialect) {
+  if (!name || typeof name !== 'string' ||  name === '') {
+    throw new Error('A query name has to be a non-empty String.');
+  }
+  var query = this.toQuery(dialect);
+  query.name = name;
+  return query;
 };
 
 Node.prototype.toString = function(dialect) {
