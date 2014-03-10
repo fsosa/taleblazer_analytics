@@ -250,7 +250,39 @@ describe('Session API', function() {
 
 
 	});
+
+	describe('PUT /session/', function() {
+		it('updates a session with the new tap_to_visit value', function(done) {
+			var session_id = 1;
+			request
+				.put('/session/' + session_id)
+				.send({ tap_to_visit: true })
+				.expect(200)
+				.expect(isSuccessResponseFormat)
+				.end(done);
+		});
+
+		it('only updates if session_id is part of the URL', function(done) {
+			request
+				.put('/session')
+				.send({ tap_to_visit: true })
+				.expect(404)
+				.end(done);
+
+		});
+
+		it('errors if tap_to_visit is not a boolean', function(done) {
+			var session_id = 1;
+			request
+				.put('/session/' + session_id)
+				.send({ tap_to_visit: true })
+				.expect(isSuccessResponseFormat)
+				.end(done);
+
+		});
+	});
 });
+
 
 ////////////
 // Events //

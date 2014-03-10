@@ -6,4 +6,5 @@ var session = require('../app/controllers/session');
 module.exports = function(app) {
 	app.get('/session', session.index);
 	app.post('/session', session.create);
+	app.put('/session/:id', session.update);
 };

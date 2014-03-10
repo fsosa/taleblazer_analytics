@@ -1,4 +1,5 @@
 var db = require('../models');
+var _ = require('underscore');
 
 exports.index = function(req, res) {
 	db.Session.findAll()
@@ -11,6 +12,22 @@ exports.index = function(req, res) {
 
 exports.create = function(req, res) {
 	createSession(req, res);
+};
+
+exports.update = function(req, res) {
+	// Currently we only update sessions if tap_to_visit was enabled
+	if (!_.isBoolean(req.body.tap_to_visit)) {
+		res.jsend(400, "tap_to_visit must be a boolean");
+	} else {
+		db.Session.update(
+			{ tap_to_visit: req.body.tap_to_visit }, /* new attribute value */
+			{ id: req.params.id } /* where criteria */
+		).success(function(result) {
+			res.jsend(200, result);
+		}).error(function(err) {
+			res.jerror(500, err);
+		});
+	}
 };
 
 /////////////////////
