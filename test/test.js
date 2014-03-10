@@ -347,14 +347,14 @@ describe('Events API', function() {
 				})
 		});
 
-		it('errors if any of the events is missing a session_id (but creates the rest of the events)', function(done) {
+		it('errors if any of the events is missing a session_id (and does not create any event)', function(done) {
 			events.events[0].session_id = null;
 			request
 				.post('/events')
 				.set('Content-Type', 'application/json')
 				.set('Accept', 'application/json')
 				.send(events)
-				.expect(500)
+				.expect(400)
 				.expect(isErrorResponseFormat)
 				.end(done);
 		});

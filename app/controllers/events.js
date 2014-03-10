@@ -26,13 +26,23 @@ exports.create = function(req, res) {
 	// 
 	// Also keep track of the most recent event per session id to update the sessions accordingly
 	// 
-	// NOTE: If one of the events is missing a session ID, the others will be still be created but we will return an error. 
-	// The Mobile client should not send up those types of events. 
-	// TODO: This SHOULD fail if one of them is bad
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 
 		var session_id = raw_event.session_id;
+
+		// If a single event in the batch is missing a session_id, we fail the entire batch and don't create anything
+		if (session_id == null) {
+			
+			message = {
+				message: 'Event is missing the session_id', 
+				data: raw_event
+			}
+
+			res.jerror(400, message);
+			return;
+		}
+
 		var current_event_time = raw_event.occurred_at;
 		var latest_time = last_session_event_times[session_id];
 
