@@ -112,14 +112,19 @@ var extractSessionChanges = function(event, session_changes) {
 
 	} else {
 		// Haven't encountered this session id yet
+		// Since we're building the attribute update object, we want to make sure there are no keys with null values
+		// This could happen if a TTV_ENABLED event is the only event sent. 
+		// We don't want that event to extend the time played, so last_event_at would be null
+		// Kind of messy to build the object individually, but works for now. 
+		session_changes[event.session_id] = {};
 		if (ttv_enabled) {
-			session_changes[event.session_id] = { last_event_at: current_event_time, tap_to_visit: ttv_enabled };
-		} else {
-			session_changes[event.session_id] = { last_event_at: current_event_time };	
-		}
- 		
-	}
+			session_changes[event.session_id].tap_to_visit = ttv_enabled;	
+		} 
 
+		if (current_event_time != null) {
+			session_changes[event.session_id].last_event_at = current_event_time;
+		}
+	}
 };
 
 
