@@ -306,6 +306,9 @@ describe('Events API', function() {
 				session_id: 1,
 				occurred_at: (new Date() - 4000)
 			}, {
+				event_type: 'TTV_ENABLED', 
+				session_id: 1
+			}, {
 				event_type: 'GAME_COMPLETION',
 				occurred_at: (new Date() - 2000),
 				session_id: 3,
@@ -363,15 +366,20 @@ describe('Events API', function() {
 				.send(events)
 				.expect(201)
 				.expect(isSuccessResponseFormat)
-				.end(done);
+				.end(function(err, res) {
+					// console.log(JSON.stringify(res.body));
+					// console.log(err);
+					done(err);
+				});
 		});
 
 
-		it('correctly updates the session with the latest event', function(done) {
+		it('correctly updates the session with the latest event time and if tap to visit was enabled', function(done) {
 			app.get('db').Session
 				.find({ where: { id: 1} })
 				.success(function(session) {
 					assert.equal(session.last_event_at.toString(), new Date(latest_time).toString(), "Session date and latest time should be equal");
+					assert.equal(session.tap_to_visit, true);
 					done();
 				})
 				.error(function(err) {

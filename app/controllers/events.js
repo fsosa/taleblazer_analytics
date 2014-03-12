@@ -6,7 +6,8 @@ var EVENT_TYPES = {
 	AGENT_BUMP: 'AGENT_BUMP',
 	REGION_SWITCH: 'REGION_SWITCH',
 	GAME_COMPLETION: 'GAME_COMPLETION',
-	CUSTOM_EVENT_TRIGGER: 'CUSTOM_EVENT_TRIGGER'
+	CUSTOM_EVENT_TRIGGER: 'CUSTOM_EVENT_TRIGGER',
+	TTV_ENABLED: 'TTV_ENABLED'
 };
 
 exports.create = function(req, res) {
@@ -17,54 +18,44 @@ exports.create = function(req, res) {
 		res.jerror(400, 'Events should be an array');
 		return;
 	}
-	var last_session_event_times = {}; // session_id => timestamps
+	var session_changes = {}; // session_id => timestamps
 
 	var chainer = new db.Sequelize.Utils.QueryChainer;
 
 	// Loop through all events and chain the event creation queries
 	// to run them all at once and get a callback when all are complete
-	// 
+	//
 	// Also keep track of the most recent event per session id to update the sessions accordingly
-	// 
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 
 		var session_id = raw_event.session_id;
 
-		// If a single event in the batch is missing a session_id, we fail the entire batch and don't create anything
-		if (session_id == null) {
-			
-			message = {
-				message: 'Event is missing the session_id', 
-				data: raw_event
-			}
-
+		// If a single event in the batch is invalid, we fail the entire batch
+		var validEvent = validateEvent(raw_event);
+		if (!validEvent) {
+			message = { message: 'Invalid event', data: raw_event };
 			res.jerror(400, message);
 			return;
 		}
 
-		var current_event_time = raw_event.occurred_at;
-		var latest_time = last_session_event_times[session_id];
-
-		if (latest_time != null) {
-			if (latest_time < current_event_time) {
-				last_session_event_times[session_id] = current_event_time;
-			}
-		} else {
-			last_session_event_times[session_id] = current_event_time;
-		}
+		// Extract changes to sessions (latest event times / ttv enabled) into session_changes dictionary
+		extractSessionChanges(raw_event, session_changes);
 
 		var creationQuery = getEventCreationQuery(raw_event);
-		chainer.add(creationQuery);
+
+		if (creationQuery != null) {
+			chainer.add(creationQuery);	
+		}
 	}
 
 	// Update the session with the updated last_event_at timestamp
-	for(var session_id in last_session_event_times) {
-		var last_event_at = last_session_event_times[session_id];
+	for (var session_id in session_changes) {
+		var last_event_at = session_changes[session_id].latest_time;
 		var sessionUpdateQuery = getSessionUpdateQuery(session_id, last_event_at);
 		chainer.add(sessionUpdateQuery);
 	}
-	
+
 
 	// Run the queries and callback once they're done
 	// NOTE: Chained queries occur in parallel
@@ -83,10 +74,51 @@ exports.create = function(req, res) {
 // Utility Methods //
 /////////////////////
 
+var validateEvent = function(event) {
+	// Events must have a valid session id
+	if (event.session_id == null) {
+		return false;
+	}
+
+	// Events must have a valid event_type (as defined in EVENT_TYPES)
+	if (EVENT_TYPES[event.event_type] == null) {
+		return false;
+	}
+
+	return true;
+};
+
+var extractSessionChanges = function(event, session_changes) {
+	// Keep track of the latest event times
+	var current_event_time = (event.event_type != EVENT_TYPES.TTV_ENABLED) ? event.occurred_at : null;
+	var session = session_changes[event.session_id];
+	var ttv_enabled = (event.event_type == EVENT_TYPES.TTV_ENABLED);
+
+	if (session != null) {
+		var latest_time = session.latest_time;
+
+		// Keep track of the time the latest event occurred per session
+		if (latest_time < current_event_time) {
+			session.latest_time = current_event_time;
+		}
+
+		// If tap-to-visit was enabled, mark it as true and never change it back
+		if (ttv_enabled) {
+			session.ttv_enabled = ttv_enabled;
+		}
+
+	} else {
+		// Haven't encountered this session yet so create a stub with this event's time
+		session_changes[event.session_id] = { latest_time: current_event_time, ttv_enabled: ttv_enabled };
+	}
+
+};
+
+
 var getSessionUpdateQuery = function(session_id, last_event_at) {
 	var updateQuery = db.Session.update(
 		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value(s) */
-		{ id: session_id } /* `where` criteria */ 
+		{ id: session_id } /* `where` criteria */
 	);
 
 	return updateQuery;
