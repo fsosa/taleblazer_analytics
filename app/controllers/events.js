@@ -89,27 +89,35 @@ var validateEvent = function(event) {
 };
 
 var extractSessionChanges = function(event, session_changes) {
-	// Keep track of the latest event times
 	var current_event_time = (event.event_type != EVENT_TYPES.TTV_ENABLED) ? event.occurred_at : null;
 	var session = session_changes[event.session_id];
 	var ttv_enabled = (event.event_type == EVENT_TYPES.TTV_ENABLED);
 
+	// Here we create an object corresponding to a session's attributes that need to be updated/ 
+	// The object is of the form: 
+	// 		{ session_model_attribute: new_value, ... } 
+	// The attribute update object is then directly used in getSessionUpdateQuery
 	if (session != null) {
-		var latest_time = session.latest_time;
+		var latest_time = session.last_event_at;
 
 		// Keep track of the time the latest event occurred per session
 		if (latest_time < current_event_time) {
-			session.latest_time = current_event_time;
+			session.last_event_at = current_event_time;
 		}
 
 		// If tap-to-visit was enabled, mark it as true and never change it back
 		if (ttv_enabled) {
-			session.ttv_enabled = ttv_enabled;
+			session.tap_to_visit = ttv_enabled;
 		}
 
 	} else {
-		// Haven't encountered this session yet so create a stub with this event's time
-		session_changes[event.session_id] = { latest_time: current_event_time, ttv_enabled: ttv_enabled };
+		// Haven't encountered this session id yet
+		if (ttv_enabled) {
+			session_changes[event.session_id] = { last_event_at: current_event_time, tap_to_visit: ttv_enabled };
+		} else {
+			session_changes[event.session_id] = { last_event_at: current_event_time };	
+		}
+ 		
 	}
 
 };
@@ -117,15 +125,10 @@ var extractSessionChanges = function(event, session_changes) {
 
 var getSessionUpdateQuery = function(session_id, updates) {
 	var last_event_at = updates.latest_time;
-	var ttv_enabled = updates.ttv_enabled;
-	var attribute_updates = { tap_to_visit: ttv_enabled };
-
-	if (last_event_at != null) {
-		attribute_updates.last_event_at = new Date(parseInt(last_event_at));
-	} 
+	var ttv_enabled = updates.tap_to_visit;
 
 	var updateQuery = db.Session.update(
-		attribute_updates, /* new attribute value(s) */
+		updates, /* new attribute value(s) */
 		{ id: session_id } /* `where` criteria */
 	);
 
