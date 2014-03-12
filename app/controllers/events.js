@@ -51,8 +51,8 @@ exports.create = function(req, res) {
 
 	// Update the session with the updated last_event_at timestamp
 	for (var session_id in session_changes) {
-		var last_event_at = session_changes[session_id].latest_time;
-		var sessionUpdateQuery = getSessionUpdateQuery(session_id, last_event_at);
+		var updates = session_changes[session_id];
+		var sessionUpdateQuery = getSessionUpdateQuery(session_id, updates);
 		chainer.add(sessionUpdateQuery);
 	}
 
@@ -115,9 +115,17 @@ var extractSessionChanges = function(event, session_changes) {
 };
 
 
-var getSessionUpdateQuery = function(session_id, last_event_at) {
+var getSessionUpdateQuery = function(session_id, updates) {
+	var last_event_at = updates.latest_time;
+	var ttv_enabled = updates.ttv_enabled;
+	var attribute_updates = { tap_to_visit: ttv_enabled };
+
+	if (last_event_at != null) {
+		attribute_updates.last_event_at = new Date(parseInt(last_event_at));
+	} 
+
 	var updateQuery = db.Session.update(
-		{ last_event_at: new Date(parseInt(last_event_at)) }, /* new attribute value(s) */
+		attribute_updates, /* new attribute value(s) */
 		{ id: session_id } /* `where` criteria */
 	);
 
