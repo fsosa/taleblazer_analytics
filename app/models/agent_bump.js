@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
 					notNull: true,
 					notEmpty: true,
 					isIn: [
-						['INV', 'GPS', 'TAP', 'HUD', 'CLUE'] // TODO: MAKE SURE THAT BUMP ONLY REGISTERS AFTER PWD IS ENTERED, IF PWD LOCKED
+						['INV', 'GPS', 'TAP', 'HUD', 'CLUE']
 					]
 				}
 			},
