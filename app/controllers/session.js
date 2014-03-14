@@ -40,7 +40,7 @@ var createSession = function(req, res) {
 		return;
 	}
 
-	session_fields = {
+	var session_fields = {
 		started_at: new Date(parseInt(req.body.started_at)),
 		last_event_at: new Date(parseInt(req.body.last_event_at)),
 		role_id: req.body.role_id,

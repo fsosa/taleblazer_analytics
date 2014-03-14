@@ -168,7 +168,7 @@ var getEventCreationQuery = function(raw_event) {
 };
 
 var parseAgentBumpFields = function(event) {
-	agent_fields = {
+	var agent_fields = {
 		bump_type: event.bump_type,
 		agent_id: event.agent_id,
 		agent_name: event.agent_name,
@@ -180,7 +180,7 @@ var parseAgentBumpFields = function(event) {
 };
 
 var parseRegionSwitchFields = function(event) {
-	region_fields = {
+	var region_fields = {
 		region_id: event.region_id,
 		region_name: event.region_name,
 		occurred_at: new Date(parseInt(event.occurred_at)),
@@ -191,7 +191,7 @@ var parseRegionSwitchFields = function(event) {
 };
 
 var parseGameCompletionFields = function(event) {
-	completion_fields = {
+	var completion_fields = {
 		occurred_at: new Date(parseInt(event.occurred_at)),
 		session_id: event.session_id
 	};
@@ -200,7 +200,7 @@ var parseGameCompletionFields = function(event) {
 };
 
 var parseCustomEventFields = function(event) {
-	trigger_fields = {
+	var trigger_fields = {
 		event_id: event.event_id,
 		event_name: event.event_name,
 		value: event.value,

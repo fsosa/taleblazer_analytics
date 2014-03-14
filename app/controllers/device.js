@@ -17,7 +17,7 @@ exports.create = function(req, res) {
 		.success(function(device) {
 			if (device) {
 				// Found an existing device so let the API consumer know
-				message = 'Device already exists with device_id: ' + device.device_id;
+				var message = 'Device already exists with device_id: ' + device.device_id;
 				res.jerror(409, message);
 			} else {
 				// No device with matching device_id found, so create a new one
@@ -35,7 +35,7 @@ exports.create = function(req, res) {
 //////////////////////
 
 var createDevice = function(req, res) {
-	device_fields = {
+	var device_fields = {
 		device_id: req.body.device_id,
 		os_type: req.body.os_type,
 		os_version: req.body.os_version,
