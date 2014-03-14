@@ -76,7 +76,7 @@ exports.create = function(req, res) {
 
 var validateEvent = function(event) {
 	// Events must have a valid session id
-	if (event.session_id == null) {
+	if (event.session_id == null || event.session_id < 0) {
 		return false;
 	}
 
