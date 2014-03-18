@@ -263,6 +263,9 @@ describe('Events API', function() {
 	var events = {
 		events: [
 			{
+				event_type: 'TTV_ENABLED', 
+				session_id: 1
+			}, {
 				event_type: 'AGENT_BUMP',
 				bump_type: 'GPS',
 				agent_id: 6,
@@ -275,9 +278,6 @@ describe('Events API', function() {
 				region_name: 'Jurassic Park',
 				session_id: 1,
 				occurred_at: (new Date() - 4000)
-			}, {
-				event_type: 'TTV_ENABLED', 
-				session_id: 1
 			}, {
 				event_type: 'GAME_COMPLETION',
 				occurred_at: (new Date() - 2000),

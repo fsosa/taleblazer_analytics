@@ -34,7 +34,7 @@ exports.create = function(req, res) {
 		// If a single event in the batch is invalid, we fail the entire batch
 		var validEvent = validateEvent(raw_event);
 		if (!validEvent) {
-			message = { message: 'Invalid event', data: raw_event };
+			var message = { message: 'Invalid event', data: raw_event };
 			res.jerror(400, message);
 			return;
 		}
@@ -98,10 +98,12 @@ var extractSessionChanges = function(event, session_changes) {
 	// 		{ session_model_attribute: new_value, ... } 
 	// The attribute update object is then directly used in getSessionUpdateQuery
 	if (session != null) {
+		
+
 		var latest_time = session.last_event_at;
 
 		// Keep track of the time the latest event occurred per session
-		if (latest_time < current_event_time) {
+		if (latest_time < current_event_time || latest_time == undefined) {
 			session.last_event_at = current_event_time;
 		}
 
