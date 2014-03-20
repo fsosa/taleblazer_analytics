@@ -1,5 +1,6 @@
 var db = require('../models');
 var _ = require('underscore');
+var moment = require('moment');
 /**
  * Given a draft id and a time range,
  * Returns:
@@ -10,13 +11,15 @@ var _ = require('underscore');
  *
  */
 exports.index = function(req, res, next) {
-	var draft_id = req.body.draft_id;
+	var draft_id = req.params.draft_id;
 	var start_time = req.body.start_time;
 	var end_time = req.body.end_time;
 
-	if (draft_id == null || start_time == null || end_time == null) {
-		res.jerror(400, 'Missing required parameter');
-		return;
+	if (start_time == null || end_time == null) {
+		// If no time is provided,
+		// default to the time period from the beginning of the week to the end of the current day
+		start_time = moment().startOf('week');
+		end_time = moment().endOf('day');
 	}
 
 	// Get the list of sessions for the draft between the start and end time
@@ -26,7 +29,9 @@ exports.index = function(req, res, next) {
 				next(err);
 			} else {
 				var stats = getSessionStats(results);
-				res.jsend(stats);
+				res.render('test', {
+					stats: stats
+				});
 			}
 		});
 
@@ -39,45 +44,49 @@ exports.index = function(req, res, next) {
 
 var getSessionStats = function(sessions) {
 	var stats = {
-		sessions_initiated: sessions.count,
-	}
+		sessions_initiated: sessions.count
+	};
 
 	var sessions_completed = 0;
 	var sum_completion_time = 0;
 
-	for(i = 0; i < sessions.rows.length; i++) {
-		var session = sessions.rows[i]
+	for (i = 0; i < sessions.rows.length; i++) {
+		var session = sessions.rows[i];
 		if (session.completion_id != null) {
-			sessions_completed = sessions_completed + 1;	
+			sessions_completed = sessions_completed + 1;
 
 			var game_length_sec = (session.last_event_at - session.started_at) / 1000;
 
-			console.log(game_length_sec);
-			sum_completion_time = sum_completion_time  + game_length_sec;
+			sum_completion_time = sum_completion_time + game_length_sec;
+			console.log(sum_completion_time);
 		}
 	}
 
 	stats.sessions_completed = sessions_completed;
-	stats.avg_completion_time = Math.round( ( sum_completion_time  / sessions_completed ) / 60 );
+
+	var avg_completion_time = (sessions_completed == 0) ? 0 : Math.round((sum_completion_time / sessions_completed) / 60);
+	stats.avg_completion_time = avg_completion_time;
 
 	return stats;
-}
+};
 
 
 var getSessions = function(draft_id, start_time, end_time, next, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
+	start_time = start_time.toDate();
+	end_time = end_time.toDate();
 	db.DraftState
 		.findAll({
 			where: {
 				draft_id: draft_id,
 				published_game: 1
 			},
-			attributes: ['id'],
+			attributes: ['id']
 		})
 		.success(function(results) {
 			var draft_state_ids = _.map(results, function(result) {
 				return result.values['id'];
-			})
+			});
 
 			db.Session
 				.findAndCountAll({

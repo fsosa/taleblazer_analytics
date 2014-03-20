@@ -15,8 +15,5 @@ module.exports = function(app) {
 	/////////////
 	// Views  //
 	/////////////
-	// app.get('/', function(req, res) {
-	// 	res.render('index', {} );
-	// });
-	app.post('/overview', overview.index);
+	app.get('/overview/:draft_id', overview.index);
 };
