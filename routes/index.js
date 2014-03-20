@@ -2,6 +2,8 @@ var device_routes = require('./device.js');
 var session_routes = require('./session.js');
 var events_routes = require('./events.js');
 
+var overview = require('../app/controllers/overview');
+
 module.exports = function(app) {
 	/////////////////
 	// Mobile API //
@@ -13,7 +15,8 @@ module.exports = function(app) {
 	/////////////
 	// Views  //
 	/////////////
-	app.get('/', function(req, res) {
-		res.render('index', {} );
-	});
+	// app.get('/', function(req, res) {
+	// 	res.render('index', {} );
+	// });
+	app.post('/overview', overview.index);
 };
