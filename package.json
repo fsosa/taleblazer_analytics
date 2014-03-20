@@ -4,16 +4,17 @@
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
-    "supertest": "*", 
+    "supertest": "*",
     "chai": "*"
   },
   "dependencies": {
     "express": "3.4.4",
     "sequelize": "1.7.0",
     "mysql": "2.0.0-alpha9",
-    "underscore": "1.5.2", 
-    "jade": "1.3.0"
-  }, 
+    "underscore": "1.5.2",
+    "jade": "1.3.0",
+    "moment": "~2.5.1"
+  },
   "scripts": {
     "test": "mocha --reporter spec"
   }
