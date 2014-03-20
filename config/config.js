@@ -9,13 +9,16 @@ dbConfig = require('./config.json')
 
 module.exports = {
   development: {
-    db: dbConfig.development
+    db: dbConfig.development, 
+    PORT: 3000,
   },
   test: {
-    db: dbConfig.test
+    db: dbConfig.test, 
+    PORT: 3000,
   },
   production: {
-    db: dbConfig.production
+    db: dbConfig.production, 
+    PORT: 3000
   }
 };
 
