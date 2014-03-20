@@ -1,14 +1,25 @@
 var db = require('../models');
+var _  = require('underscore');
 
 
 exports.index = function(req, res) {
-	db.Device.findAll()
-		.success(function(devices) {
-			res.jsend(devices);
+	db.DraftState
+		.findAll({ where: { draft_id: 4, published_game: 1 }, attributes: ['id'] })
+		.success(function(resu) {
+			var ids = _.map(resu, function(result) { return result.values['id'] });
+			db.Session
+				.findAndCountAll({ where: { started_at: { between: ['2014-01-14', '2015-01-01'] }, draft_state_id: ids } })
+				.success(function(results) {
+					res.jsend(results);
+				})
+				.error(function(error){
+					res.jerror(500, error);	
+				})							
 		})
 		.error(function(error) {
 			res.jerror(500, error);
-		});
+		})
+
 };
 
 exports.create = function(req, res) {
