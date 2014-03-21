@@ -18,7 +18,8 @@ var config = require('../../config/config')[env];
 var options = {
 	host: config.db.host,
 	dialect: 'mysql',
-	dialectOptions: config.db.dialectOptions
+	dialectOptions: config.db.dialectOptions, 
+	pool: { maxConnections: 20, maxIdleTime: 10000 }
 };
 
 // Disable logging if in production

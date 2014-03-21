@@ -18,56 +18,58 @@ exports.create = function(req, res) {
 		res.jerror(400, 'Events should be an array');
 		return;
 	}
-	var session_changes = {}; // session_id => timestamps
 
-	var chainer = new db.Sequelize.Utils.QueryChainer;
+	// Event creation takes place within a transaction, in order to rollback the query operations of the failed batch.
+	db.sequelize.transaction(function(t) {
+		var session_changes = {}; // session_id => timestamps
+		var chainer = new db.Sequelize.Utils.QueryChainer;
 
-	// Loop through all events and chain the event creation queries
-	// to run them all at once and get a callback when all are complete
-	//
-	// Also keep track of the most recent event per session id to update the sessions accordingly
-	for (i = 0; i < events.length; i++) {
-		var raw_event = events[i];
+		for (i = 0; i < events.length; i++) {
+			var raw_event = events[i];
 
-		var session_id = raw_event.session_id;
+			var session_id = raw_event.session_id;
 
-		// If a single event in the batch is invalid, we fail the entire batch
-		var validEvent = validateEvent(raw_event);
-		if (!validEvent) {
-			var message = { message: 'Invalid event', data: raw_event };
-			res.jerror(400, message);
-			return;
+			// If a single event in the batch is invalid, we fail the entire batch
+			var validEvent = validateEvent(raw_event);
+			if (!validEvent) {
+				var message = {
+					message: 'Invalid event',
+					data: raw_event
+				};
+				res.jerror(400, message);
+				return;
+			}
+
+			// Extract changes to sessions (latest event times / ttv enabled) so that we know what to update
+			extractSessionChanges(raw_event, session_changes);
+
+			addEventCreationQuery(raw_event, t, chainer, res);
 		}
 
-		// Extract changes to sessions (latest event times / ttv enabled) into session_changes dictionary
-		extractSessionChanges(raw_event, session_changes);
+		// Update the session with the updated last_event_at timestamp
+		for (var session_id in session_changes) {
+			var updates = session_changes[session_id];
+			addSessionUpdateQuery(session_id, updates, t, chainer, res);
+		}
 
-		getEventCreationQuery(raw_event, chainer);
+		chainer.run()
+			.success(function(results) {
+				t.commit().success(function() {
+					res.jsend(201, results);
+				})
+					.error(function(error) {
+						res.jerror(500, results);
+					});
+			})
+			.error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				}).error(function() {
+					res.jerror(500, error);
+				});
+			});
 
-		// if (creationQuery != null) {
-		// 	chainer.add(creationQuery);	
-		// }
-	}
-
-	// Update the session with the updated last_event_at timestamp
-	for (var session_id in session_changes) {
-		var updates = session_changes[session_id];
-		getSessionUpdateQuery(session_id, updates, chainer);
-		// chainer.add(sessionUpdateQuery);
-	}
-
-
-	// Run the queries and callback once they're done
-	// NOTE: Chained queries occur in parallel
-	console.log("RUNNING CHAINER");
-	chainer
-		.run()
-		.success(function(results) {
-			res.jsend(201, results);
-		})
-		.error(function(error) {
-			res.jerror(500, error);
-		});
+	});
 };
 
 
@@ -94,12 +96,12 @@ var extractSessionChanges = function(event, session_changes) {
 	var session = session_changes[event.session_id];
 	var ttv_enabled = (event.event_type == EVENT_TYPES.TTV_ENABLED);
 
-	// Here we create an object corresponding to a session's attributes that need to be updated/ 
-	// The object is of the form: 
-	// 		{ session_model_attribute: new_value, ... } 
+	// Here we create an object corresponding to a session's attributes that need to be updated/
+	// The object is of the form:
+	// 		{ session_model_attribute: new_value, ... }
 	// The attribute update object is then directly used in getSessionUpdateQuery
 	if (session != null) {
-		
+
 
 		var latest_time = session.last_event_at;
 
@@ -116,13 +118,13 @@ var extractSessionChanges = function(event, session_changes) {
 	} else {
 		// Haven't encountered this session id yet
 		// Since we're building the attribute update object, we want to make sure there are no keys with null values
-		// This could happen if a TTV_ENABLED event is the only event sent. 
+		// This could happen if a TTV_ENABLED event is the only event sent.
 		// We don't want that event to extend the time played, so last_event_at would be null
-		// Kind of messy to build the object individually, but works for now. 
+		// Kind of messy to build the object individually, but works for now.
 		session_changes[event.session_id] = {};
 		if (ttv_enabled) {
-			session_changes[event.session_id].tap_to_visit = ttv_enabled;	
-		} 
+			session_changes[event.session_id].tap_to_visit = ttv_enabled;
+		}
 
 		if (current_event_time != null) {
 			session_changes[event.session_id].last_event_at = current_event_time;
@@ -131,49 +133,78 @@ var extractSessionChanges = function(event, session_changes) {
 };
 
 
-var getSessionUpdateQuery = function(session_id, updates, chainer) {
-	var last_event_at = updates.latest_time;
-	var ttv_enabled = updates.tap_to_visit;
+var addSessionUpdateQuery = function(session_id, updates, t, chainer, res) {
+	var transaction = { transaction: t };
 
-	chainer.add(db.Session.update(
-		updates, /* new attribute value(s) */
-		{ id: session_id } /* `where` criteria */
-	));
-
-	// return updateQuery;
+	db.Session
+		.find({
+			where: {
+				id: session_id
+			}
+		})
+		.success(function(session) {
+			chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				});
+			}));
+		})
+		.error(function(error) {
+			console.log(error);
+		});
 };
 
-var getEventCreationQuery = function(raw_event, chainer) {
+var addEventCreationQuery = function(raw_event, t, chainer, res) {
 	var event_fields = null;
 	var event_type = raw_event.event_type;
 	var query = null;
+	var transaction = { transaction: t };
 
 	switch (event_type) {
 		case EVENT_TYPES.AGENT_BUMP:
 			event_fields = parseAgentBumpFields(raw_event);
-			chainer.add(db.AgentBump.create(event_fields));
+
+			chainer.add(db.AgentBump.create(event_fields, transaction).error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				});
+			}));
+
 			break;
 		case EVENT_TYPES.REGION_SWITCH:
 			event_fields = parseRegionSwitchFields(raw_event);
-			chainer.add(db.RegionSwitch.create(event_fields));
+
+			chainer.add(db.RegionSwitch.create(event_fields, transaction).error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				});
+			}));
+
 			break;
 		case EVENT_TYPES.GAME_COMPLETION:
 			event_fields = parseGameCompletionFields(raw_event);
-			chainer.add(db.GameCompletion.create(event_fields));
+
+			chainer.add(query = db.GameCompletion.create(event_fields, transaction).error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				});
+			}));
+
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(raw_event);
 			var cet = db.CustomEventTrigger.build(event_fields);
-			// add validation
 			cet.draft_id = raw_event.draft_id;
 			cet.game_event_id = raw_event.event_id;
-			chainer.add(cet.save());
 
-			// query = db.CustomEventTrigger.create(event_fields);
+			chainer.add(cet.save(transaction).error(function(error) {
+				t.rollback().success(function() {
+					res.jerror(500, error);
+				});
+			}));
+
 			break;
 	}
-
-	//return query;
 };
 
 var parseAgentBumpFields = function(event) {

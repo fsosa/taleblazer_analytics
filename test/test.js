@@ -204,7 +204,7 @@ describe('Session API', function() {
 				role_id: 52,
 				role_name: 'Tester',
 				scenario_id: 90,
-				scenario_name: 'Testing Scenario',
+				scenario_name: 'The Session',
 				tap_to_visit: false,
 				device_id: "TE-STING-DEV1CE-1D3",
 				draft_state_id: 42
@@ -275,8 +275,8 @@ describe('Session API', function() {
 // Events //
 ////////////
 
-describe('Events API', function() {
-	var latest_time = Date.now();
+describe('Events API', function() { 
+	var latest_time = Date.now(); // in milliseconds
 
 	var events = {
 		events: [{
@@ -288,23 +288,23 @@ describe('Events API', function() {
 				agent_id: 6,
 				agent_name: 'Bobby Beetle',
 				session_id: 1,
-				occurred_at: (new Date() - 10000)
+				occurred_at: latest_time + 1000,
 			}, {
 				event_type: 'REGION_SWITCH',
 				region_id: 7,
 				region_name: 'Jurassic Park',
 				session_id: 1,
-				occurred_at: (new Date() - 4000)
+				occurred_at: latest_time + 1000
 			}, {
 				event_type: 'GAME_COMPLETION',
-				occurred_at: (new Date() - 2000),
+				occurred_at: latest_time + 4000,
 				session_id: 3,
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 8,
 				event_name: 'RAPTOR ATE PEOPLE',
 				value: '4',
-				occurred_at: (new Date() - 1000),
+				occurred_at: latest_time + 2000,
 				session_id: 2,
 				draft_id: 89
 			}, {
@@ -312,14 +312,14 @@ describe('Events API', function() {
 				event_id: 9,
 				event_name: 'DINOSAURS ESCAPED',
 				value: '4',
-				occurred_at: latest_time,
+				occurred_at: latest_time + 10000,
 				session_id: 1,
 				draft_id: 90
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 9,
 				event_name: 'FUTURE COP MET',
-				occurred_at: new Date(),
+				occurred_at: latest_time + 5000,
 				session_id: 2,
 				draft_id: 89
 			}
@@ -335,7 +335,7 @@ describe('Events API', function() {
 				role_id: 52,
 				role_name: 'Tester',
 				scenario_id: 90,
-				scenario_name: 'Testing Scenario',
+				scenario_name: 'Testing Sessions',
 				tap_to_visit: false,
 				device_id: "TE-STING-DEV1CE-1D3",
 				draft_state_id: 42
@@ -377,7 +377,7 @@ describe('Events API', function() {
 					}
 				})
 				.success(function(session) {
-					assert.equal(session.last_event_at.toString(), new Date(latest_time).toString(), "Session date and latest time should be equal");
+					assert.equal(session.last_event_at.toString(), new Date(latest_time + 10000).toString(), "Session date and latest time should be equal");
 					assert.equal(session.tap_to_visit, true);
 					done();
 				})
@@ -422,46 +422,44 @@ describe('Events API', function() {
 				})
 		})
 
-		// it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
-		// 	var bad_events = {
-		// 		events: [{
-		// 			event_type: 'GAME_COMPLETION',
-		// 			occurred_at: Date.now(),
-		// 			session_id: 2
-		// 		}, {
-		// 			event_type: 'AGENT_BUMP',
-		// 			agent_id: 6,
-		// 			agent_name: 'BAD PERSON',
-		// 			session_id: 1,
-		// 			occurred_at: (new Date() - 10000)
-		// 		}]
-		// 	}
-		// 	console.log("STARTING");
-		// 	request
-		// 		.post('/events')
-		// 		.send(bad_events)
-		// 		.expect(500)
-		// 		.expect(isErrorResponseFormat)
-		// 		.end(function(err, res) {
-		// 			console.log(res.body);
-		// 			app.get('db').Session
-		// 				.find({
-		// 					where: {
-		// 						id: 2
-		// 					}
-		// 				})
-		// 				.success(function(session) {
-		// 					assert.equal(session.completion_id, null);
-		// 					done();
-		// 				})
-		// 				.error(function(error) {
-		// 					done(err);
-		// 				})
+		it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
+			var bad_events = {
+				events: [{
+					event_type: 'GAME_COMPLETION',
+					occurred_at: Date.now(),
+					session_id: 2
+				}, {
+					event_type: 'AGENT_BUMP',
+					agent_id: 6,
+					agent_name: 'BAD PERSON',
+					session_id: 1,
+					occurred_at: (new Date() - 10000)
+				}]
+			}
+			request
+				.post('/events')
+				.send(bad_events)
+				.expect(500)
+				.expect(isErrorResponseFormat)
+				.end(function(err, res) {
+					app.get('db').Session
+						.find({
+							where: {
+								id: 2
+							}
+						})
+						.success(function(session) {
+							assert.equal(session.completion_id, null);
+							done();
+						})
+						.error(function(error) {
+							done(err);
+						})
 
-		// 		})
+				})
 
 			
-		// });
+		});
 
 	});
 
