@@ -18,11 +18,13 @@ var config = require('../../config/config')[env];
 var options = {
 	host: config.db.host,
 	dialect: 'mysql',
-	dialectOptions: config.db.dialectOptions
+	dialectOptions: config.db.dialectOptions, 
+	pool: { maxIdleTime: 10000 }
 };
 
 // Disable logging if in production
-options.logging = (env == 'development') ? console.log : false;
+// options.logging = (env == 'development') ? console.log : false;
+options.logging = console.log;
 
 // Initialize the database connection
 var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);

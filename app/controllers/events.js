@@ -18,55 +18,70 @@ exports.create = function(req, res) {
 		res.jerror(400, 'Events should be an array');
 		return;
 	}
-	var session_changes = {}; // session_id => timestamps
 
-	var chainer = new db.Sequelize.Utils.QueryChainer;
 
 	// Loop through all events and chain the event creation queries
 	// to run them all at once and get a callback when all are complete
 	//
 	// Also keep track of the most recent event per session id to update the sessions accordingly
-	for (i = 0; i < events.length; i++) {
-		var raw_event = events[i];
+	// db.sequelize.transaction(function(t) {
+		var session_changes = {}; // session_id => timestamps	
+		console.log("START TRANSACTION");
+		var chainer = new db.Sequelize.Utils.QueryChainer;
 
-		var session_id = raw_event.session_id;
+		for (i = 0; i < events.length; i++) {
+			var raw_event = events[i];
 
-		// If a single event in the batch is invalid, we fail the entire batch
-		var validEvent = validateEvent(raw_event);
-		if (!validEvent) {
-			var message = { message: 'Invalid event', data: raw_event };
-			res.jerror(400, message);
-			return;
+			var session_id = raw_event.session_id;
+
+			// If a single event in the batch is invalid, we fail the entire batch
+			var validEvent = validateEvent(raw_event);
+			if (!validEvent) {
+				var message = { message: 'Invalid event', data: raw_event };
+				res.jerror(400, message);
+				return;
+			}
+
+			// Extract changes to sessions (latest event times / ttv enabled) into session_changes dictionary
+			extractSessionChanges(raw_event, session_changes);
+
+			getEventCreationQuery(raw_event, t, chainer);
+
+			// if (creationQuery != null) {
+			// 	chainer.add(creationQuery);	
+			// }
 		}
 
-		// Extract changes to sessions (latest event times / ttv enabled) into session_changes dictionary
-		extractSessionChanges(raw_event, session_changes);
-
-		var creationQuery = getEventCreationQuery(raw_event);
-
-		if (creationQuery != null) {
-			chainer.add(creationQuery);	
+		// Update the session with the updated last_event_at timestamp
+		for (var session_id in session_changes) {
+			var updates = session_changes[session_id];
+			getSessionUpdateQuery(session_id, updates, t, chainer);
 		}
-	}
+		console.log("CALLING RUN ON CHAINER");
+		chainer.run()
+			.success(function(results) {
+				console.log(results);
+				t.commit().success(function() {
+					console.log("COMMITTED");
+					res.jsend(201, results);
+				})
+				.error(function(error) {
+					console.log(error);
+					res.jerror(500, results);
+				});
+			})
+			.error(function(error) {
+				console.log(error);
+				t.rollback().success(function() {
+					console.log("ROLLED BACK");
+					console.log(error);
+					res.jerror(500, error);
+				}).error(function() {
+					res.jerror(500, error);
+				})
+			})
 
-	// Update the session with the updated last_event_at timestamp
-	for (var session_id in session_changes) {
-		var updates = session_changes[session_id];
-		var sessionUpdateQuery = getSessionUpdateQuery(session_id, updates);
-		chainer.add(sessionUpdateQuery);
-	}
-
-
-	// Run the queries and callback once they're done
-	// NOTE: Chained queries occur in parallel
-	chainer
-		.run()
-		.success(function(results) {
-			res.jsend(201, results);
-		})
-		.error(function(error) {
-			res.jerror(500, error);
-		});
+	// });
 };
 
 
@@ -129,36 +144,53 @@ var extractSessionChanges = function(event, session_changes) {
 	}
 };
 
+var errorCallback = function(error) {
+	res.jerror(400, error);
+	return;
+}
 
-var getSessionUpdateQuery = function(session_id, updates) {
-	var last_event_at = updates.latest_time;
+
+var getSessionUpdateQuery = function(session_id, updates, t, chainer) {
+	var last_event_at = updates.last_event_at;
 	var ttv_enabled = updates.tap_to_visit;
-
-	var updateQuery = db.Session.update(
+	console.log(session_id , last_event_at);
+	chainer.add(db.Session.update(
 		updates, /* new attribute value(s) */
-		{ id: session_id } /* `where` criteria */
-	);
-
-	return updateQuery;
+		{ id: session_id }, /* `where` criteria */
+		{ transaction: t }
+	).error(function(error) {
+		console.log("IN HERE");
+		console.log(error);
+	}));
+	// return updateQuery;
 };
 
-var getEventCreationQuery = function(raw_event) {
+var getEventCreationQuery = function(raw_event, t, chainer) {
 	var event_fields = null;
 	var event_type = raw_event.event_type;
 	var query = null;
-
+	var transaction = { transaction: t }
 	switch (event_type) {
 		case EVENT_TYPES.AGENT_BUMP:
 			event_fields = parseAgentBumpFields(raw_event);
-			query = db.AgentBump.create(event_fields);
+			chainer.add(db.AgentBump.create(event_fields, transaction).error(function(error) {
+		console.log("IN HERE");
+		console.log(error);
+	}));
 			break;
 		case EVENT_TYPES.REGION_SWITCH:
 			event_fields = parseRegionSwitchFields(raw_event);
-			query = db.RegionSwitch.create(event_fields);
+			chainer.add(db.RegionSwitch.create(event_fields, transaction).error(function(error) {
+		console.log("IN HERE");
+		console.log(error);
+	}));
 			break;
 		case EVENT_TYPES.GAME_COMPLETION:
 			event_fields = parseGameCompletionFields(raw_event);
-			query = db.GameCompletion.create(event_fields);
+			chainer.add(query = db.GameCompletion.create(event_fields, transaction).error(function(error) {
+		console.log("IN HERE");
+		console.log(error);
+	}));
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(raw_event);
@@ -166,13 +198,22 @@ var getEventCreationQuery = function(raw_event) {
 			// add validation
 			cet.draft_id = raw_event.draft_id;
 			cet.game_event_id = raw_event.event_id;
-			query = cet.save();
+			chainer.add(cet.save(transaction).error(function(error) {
+		console.log("IN HERE");
+		console.log(error);
+	}));
 
 			// query = db.CustomEventTrigger.create(event_fields);
 			break;
 	}
+	// if (query != null) {
+	// 	return query.error(function(error) {
+	// 		t.rollback.success(function() {
+	// 			res.jerror(500, "rollback");
+	// 		})
+	// 	});		
+	// }
 
-	return query;
 };
 
 var parseAgentBumpFields = function(event) {
