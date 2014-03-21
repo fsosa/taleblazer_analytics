@@ -8,17 +8,27 @@ module.exports = function(sequelize, DataTypes) {
 	var CustomEvent = sequelize.define('CustomEvent',
 		// Column definitions
 		{
+			event_id: {
+				type: DataTypes.INTEGER, 
+				allowNull: false, 
+				unique: 'event_and_draft_id',
+				validate: {
+					notNull: true, 
+					isInt: true
+				}
+			},
 			name: {
 				type: DataTypes.STRING,
 				allowNull: false,
 				validate: {
 					notNull: true,
-					isEmpty: false
+					notEmpty: false
 				}
 			},
 			draft_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
+				unique: 'event_and_draft_id',
 				validate: {
 					notNull: true,
 					isInt: true
@@ -39,9 +49,7 @@ module.exports = function(sequelize, DataTypes) {
 					CustomEvent.belongsTo(models.Draft, {
 						foreignKey: 'draft_id'
 					});
-
-
-				}
+				}, 
 			},
 
 			// Automatically added attributes are underscored

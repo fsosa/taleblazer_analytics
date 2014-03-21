@@ -40,7 +40,9 @@ var isErrorResponseFormat = function(res) {
 before(function(done) {
 	// Synchronize the database before we start
 	// {force: true} drops the tables and recreates them each test run
-	app.get('db').sequelize.sync({ force:true }).complete(function(err) {
+	app.get('db').sequelize.sync({
+		force: true
+	}).complete(function(err) {
 		console.log('--- Test DB tables dropped ---');
 		console.log('--- Database synchronized ---');
 		if (err) return done(err);
@@ -172,10 +174,26 @@ describe('Session API', function() {
 			};
 			app.get('db').Device.create(device)
 				.success(function(device) {
-					done();
+					// done();
 				})
 				.error(function(error) {
-					done(error);
+					// done(error);
+				});
+
+			app.get('db').DraftState.create({
+				id: 42,
+				draft_id: 90,
+				name: 'a name',
+				time_saved: Date.now(),
+				single_player: true,
+				published_game: true,
+				previous_draft_state_id: 97
+			})
+				.success(function(device) {
+					done()
+				})
+				.error(function(error) {
+					done(error)
 				});
 		});
 
@@ -183,7 +201,7 @@ describe('Session API', function() {
 			session = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
-				role_id: 52, 
+				role_id: 52,
 				role_name: 'Tester',
 				scenario_id: 90,
 				scenario_name: 'Testing Scenario',
@@ -203,7 +221,7 @@ describe('Session API', function() {
 		});
 
 		it('errors if there is no matching device in the db', function(done) {
-				session = {
+			session = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
 				tap_to_visit: false,
@@ -261,9 +279,8 @@ describe('Events API', function() {
 	var latest_time = Date.now();
 
 	var events = {
-		events: [
-			{
-				event_type: 'TTV_ENABLED', 
+		events: [{
+				event_type: 'TTV_ENABLED',
 				session_id: 1
 			}, {
 				event_type: 'AGENT_BUMP',
@@ -289,13 +306,22 @@ describe('Events API', function() {
 				value: '4',
 				occurred_at: (new Date() - 1000),
 				session_id: 2,
+				draft_id: 89
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
-				event_id: 8,
-				event_name: 'RAPTOR ATE PEOPLE',
+				event_id: 9,
+				event_name: 'DINOSAURS ESCAPED',
 				value: '4',
 				occurred_at: latest_time,
 				session_id: 1,
+				draft_id: 90
+			}, {
+				event_type: 'CUSTOM_EVENT_TRIGGER',
+				event_id: 9,
+				event_name: 'FUTURE COP MET',
+				occurred_at: new Date(),
+				session_id: 2,
+				draft_id: 89
 			}
 
 		]
@@ -306,7 +332,7 @@ describe('Events API', function() {
 			session = {
 				started_at: Date.now(),
 				last_event_at: Date.now(),
-				role_id: 52, 
+				role_id: 52,
 				role_name: 'Tester',
 				scenario_id: 90,
 				scenario_name: 'Testing Scenario',
@@ -316,10 +342,10 @@ describe('Events API', function() {
 			};
 
 			app.get('db').Session.bulkCreate([
-				session, 
-				session, 
-				session, 
-				session, 
+				session,
+				session,
+				session,
+				session,
 				session
 			]).success(function() {
 				done();
@@ -338,7 +364,6 @@ describe('Events API', function() {
 				.expect(isSuccessResponseFormat)
 				.end(function(err, res) {
 					// console.log(JSON.stringify(res.body));
-					// console.log(err);
 					done(err);
 				});
 		});
@@ -346,7 +371,11 @@ describe('Events API', function() {
 
 		it('correctly updates the session with the latest event time and if tap to visit was enabled', function(done) {
 			app.get('db').Session
-				.find({ where: { id: 1} })
+				.find({
+					where: {
+						id: 1
+					}
+				})
 				.success(function(session) {
 					assert.equal(session.last_event_at.toString(), new Date(latest_time).toString(), "Session date and latest time should be equal");
 					assert.equal(session.tap_to_visit, true);
@@ -381,5 +410,59 @@ describe('Events API', function() {
 				.end(done);
 		});
 
+		it('creates the correct number of unique custom events (identified by event_id and draft_id, jointly)', function(done) {
+			app.get('db').CustomEvent
+				.findAndCountAll()
+				.success(function(result) {
+					assert.equal(result.count, 3, "There should be 3 unique custom events (as per the test data)");
+					done();
+				})
+				.error(function(error) {
+					done(error);
+				})
+		})
+
+		it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
+			var bad_events = {
+				events: [{
+					event_type: 'GAME_COMPLETION',
+					occurred_at: Date.now(),
+					session_id: 2
+				}, {
+					event_type: 'AGENT_BUMP',
+					agent_id: 6,
+					agent_name: 'BAD PERSON',
+					session_id: 1,
+					occurred_at: (new Date() - 10000)
+				}]
+			}
+			console.log("STARTING");
+			request
+				.post('/events')
+				.send(bad_events)
+				.expect(500)
+				.expect(isErrorResponseFormat)
+				.end(function(err, res) {
+					console.log(res.body);
+					app.get('db').Session
+						.find({
+							where: {
+								id: 2
+							}
+						})
+						.success(function(session) {
+							assert.equal(session.completion_id, null);
+							done();
+						})
+						.error(function(error) {
+							done(err);
+						})
+
+				})
+
+			
+		});
+
 	});
+
 });

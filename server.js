@@ -35,6 +35,7 @@ app.configure(function() {
   // The order that middleware is passed to app.use is the order that requests will be handled
   // e.g. static -> router serves static file first; router -> static serves the defined route first
   // http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
+  // app.use(express.logger());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
