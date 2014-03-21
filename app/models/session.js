@@ -71,12 +71,9 @@ module.exports = function(sequelize, DataTypes) {
 					isInt: true
 				}
 			},
-			completion_id: {
-				type: DataTypes.INTEGER,
-				allowNull: true,
-				validate: {
-					isInt: true
-				}
+			completed: {
+				type:DataTypes.BOOLEAN, 
+				allowNull: true
 			}
 		},
 		// Configuration options

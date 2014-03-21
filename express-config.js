@@ -23,7 +23,7 @@ module.exports = function(app, env) {
 	// e.g. static -> router serves static file first; router -> static serves the defined route first
 	// http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
 	if (env == 'development') {
-		app.use(express.logger());	
+		app.use(express.logger('dev'));	
 	}
 	
 	app.use(app.router);

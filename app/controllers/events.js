@@ -95,6 +95,7 @@ var extractSessionChanges = function(event, session_changes) {
 	var current_event_time = (event.event_type != EVENT_TYPES.TTV_ENABLED) ? event.occurred_at : null;
 	var session = session_changes[event.session_id];
 	var ttv_enabled = (event.event_type == EVENT_TYPES.TTV_ENABLED);
+	var session_completed = (event.event_type == EVENT_TYPES.GAME_COMPLETION);
 
 	// Here we create an object corresponding to a session's attributes that need to be updated/
 	// The object is of the form:
@@ -115,6 +116,10 @@ var extractSessionChanges = function(event, session_changes) {
 			session.tap_to_visit = ttv_enabled;
 		}
 
+		if (session_completed) {
+			session.completed = true;
+		}
+
 	} else {
 		// Haven't encountered this session id yet
 		// Since we're building the attribute update object, we want to make sure there are no keys with null values
@@ -128,6 +133,10 @@ var extractSessionChanges = function(event, session_changes) {
 
 		if (current_event_time != null) {
 			session_changes[event.session_id].last_event_at = current_event_time;
+		}
+
+		if (session_completed) {
+			session_changes[event.session_id].completed = true;
 		}
 	}
 };

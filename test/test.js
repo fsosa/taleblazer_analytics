@@ -369,7 +369,7 @@ describe('Events API', function() {
 		});
 
 
-		it('correctly updates the session with the latest event time and if tap to visit was enabled', function(done) {
+		it('correctly updates the session with the time of the latest event, tap to visit status, and completion status', function(done) {
 			app.get('db').Session
 				.find({
 					where: {
@@ -379,7 +379,22 @@ describe('Events API', function() {
 				.success(function(session) {
 					assert.equal(session.last_event_at.toString(), new Date(latest_time + 10000).toString(), "Session date and latest time should be equal");
 					assert.equal(session.tap_to_visit, true);
-					done();
+					assert.notEqual(session.completed, true);
+					
+					app.get('db').Session
+						.find({
+							where: {
+								id: 3
+							}
+						})
+						.success(function(session) {
+							assert.equal(session.completed, true);
+							done();
+						})
+						.error(function(error) {
+							done(err);
+						})
+
 				})
 				.error(function(err) {
 					done(err);
