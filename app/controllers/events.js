@@ -26,8 +26,6 @@ exports.create = function(req, res) {
 	// to run them all at once and get a callback when all are complete
 	//
 	// Also keep track of the most recent event per session id to update the sessions accordingly
-	
-	db.sequelize.transaction(function(t) {
 	for (i = 0; i < events.length; i++) {
 		var raw_event = events[i];
 
@@ -47,7 +45,7 @@ exports.create = function(req, res) {
 		var creationQuery = getEventCreationQuery(raw_event);
 
 		if (creationQuery != null) {
-			//chainer.add(creationQuery);	
+			chainer.add(creationQuery);	
 		}
 	}
 
@@ -55,56 +53,20 @@ exports.create = function(req, res) {
 	for (var session_id in session_changes) {
 		var updates = session_changes[session_id];
 		var sessionUpdateQuery = getSessionUpdateQuery(session_id, updates);
-		//chainer.add(sessionUpdateQuery);
+		chainer.add(sessionUpdateQuery);
 	}
 
-	// db.sequelize.transaction(function(t) {
-		//console.log("====starting transaction====")
-	 	// we just opened a new connection to the database which is transaction exclusive.
-	  	// also we send some first transaction queries to the database.
-		// Run the queries and callback once they're done
-		// NOTE: Chained queries occur in parallel
-		// chainer
-		// 	.run()
-		// 	.success(function(results) {
-		// 		t.commit().success(function() {
-		// 			console.log("WORKED!")
-		// 			res.jsend(201, results);	
-		// 		})
-		// 	})
-		// 	.error(function(error) {
-		// 		t.rollback().success(function() {
-		// 			console.log("ROLLED BACK")
-		// 			res.jerror(500, error);
-		// 		})
-		// 	});	
 
-		// 	t.done(function() {
-		// 		console.log("DONE!");
-		// 	})
-
-	 	// // if everything is ok ... commit the transaction
-	  	t.commit().success(function() {
-	  		console.log("cool");
-	  		res.jsend(201, "COOL");
-	  	})
-	 
-	  // 	// if something failed ... rollback the transaction
-	  	t.rollback().success(function() {
-	  		console.log("not cool");
-	  		res.jerror(500, "NOT COOL");
-	  	})
-	 
-	  // 	// the commit / rollback will emit events which can be observed via:
-	  	t.done(function() { 
-	  //   	/* we will be here once the transaction 
-	  //   	has been committed / reverted */ 
-	  		console.log("we're done");
-	  	});
-	});
-
-
-
+	// Run the queries and callback once they're done
+	// NOTE: Chained queries occur in parallel
+	chainer
+		.run()
+		.success(function(results) {
+			res.jsend(201, results);
+		})
+		.error(function(error) {
+			res.jerror(500, error);
+		});
 };
 
 
