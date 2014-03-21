@@ -42,23 +42,24 @@ exports.create = function(req, res) {
 		// Extract changes to sessions (latest event times / ttv enabled) into session_changes dictionary
 		extractSessionChanges(raw_event, session_changes);
 
-		var creationQuery = getEventCreationQuery(raw_event);
+		getEventCreationQuery(raw_event, chainer);
 
-		if (creationQuery != null) {
-			chainer.add(creationQuery);	
-		}
+		// if (creationQuery != null) {
+		// 	chainer.add(creationQuery);	
+		// }
 	}
 
 	// Update the session with the updated last_event_at timestamp
 	for (var session_id in session_changes) {
 		var updates = session_changes[session_id];
-		var sessionUpdateQuery = getSessionUpdateQuery(session_id, updates);
-		chainer.add(sessionUpdateQuery);
+		getSessionUpdateQuery(session_id, updates, chainer);
+		// chainer.add(sessionUpdateQuery);
 	}
 
 
 	// Run the queries and callback once they're done
 	// NOTE: Chained queries occur in parallel
+	console.log("RUNNING CHAINER");
 	chainer
 		.run()
 		.success(function(results) {
@@ -130,19 +131,19 @@ var extractSessionChanges = function(event, session_changes) {
 };
 
 
-var getSessionUpdateQuery = function(session_id, updates) {
+var getSessionUpdateQuery = function(session_id, updates, chainer) {
 	var last_event_at = updates.latest_time;
 	var ttv_enabled = updates.tap_to_visit;
 
-	var updateQuery = db.Session.update(
+	chainer.add(db.Session.update(
 		updates, /* new attribute value(s) */
 		{ id: session_id } /* `where` criteria */
-	);
+	));
 
-	return updateQuery;
+	// return updateQuery;
 };
 
-var getEventCreationQuery = function(raw_event) {
+var getEventCreationQuery = function(raw_event, chainer) {
 	var event_fields = null;
 	var event_type = raw_event.event_type;
 	var query = null;
@@ -150,15 +151,15 @@ var getEventCreationQuery = function(raw_event) {
 	switch (event_type) {
 		case EVENT_TYPES.AGENT_BUMP:
 			event_fields = parseAgentBumpFields(raw_event);
-			query = db.AgentBump.create(event_fields);
+			chainer.add(db.AgentBump.create(event_fields));
 			break;
 		case EVENT_TYPES.REGION_SWITCH:
 			event_fields = parseRegionSwitchFields(raw_event);
-			query = db.RegionSwitch.create(event_fields);
+			chainer.add(db.RegionSwitch.create(event_fields));
 			break;
 		case EVENT_TYPES.GAME_COMPLETION:
 			event_fields = parseGameCompletionFields(raw_event);
-			query = db.GameCompletion.create(event_fields);
+			chainer.add(db.GameCompletion.create(event_fields));
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(raw_event);
@@ -166,13 +167,13 @@ var getEventCreationQuery = function(raw_event) {
 			// add validation
 			cet.draft_id = raw_event.draft_id;
 			cet.game_event_id = raw_event.event_id;
-			query = cet.save();
+			chainer.add(cet.save());
 
 			// query = db.CustomEventTrigger.create(event_fields);
 			break;
 	}
 
-	return query;
+	//return query;
 };
 
 var parseAgentBumpFields = function(event) {
