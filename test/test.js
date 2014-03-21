@@ -275,9 +275,8 @@ describe('Session API', function() {
 // Events //
 ////////////
 
-describe('Events API', function() {
-	var latest_time = Date.now();
-	console.log(latest_time);
+describe('Events API', function() { 
+	var latest_time = Date.now(); // in milliseconds
 
 	var events = {
 		events: [{
@@ -289,23 +288,23 @@ describe('Events API', function() {
 				agent_id: 6,
 				agent_name: 'Bobby Beetle',
 				session_id: 1,
-				occurred_at: (new Date() - 10000)
+				occurred_at: latest_time + 1000,
 			}, {
 				event_type: 'REGION_SWITCH',
 				region_id: 7,
 				region_name: 'Jurassic Park',
 				session_id: 1,
-				occurred_at: (new Date() - 4000)
+				occurred_at: latest_time + 1000
 			}, {
 				event_type: 'GAME_COMPLETION',
-				occurred_at: (new Date() - 2000),
+				occurred_at: latest_time + 4000,
 				session_id: 3,
 			}, {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 8,
 				event_name: 'RAPTOR ATE PEOPLE',
 				value: '4',
-				occurred_at: (new Date() - 1000),
+				occurred_at: latest_time + 2000,
 				session_id: 2,
 				draft_id: 89
 			}, {
@@ -320,7 +319,7 @@ describe('Events API', function() {
 				event_type: 'CUSTOM_EVENT_TRIGGER',
 				event_id: 9,
 				event_name: 'FUTURE COP MET',
-				occurred_at: new Date(),
+				occurred_at: latest_time + 5000,
 				session_id: 2,
 				draft_id: 89
 			}
@@ -356,7 +355,6 @@ describe('Events API', function() {
 		});
 
 		it('creates a list of events', function(done) {
-			this.timeout(10000);
 			request
 				.post('/events')
 				.set('Content-Type', 'application/json')
@@ -379,8 +377,6 @@ describe('Events API', function() {
 					}
 				})
 				.success(function(session) {
-					console.log(session.scenario_name);
-					console.log(session.last_event_at);
 					assert.equal(session.last_event_at.toString(), new Date(latest_time + 10000).toString(), "Session date and latest time should be equal");
 					assert.equal(session.tap_to_visit, true);
 					done();
@@ -390,83 +386,80 @@ describe('Events API', function() {
 				})
 		});
 
-		// it('errors if any of the events is missing a session_id (and does not create any event)', function(done) {
-		// 	events.events[0].session_id = null;
-		// 	request
-		// 		.post('/events')
-		// 		.set('Content-Type', 'application/json')
-		// 		.set('Accept', 'application/json')
-		// 		.send(events)
-		// 		.expect(400)
-		// 		.expect(isErrorResponseFormat)
-		// 		.end(done);
-		// });
+		it('errors if any of the events is missing a session_id (and does not create any event)', function(done) {
+			events.events[0].session_id = null;
+			request
+				.post('/events')
+				.set('Content-Type', 'application/json')
+				.set('Accept', 'application/json')
+				.send(events)
+				.expect(400)
+				.expect(isErrorResponseFormat)
+				.end(done);
+		});
 
-		// it('errors if data is not an array of events', function(done) {
-		// 	wrong_events = _.extend({}, events);
-		// 	wrong_events.events = {};
+		it('errors if data is not an array of events', function(done) {
+			wrong_events = _.extend({}, events);
+			wrong_events.events = {};
 
-		// 	request
-		// 		.post('/events')
-		// 		.send(wrong_events)
-		// 		.expect(400)
-		// 		.expect(isErrorResponseFormat)
-		// 		.end(done);
-		// });
+			request
+				.post('/events')
+				.send(wrong_events)
+				.expect(400)
+				.expect(isErrorResponseFormat)
+				.end(done);
+		});
 
-		// it('creates the correct number of unique custom events (identified by event_id and draft_id, jointly)', function(done) {
-		// 	app.get('db').CustomEvent
-		// 		.findAndCountAll()
-		// 		.success(function(result) {
-		// 			assert.equal(result.count, 3, "There should be 3 unique custom events (as per the test data)");
-		// 			done();
-		// 		})
-		// 		.error(function(error) {
-		// 			done(error);
-		// 		})
-		// })
+		it('creates the correct number of unique custom events (identified by event_id and draft_id, jointly)', function(done) {
+			app.get('db').CustomEvent
+				.findAndCountAll()
+				.success(function(result) {
+					assert.equal(result.count, 3, "There should be 3 unique custom events (as per the test data)");
+					done();
+				})
+				.error(function(error) {
+					done(error);
+				})
+		})
 
-		// it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
-		// 	this.timeout(3000);
-		// 	var bad_events = {
-		// 		events: [{
-		// 			event_type: 'GAME_COMPLETION',
-		// 			occurred_at: Date.now(),
-		// 			session_id: 2
-		// 		}, {
-		// 			event_type: 'AGENT_BUMP',
-		// 			agent_id: 6,
-		// 			agent_name: 'BAD PERSON',
-		// 			session_id: 1,
-		// 			occurred_at: (new Date() - 10000)
-		// 		}]
-		// 	}
-		// 	console.log("STARTING");
-		// 	request
-		// 		.post('/events')
-		// 		.send(bad_events)
-		// 		.expect(500)
-		// 		.expect(isErrorResponseFormat)
-		// 		.end(function(err, res) {
-		// 			console.log(res.body);
-		// 			app.get('db').Session
-		// 				.find({
-		// 					where: {
-		// 						id: 2
-		// 					}
-		// 				})
-		// 				.success(function(session) {
-		// 					assert.equal(session.completion_id, null);
-		// 					done();
-		// 				})
-		// 				.error(function(error) {
-		// 					done(err);
-		// 				})
+		it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
+			var bad_events = {
+				events: [{
+					event_type: 'GAME_COMPLETION',
+					occurred_at: Date.now(),
+					session_id: 2
+				}, {
+					event_type: 'AGENT_BUMP',
+					agent_id: 6,
+					agent_name: 'BAD PERSON',
+					session_id: 1,
+					occurred_at: (new Date() - 10000)
+				}]
+			}
+			request
+				.post('/events')
+				.send(bad_events)
+				.expect(500)
+				.expect(isErrorResponseFormat)
+				.end(function(err, res) {
+					app.get('db').Session
+						.find({
+							where: {
+								id: 2
+							}
+						})
+						.success(function(session) {
+							assert.equal(session.completion_id, null);
+							done();
+						})
+						.error(function(error) {
+							done(err);
+						})
 
-		// 		})
+				})
 
 			
-		// });
+		});
 
 	});
 

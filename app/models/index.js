@@ -19,12 +19,11 @@ var options = {
 	host: config.db.host,
 	dialect: 'mysql',
 	dialectOptions: config.db.dialectOptions, 
-	pool: { maxIdleTime: 10000 }
+	pool: { maxConnections: 20, maxIdleTime: 10000 }
 };
 
 // Disable logging if in production
-// options.logging = (env == 'development') ? console.log : false;
-options.logging = console.log;
+options.logging = (env == 'development') ? console.log : false;
 
 // Initialize the database connection
 var sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, options);
