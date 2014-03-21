@@ -30,9 +30,6 @@ module.exports = function(sequelize, DataTypes) {
 			classMethods: {
 				associate: function(models) {
 					// Foreign key from other models to this one (i.e. they exist on the other models)
-					GameCompletion.hasOne(models.Session, {
-						foreignKey: 'completion_id'
-					});
 				}
 			},
 			// Automatically added attributes are underscored
