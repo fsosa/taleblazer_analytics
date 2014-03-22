@@ -26,8 +26,9 @@ exports.index = function(req, res, next) {
 		function(results) {
 			if (results) {
 				var stats = getSessionStats(results);
-				res.render('overview', {
-					stats: stats
+				res.render('overview.ect', {
+					stats: stats,
+					script: 'overview.js'
 				});
 			}
 		});

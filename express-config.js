@@ -1,4 +1,5 @@
 var express = require('express');
+var ECT = require('ect');
 
 //////////////////////////////////////
 // Express Middleware Configuration //
@@ -9,9 +10,10 @@ module.exports = function(app, env) {
 	// IMPORTANT: DECLARATION ORDER MATTERS //
 	//////////////////////////////////////////
 
-	// Set the view directory and templating engine
+	// Set the view directory and templating engine	
 	app.set('views', __dirname + '/app/views');
-	app.set('view engine', 'jade');
+	var ectRenderer = ECT({ watch: true, root: app.get('views') });
+	app.engine('.ect', ectRenderer.render);
 
 	app.use(express.favicon());
 	app.use(express.json());

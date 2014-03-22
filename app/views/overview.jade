@@ -3,8 +3,16 @@ extends layout
 block page-wrapper
 	#page-wrapper
 		.row
-			.col-lg-12
+			.col-lg-4
 				h1.page-header Overview
+			.col-lg-offset-8
+				#datepicker.input-daterange.input-group
+					input.input-sm.form-control(type='text', name='start', data-provide='datepicker')
+					span.input-group-addon
+						i.glyphicon.glyphicon-th 
+					input.input-sm.form-control(type='text', name='end', data-provide='datepicker')
+					span.input-group-addon
+						i.glyphicon.glyphicon-th 
 		.row
 			.col-lg-3
 				.panel.panel-primary
