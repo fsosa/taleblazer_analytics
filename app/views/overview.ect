@@ -9,18 +9,25 @@
             </div>
 
             <div class="row">
-                <div id="dpCol" class="col-md-offset-8 col-md-4">
-                    <div id="datepicker" class="input-daterange input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i>
-                        </span>
-                        <input type="text" name="start" data-provide="datepicker" class="input-sm form-control" />
-
-                        <span class="input-group-addon">to</span>
-                        <input type="text" name="end" data-provide="datepicker" class="input-sm form-control" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i>
-                        </span>
+                <div class="col-md-offset-5 col-md-3">
+                    <div id="startDate" class="input-group date">
+                    	<span class="input-group-addon"> Start date: </span>
+                        <input type="text" name="start" class="input form-control" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                     </div>
-                </div>              
+                </div>     
+
+                <div id="dateEnd" class="col-md-3">
+                    <div id="endDate" class="input-group date">
+                    	<span class="input-group-addon"> End date: </span>
+                        <input type="text" name="end" class="input form-control" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+
+               	<div class="col-md-1">
+                	<button id='dateFilter' type="button" class="btn btn-default">Filter</button>
+            	</div>
             </div>
 
             <div class="row voffset4">
@@ -28,7 +35,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Games Initiated</div>
                         <div class="panel-body">
-                            <h1 class="text-center">
+                            <h1 id="sessions_initiated" class="text-center">
                                 <%- @stats.sessions_initiated %>
                             </h1>
                         </div>
@@ -38,7 +45,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Games Completed</div>
                         <div class="panel-body">
-                            <h1 class="text-center">
+                            <h1 id="sessions_completed" class="text-center">
                                 <%- @stats.sessions_completed %>
                             </h1>
                         </div>
@@ -48,8 +55,8 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Average Completion Time</div>
                         <div class="panel-body">
-                            <h1 class="text-center">
-                                <%- @stats.avg_completion_time %>
+                            <h1 id="avg_completion_time" class="text-center">
+                                <%- @stats.avg_completion_time %> min
                             </h1>
                         </div>
                     </div>
@@ -58,7 +65,7 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Download Count</div>
                         <div class="panel-body">
-                            <h1 class="text-center">
+                            <h1 id="download_count" class="text-center">
                                 <%- @stats.download_count %>
                             </h1>
                         </div>

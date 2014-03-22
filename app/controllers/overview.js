@@ -12,13 +12,18 @@ var moment = require('moment');
  */
 exports.index = function(req, res, next) {
 	var draft_id = req.params.draft_id;
-	var start_time = req.body.start_time;
-	var end_time = req.body.end_time;
+	var start_time = req.body.start_time || req.query.start_time;
+	var end_time = req.body.end_time || req.query.end_time;
+
 
 	if (start_time == null || end_time == null) {
 		// If no time is provided, default to the time period from the beginning of the week to the end of the current day
+		console.log("defaults");
 		start_time = moment().startOf('week');
 		end_time = moment().endOf('day');
+	} else {
+		start_time = moment(start_time).startOf('day');
+		end_time = moment(end_time).endOf('day');
 	}
 
 	// Get the list of sessions for the draft between the start and end time
@@ -26,10 +31,16 @@ exports.index = function(req, res, next) {
 		function(results) {
 			if (results) {
 				var stats = getSessionStats(results);
-				res.render('overview.ect', {
-					stats: stats,
-					script: 'overview.js'
-				});
+
+				if (req.xhr) {
+					res.jsend(stats);
+				} else {
+					res.render('overview.ect', {
+						stats: stats,
+						script: 'overview.js'
+					});					
+				}
+
 			}
 		});
 
@@ -63,6 +74,8 @@ var getSessionStats = function(sessions) {
 
 	var avg_completion_time = (sessions_completed == 0) ? 0 : Math.round((sum_completion_time / sessions_completed) / 60);
 	stats.avg_completion_time = avg_completion_time;
+
+	stats.download_count = 0;
 
 	return stats;
 };
