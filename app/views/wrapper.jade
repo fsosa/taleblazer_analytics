@@ -1,0 +1,54 @@
+#wrapper
+	nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom: 0;')
+		.navbar-header
+			button.navbar-toggle(type='button', data-toggle='collapse', data-target='.sidebar-collapse')
+				span.sr-only Toggle navigation
+				span.icon-bar 
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href='index.html') TaleBlazer Analytics
+
+		ul.nav.navbar-top-links.navbar-right
+			li.dropdown
+				a.dropdown-toggle(data-toggle='dropdown', href='#')
+					i.fa.fa-user.fa-fw
+					i.fa.fa-caret-down
+				ul.dropdown-menu.dropdown-user
+					li
+						a(href='#')
+							i.fa.fa-user.fa-fw
+							|User Profile
+					li
+						a(href='#')
+							i.fa.fa-gear.fa-fw
+							| Settings
+					li.divider
+					li
+						a(href='login.html')
+							i.fa.fa-sign-out.fa-fw
+							| Logout
+	nav.navbar-default.navbar-static-side(role='navigation')
+		.sidebar-collapse
+			ul#side-menu.nav
+				div.form-group
+					select.form-control
+						option 1
+						option 2
+						option 3
+						option 4
+				li
+					a(href='#')
+						i.fa.fa-dashboard.fa-fw
+						| Overview
+				li
+					a(href='#')
+						i.fa.fa-bar-chart-o.fa-fw
+						| Events
+						span.fa.arrow
+					ul.nav.nav-second-level
+						li
+							a(href='flot.html') Flot Charts
+						li
+							a(href='morris.html') Morris.js Charts
+
+	block page-wrapper

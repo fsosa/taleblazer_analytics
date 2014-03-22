@@ -1,0 +1,28 @@
+extends layout
+
+block page-wrapper
+	#page-wrapper
+		.row
+			.col-lg-12
+				h1.page-header Overview
+		.row
+			.col-lg-3
+				.panel.panel-primary
+					.panel-heading.text-center Games Initiated
+					.panel-body
+						h1.text-center #{stats.sessions_initiated}
+			.col-lg-3
+				.panel.panel-primary
+					.panel-heading.text-center Games Completed
+					.panel-body
+						h1.text-center #{stats.sessions_completed}
+			.col-lg-3
+				.panel.panel-primary
+					.panel-heading.text-center Average Completion Time
+					.panel-body
+						h1.text-center #{stats.avg_completion_time} min
+			.col-lg-3
+				.panel.panel-primary
+					.panel-heading.text-center Download Count
+					.panel-body
+						h1.text-center #{stats.download_count}

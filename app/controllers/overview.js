@@ -16,20 +16,17 @@ exports.index = function(req, res, next) {
 	var end_time = req.body.end_time;
 
 	if (start_time == null || end_time == null) {
-		// If no time is provided,
-		// default to the time period from the beginning of the week to the end of the current day
+		// If no time is provided, default to the time period from the beginning of the week to the end of the current day
 		start_time = moment().startOf('week');
 		end_time = moment().endOf('day');
 	}
 
 	// Get the list of sessions for the draft between the start and end time
 	var sessions = getSessions(draft_id, start_time, end_time, next,
-		function(results, err) {
-			if (err) {
-				next(err);
-			} else {
+		function(results) {
+			if (results) {
 				var stats = getSessionStats(results);
-				res.render('test', {
+				res.render('overview', {
 					stats: stats
 				});
 			}
@@ -52,13 +49,12 @@ var getSessionStats = function(sessions) {
 
 	for (i = 0; i < sessions.rows.length; i++) {
 		var session = sessions.rows[i];
-		if (session.completion_id != null) {
+		if (session.completed) {
 			sessions_completed = sessions_completed + 1;
 
 			var game_length_sec = (session.last_event_at - session.started_at) / 1000;
 
 			sum_completion_time = sum_completion_time + game_length_sec;
-			console.log(sum_completion_time);
 		}
 	}
 
@@ -75,6 +71,7 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
 	start_time = start_time.toDate();
 	end_time = end_time.toDate();
+
 	db.DraftState
 		.findAll({
 			where: {
@@ -94,11 +91,11 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 						started_at: {
 							between: [start_time, end_time]
 						},
-						draft_state_id: draft_state_ids // IN LIST
+						draft_state_id: draft_state_ids
 					}
 				})
 				.success(function(sessions) {
-					callback(sessions, null);
+					callback(sessions);
 					return sessions;
 				})
 				.error(function(error) {
