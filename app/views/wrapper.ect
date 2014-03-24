@@ -33,13 +33,19 @@
                         <option>4</option>
                     </select>
                 </div>
-                <li><a href="#"><i class="fa fa-dashboard fa-fw"></i>Overview</a>
+                <li><a href=""><i class="fa fa-dashboard fa-fw"></i>Overview</a>
                 </li>
                 <li><a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Events<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a href="flot.html">Flot Charts</a>
+                        <li><a href="/games-initiated/<%- @draft_id %>">Games Initiated</a>
                         </li>
-                        <li><a href="morris.html">Morris.js Charts</a>
+                        <li><a href="/games-completed/<%- @draft_id %>">Games Completed</a>
+                        </li>
+                        <li><a href="/completion-time/<%- @draft_id %>">Completion Time</a>
+                        </li>
+                        <li><a href="/agent-bumps/<%- @draft_id %>">Agent Bumps</a>
+                        </li>
+                        <li><a href="#">More Stuff</a>
                         </li>
                     </ul>
                 </li>

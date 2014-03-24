@@ -35,6 +35,8 @@ exports.index = function(req, res, next) {
 					res.jsend(stats);
 				} else {
 					res.render('overview.ect', {
+						draft_id: draft_id,
+						title: 'Overview',
 						stats: stats,
 						script: 'overview.js'
 					});					
