@@ -1,21 +1,30 @@
 var initDatePicker = function() {
-	var startDatePicker = $('#startDate.input-group.date');
-	$('#startDate.input-group.date').datepicker({
-		todayBtn: 'linked',
-		autoclose: true,
-		todayHighlight: true
+	// DatePicker docs at http://eonasdan.github.io/bootstrap-datetimepicker/
+	var startPicker = $('#startPicker');
+	var endPicker = $('#endPicker');
+
+	// Set the default date range: from the beginning of the week to the end of the current day
+	var default_start_date = moment().startOf('week');
+	var default_end_date = moment().endOf('day');
+
+	startPicker.datetimepicker({
+		pickTime: false, 
+		defaultDate: default_start_date
+	});
+	endPicker.datetimepicker({
+		pickTime: false, 
+		defaultDate: default_end_date
 	});
 
-	var endDatePicker = $('#endDate.input-group.date');
-	$('#endDate.input-group.date').datepicker({
-		todayBtn: 'linked',
-		autoclose: true,
-		todayHighlight: true,
-	})
+	// Once the first date is picked, limit the next date to dates after that
+	startPicker.on('dp.change', function(data) {
+		endPicker.data('DateTimePicker').setMinDate(data.date);
+	});
 
 	$('#dateFilter').click(function() {
-		var start_time = $('#startDate').datepicker('getDate');
-		var end_time = endDatePicker.datepicker('getDate');
+		// DatePicker uses Moment dates (see momentjs.com); Use toDate() to get the underlying js Date object)
+		var start_time = startPicker.data('DateTimePicker').getDate().toDate();
+		var end_time = endPicker.data('DateTimePicker').getDate().toDate();
 
 		if (isNaN(start_time) || isNaN(end_time)) {
 			return;
@@ -23,7 +32,7 @@ var initDatePicker = function() {
 
 		var req = { start_time: start_time, end_time: end_time };
 
-		if (startDate <= endDate) {
+		if (start_time <= end_time) {
 			$.ajax(window.location.pathname, {
 				data: req,
 				type: 'GET', 

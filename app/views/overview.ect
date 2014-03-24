@@ -8,29 +8,40 @@
                 </div>
             </div>
 
+            <!-- Consider moving into a partial !!! -->
             <div class="row">
-                <div class="col-md-offset-5 col-md-3">
-                    <div id="startDate" class="input-group date">
-                    	<span class="input-group-addon"> Start date: </span>
-                        <input type="text" name="start" class="input form-control" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                <div class="col-sm-offset-6 col-sm-6" style="height:75px;">
+                    <div class='col-md-5'>
+                        <div class="form-group">
+                            <div class='input-group date' id='startPicker'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                </div>     
+                    <div class='col-md-5'>
+                        <div class="form-group">
+                            <div class='input-group date' id='endPicker'>
+                                <input type='text' class="form-control" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div id="dateEnd" class="col-md-3">
-                    <div id="endDate" class="input-group date">
-                    	<span class="input-group-addon"> End date: </span>
-                        <input type="text" name="end" class="input form-control" />
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    <div class="col-sm-1">
+                        <button id='dateFilter' type="button" class="btn btn-default">Filter</button>
                     </div>
                 </div>
 
-               	<div class="col-md-1">
-                	<button id='dateFilter' type="button" class="btn btn-default">Filter</button>
-            	</div>
+
             </div>
 
-            <div class="row voffset4">
+
+            <div class="row">
                 <div class="col-lg-3">
                     <div class="panel panel-primary">
                         <div class="panel-heading text-center">Games Initiated</div>
