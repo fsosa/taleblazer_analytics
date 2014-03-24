@@ -18,7 +18,6 @@ exports.index = function(req, res, next) {
 
 	if (start_time == null || end_time == null) {
 		// If no time is provided, default to the time period from the beginning of the week to the end of the current day
-		console.log("defaults");
 		start_time = moment().startOf('week');
 		end_time = moment().endOf('day');
 	} else {
