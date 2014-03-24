@@ -7,6 +7,10 @@ var initDatePicker = function() {
 	var default_start_date = moment().startOf('week');
 	var default_end_date = moment().endOf('day');
 
+	// Set the human-readable range in the header
+	updateDateRangeHeader(default_start_date, default_end_date);
+
+	// Initialize components
 	startPicker.datetimepicker({
 		pickTime: false, 
 		defaultDate: default_start_date
@@ -38,6 +42,7 @@ var initDatePicker = function() {
 				type: 'GET', 
 				contentType: 'application/json'
 			}).done(function(stats) {
+				updateDateRangeHeader(start_time, end_time);
 				updateStats(stats.data);
 			})
 		}
@@ -53,6 +58,16 @@ var updateStats = function(stats) {
 		}
 		$('#' + stat_ids[i]).text(text);
 	}
+};
+
+var updateDateRangeHeader = function(start_time, end_time) {
+	// Convert to Moment dates
+	start_time = moment(start_time);
+	end_time = moment(end_time);
+
+	var dateFormat = "ddd, MMMM D, YYYY";
+	var date_range_text = start_time.format(dateFormat) + ' - ' + end_time.format(dateFormat);
+	$('#date-range-header').text(date_range_text);
 };
 
 $(document).ready(function() {
