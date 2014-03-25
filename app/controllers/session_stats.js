@@ -36,27 +36,49 @@ exports.sessionsInitiated = function(req, res, next) {
 		if (sessions) {
 			var stats = getSessionStats(sessions);
 
+			// needs to bucket by categories
+			// make a method
+			var bucketed_values = { }
+
 			var session_values = _.map(sessions.rows, function(session) {
 				var sess = session.values
-				// NOTE: quick way to delete values we're not interested in
-				// should actually be in the list of attributes in the query
-				delete sess.id;
-				delete sess.created_at;
-				sess.started_at = moment(sess.started_at).format('ddd MMM D h:mm A')
-				delete sess.updated_at;
-				// delete sess.started_at;
-				delete sess.last_event_at;
-				delete sess.role_id;
-				delete sess.scenario_id;
-				delete sess.tap_to_visit;
-				delete sess.draft_state_id;
-				delete sess.device_id;
+				sess = _.omit(sess, 'id');
+				var dateString = moment(sess.started_at).format('MMM D YYYY');
+				sess.started_at = moment(sess.started_at).format('MMM D YYYY')
 				sess.completed = (sess.completed == true);
+
+				if (bucketed_values[dateString] == null) {
+					if (sess.completed) {
+						bucketed_values[dateString] = { initiated: 0, completed: sess.count }
+					} else {
+						bucketed_values[dateString] = { initiated: sess.count, completed: 0 }  
+					}
+				} else {
+					if (sess.completed) {
+						bucketed_values[dateString].completed = bucketed_values[dateString].completed + sess.count;
+					} else {
+						bucketed_values[dateString].initiated = bucketed_values[dateString].initiated + sess.count;
+					}
+				}				
 				return sess;
 			});
 
+			console.log(bucketed_values);
+
+			var results = _.map(Object.keys(bucketed_values), function(date) {
+				var x = { date: date };
+				console.log(date);
+				console.log(bucketed_values[date]);
+				_.extend(x, bucketed_values[date]);
+				console.log(x);
+				return x;
+			});
+
+			console.log(results);
+
+
 			data = {
-				results: session_values,
+				results: results,
 				stats: stats
 			};
 
@@ -78,14 +100,6 @@ exports.sessionsInitiated = function(req, res, next) {
 
 };
 
-exports.sessionsCompleted = function(req, res, next) {
-
-};
-
-exports.completionTime = function(req, res, next) {
-
-};
-
 /////////////////////
 // Utility Methods //
 /////////////////////
@@ -100,16 +114,16 @@ var getCategorizeQueryOptions = function(categorize_by) {
 			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'completed'];
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
-			attributes = [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = ['draft_state_id'];
+			attributes = ['draft_state_id', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'draft_state_id'];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
-			attributes = [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = ['role_id'];
+			attributes = ['role_id', 'role_name', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'];
 			break;
 		case CATEGORIZE_TYPE.SCENARIO:
-			attributes = [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = ['scenario_id'];
+			attributes = ['scenario_id', 'scenario_name', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'scenario_id'];
 			break;
 	}
 
