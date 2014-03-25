@@ -70,6 +70,11 @@ var updateDateRangeHeader = function(start_time, end_time) {
 	$('#date-range-header').text(date_range_text);
 };
 
+var initDataTables = function() {
+	$('#dataTable').dataTable();
+}
+
 $(document).ready(function() {
 	initDatePicker();
+	initDataTables();
 });
