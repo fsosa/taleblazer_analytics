@@ -55,7 +55,7 @@ exports.sessionsInitiated = function(req, res, next) {
 			});
 
 			data = {
-				sessions: session_values,
+				results: session_values,
 				stats: stats
 			};
 

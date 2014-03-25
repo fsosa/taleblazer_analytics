@@ -7,6 +7,7 @@ var initDatePicker = function() {
 	var default_start_date = moment().startOf('week');
 	var default_end_date = moment().endOf('day');
 
+	// Get the first overview stats
 	getOverviewStats(default_start_date.toDate(), default_end_date.toDate());
 
 	// Set the human-readable range in the header
@@ -54,11 +55,22 @@ var getOverviewStats = function(start_time, end_time, categorize_by) {
 			data: req,
 			type: 'GET', 
 			contentType: 'application/json'
-		}).done(function(stats) {
+		}).done(function(results) {
 			updateDateRangeHeader(start_time, end_time);
-			updateStats(stats.data);
+			updateStats(results.data); // for overview (stats)
+
+			// NOTE: WE REALLY NEED TO SEPARATE THIS STUFF OUT!
+			updateDataTable(results.data);
 		})
 	}
+}
+
+var getRequestParams = function() {
+	var start_time = startPicker.data('DateTimePicker').getDate().toDate();
+	var end_time = endPicker.data('DateTimePicker').getDate().toDate();
+	var categorize_by = $("#categorizer").val();
+
+	return { start_time: start_time, end_time: end_time, categorize_by: categorize_by };
 }
 
 var updateStats = function(stats) {
@@ -82,11 +94,43 @@ var updateDateRangeHeader = function(start_time, end_time) {
 	$('#date-range-header').text(date_range_text);
 };
 
-var initDataTables = function() {
-	$('#dataTable').dataTable();
+var updateDataTable = function(data) {
+	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
+	// http://www.datatables.net/forums/discussion/5287/destroy-and-recreate-troubles/p1
+	// basically we're fully defining the table so the data that gets shifted into the DOM after destroy needs to be cleared out completely
+	// that's why we call .empty() on the datatable DOM element
+	var dataTable = $('#dataTable')
+	if (data.results.length == 0) {
+		dataTable.dataTable().fnClearTable();
+		return;
+	}
+
+	
+
+	if ($.fn.DataTable.fnIsDataTable(dataTable)) {
+		// we have to do this bc the ajax call might return more columns and DataTables currently doesn't support dynamic column addition/removal
+		dataTable.dataTable().fnDestroy();
+		dataTable.empty();
+	}
+
+	var first_result = data.results[0];
+
+	var columns = _.map(Object.keys(first_result), function(key, i) {
+		return { mData: key, sTitle: key, aTargets: [i] }
+	});
+
+	console.log(data);
+	console.log(columns);
+
+	dataTable.dataTable({
+		bDestroy: true, 
+		bDeferRender: true, 
+		aoColumnDefs: columns, 
+		aaData: data.results
+	});
+	console.log("created new table");
 }
 
 $(document).ready(function() {
 	initDatePicker();
-	initDataTables();
 });

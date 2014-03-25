@@ -18,24 +18,12 @@
                                 <table class="table table-striped table-bordered table-hover" id="dataTable">
 								<thead>
 									<tr>
-										<% if @sessions.length >= 0 : %>
-											<% for key in Object.keys(@sessions[0]) : %>
-											<th><%- key %></th>
-											<% end %>
-										<% else : %>
-											<p> empty </p>
-										<% end %>
+			
 									</tr>
 								</thead>
 
 								<tbody>
-									<% for session in @sessions : %>
-										<tr>
-										<% for key in Object.keys(session) : %>
-											<td> <%- session[key] %> </td>
-										<% end %>
-										</tr>
-									<% end %>
+				
 								</tbody>
 
                                 </table>
