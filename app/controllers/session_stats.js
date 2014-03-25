@@ -3,9 +3,9 @@ var _ = require('underscore');
 var moment = require('moment');
 
 var CATEGORIZE_TYPE = {
-	GAME_VERSION: 'game_version', 
-	ROLE: 'role', 
-	SCENARIO: 'scenario', 
+	GAME_VERSION: 'game_version',
+	ROLE: 'role',
+	SCENARIO: 'scenario',
 	DAY_TYPE: 'day_type'
 }
 
@@ -27,15 +27,35 @@ exports.sessionsInitiated = function(req, res, next) {
 	getSessions(draft_id, start_time, end_time, next, function(sessions) {
 		if (sessions) {
 			var stats = getSessionStats(sessions);
+			
+			var session_values = _.map(sessions.rows, function(session) {
+				var sess = session.values
+				delete sess.created_at;
+				delete sess.updated_at;
+				return sess;
+			})
+		
 			data = {
-				sessions: sessions, 
+				sessions: session_values,
 				stats: stats
 			}
-			res.jsend(200, data);
+
+			if (req.xhr) {
+				res.jsend(200, data);
+			} else {
+				res.render('games-initiated.ect', {
+					draft_id: draft_id,
+					title: 'Games Initiated',
+					stats: stats,
+					sessions: session_values,
+					script: 'overview.js'
+				})
+			}
+
 		}
 	});
 
-	
+
 };
 
 exports.sessionsCompleted = function(req, res, next) {
@@ -83,7 +103,7 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
 	start_time = start_time.toDate();
 	end_time = end_time.toDate();
-	
+
 	db.DraftState
 		.findAll({
 			where: {
@@ -96,7 +116,7 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 			var draft_state_ids = _.map(results, function(result) {
 				return result.values['id'];
 			});
-			
+
 			db.Session
 				.findAndCountAll({
 					where: {
@@ -104,13 +124,13 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 							between: [start_time, end_time]
 						},
 						draft_state_id: draft_state_ids
-					}, 
-					attributes: [db.sequelize.col('*'), db.sequelize.fn('COUNT', db.sequelize.col('*'))],
-					group: [db.sequelize.fn('DATE', db.sequelize.col('started_at'))],
+					},
+					// attributes: [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']],
+					// group: [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'],
 				})
 				.success(function(sessions) {
 					callback(sessions);
-					return sessions;
+					return sessions; // WE DONT EVER GET HERE
 				})
 				.error(function(error) {
 					next(error);
