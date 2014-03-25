@@ -7,6 +7,8 @@ var initDatePicker = function() {
 	var default_start_date = moment().startOf('week');
 	var default_end_date = moment().endOf('day');
 
+	getOverviewStats(default_start_date.toDate(), default_end_date.toDate());
+
 	// Set the human-readable range in the header
 	updateDateRangeHeader(default_start_date, default_end_date);
 
@@ -30,24 +32,33 @@ var initDatePicker = function() {
 		var start_time = startPicker.data('DateTimePicker').getDate().toDate();
 		var end_time = endPicker.data('DateTimePicker').getDate().toDate();
 
-		if (isNaN(start_time) || isNaN(end_time)) {
-			return;
-		}
-
-		var req = { start_time: start_time, end_time: end_time };
-
-		if (start_time <= end_time) {
-			$.ajax(window.location.pathname, {
-				data: req,
-				type: 'GET', 
-				contentType: 'application/json'
-			}).done(function(stats) {
-				updateDateRangeHeader(start_time, end_time);
-				updateStats(stats.data);
-			})
-		}
+		getOverviewStats(start_time, end_time);
 	})
 };
+
+/**
+ * Gets stats for the overview page
+ * @param  {Date} start_time [must be a Javascript Date object]
+ * @param  {Date} end_time   [must be a Javascript Date object]
+ */
+var getOverviewStats = function(start_time, end_time) {
+	if (isNaN(start_time) || isNaN(end_time)) {
+		return;
+	}
+
+	var req = { start_time: start_time, end_time: end_time };
+
+	if (start_time <= end_time) {
+		$.ajax(window.location.pathname, {
+			data: req,
+			type: 'GET', 
+			contentType: 'application/json'
+		}).done(function(stats) {
+			updateDateRangeHeader(start_time, end_time);
+			updateStats(stats.data);
+		})
+	}
+}
 
 var updateStats = function(stats) {
 	var stat_ids = ['sessions_initiated', 'sessions_completed', 'avg_completion_time', 'download_count'];
