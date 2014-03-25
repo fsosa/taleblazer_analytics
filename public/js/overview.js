@@ -31,8 +31,9 @@ var initDatePicker = function() {
 		// DatePicker uses Moment dates (see momentjs.com); Use toDate() to get the underlying js Date object)
 		var start_time = startPicker.data('DateTimePicker').getDate().toDate();
 		var end_time = endPicker.data('DateTimePicker').getDate().toDate();
+		var categorize_by = $("#categorizer").val();
 
-		getOverviewStats(start_time, end_time);
+		getOverviewStats(start_time, end_time, categorize_by);
 	})
 };
 
@@ -41,12 +42,12 @@ var initDatePicker = function() {
  * @param  {Date} start_time [must be a Javascript Date object]
  * @param  {Date} end_time   [must be a Javascript Date object]
  */
-var getOverviewStats = function(start_time, end_time) {
+var getOverviewStats = function(start_time, end_time, categorize_by) {
 	if (isNaN(start_time) || isNaN(end_time)) {
 		return;
 	}
 
-	var req = { start_time: start_time, end_time: end_time };
+	var req = { start_time: start_time, end_time: end_time, categorize_by: categorize_by };
 
 	if (start_time <= end_time) {
 		$.ajax(window.location.pathname, {
