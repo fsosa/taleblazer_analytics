@@ -16,8 +16,7 @@ exports.sessionsInitiated = function(req, res, next) {
 
 	if (start_time == null || end_time == null) {
 		// Default: beginning of week to end of current day
-		// start_time = moment().startOf('week');
-		start_time = moment().subtract('days', 14);
+		start_time = moment().startOf('week');
 		end_time = moment().endOf('day');
 	} else {
 		start_time = moment(start_time).startOf('day');
@@ -30,8 +29,20 @@ exports.sessionsInitiated = function(req, res, next) {
 			
 			var session_values = _.map(sessions.rows, function(session) {
 				var sess = session.values
+				// NOTE: quick way to delete values we're not interested in
+				// should actually be in the list of attributes in the query
+				delete sess.id;
 				delete sess.created_at;
+				sess.started_at = moment(sess.started_at).format("ddd MMM D h:mm A")
 				delete sess.updated_at;
+				// delete sess.started_at;
+				delete sess.last_event_at;
+				delete sess.role_id;
+				delete sess.scenario_id;
+				delete sess.tap_to_visit;
+				delete sess.draft_state_id;
+				delete sess.device_id;
+				sess.completed = (sess.completed == true); 
 				return sess;
 			})
 		
@@ -125,8 +136,8 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 						},
 						draft_state_id: draft_state_ids
 					},
-					// attributes: [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']],
-					// group: [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'],
+					attributes: [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']],
+					group: [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'],
 				})
 				.success(function(sessions) {
 					callback(sessions);
