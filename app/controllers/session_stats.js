@@ -3,6 +3,7 @@ var _ = require('underscore');
 var moment = require('moment');
 
 var CATEGORIZE_TYPE = {
+	DEFAULT: 'default',
 	GAME_VERSION: 'game_version',
 	ROLE: 'roles',
 	SCENARIO: 'scenarios'
@@ -64,7 +65,7 @@ exports.sessionsInitiated = function(req, res, next) {
 			} else {
 				res.render('games-initiated.ect', {
 					draft_id: draft_id,
-					title: 'Games Initiated',
+					title: 'Games Played',
 					stats: stats,
 					sessions: session_values,
 					script: 'overview.js'
@@ -94,6 +95,10 @@ var getCategorizeQueryOptions = function(categorize_by) {
 	var group = null;
 
 	switch (categorize_by) {
+		case CATEGORIZE_TYPE.DEFAULT:
+			attributes = ['started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'completed'];
+			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
 			attributes = [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
 			group = ['draft_state_id'];
@@ -176,7 +181,6 @@ var getSessions = function(draft_id, start_time, end_time, next, options, callba
 				})
 				.success(function(sessions) {
 					callback(sessions);
-					return sessions; // WE DONT EVER GET HERE
 				})
 				.error(function(error) {
 					next(error);

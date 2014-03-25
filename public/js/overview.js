@@ -6,9 +6,10 @@ var initDatePicker = function() {
 	// Set the default date range: from the beginning of the week to the end of the current day
 	var default_start_date = moment().startOf('week');
 	var default_end_date = moment().endOf('day');
+	var default_categorize_by = $("#categorizer").val();
 
 	// Get the first overview stats
-	getOverviewStats(default_start_date.toDate(), default_end_date.toDate());
+	getOverviewStats(default_start_date.toDate(), default_end_date.toDate(), default_categorize_by);
 
 	// Set the human-readable range in the header
 	updateDateRangeHeader(default_start_date, default_end_date);
@@ -119,8 +120,8 @@ var updateDataTable = function(data) {
 		return { mData: key, sTitle: key, aTargets: [i] }
 	});
 
-	console.log(data);
-	console.log(columns);
+	// console.log(data);
+	// console.log(columns);
 
 	dataTable.dataTable({
 		bDestroy: true, 
@@ -128,7 +129,7 @@ var updateDataTable = function(data) {
 		aoColumnDefs: columns, 
 		aaData: data.results
 	});
-	console.log("created new table");
+	// console.log("created new table");
 }
 
 $(document).ready(function() {
