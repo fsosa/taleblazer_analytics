@@ -23,25 +23,21 @@ var setupLogDirectory = function(env) {
 };
 
 var getRequestLogger = function(env, log_dir) {
-	var transport = null;
 
 	if (env == 'development') {
-		transport = new winston.transports.Console({
-			json: false,
-			colorize: true
-		});
+		return express.logger('dev');
 	} else {
-		transport = new winston.transports.File({
-			filename: log_dir + env + '.log', 
-			json: false
+		return expressWinston.logger({
+			transports: [
+				new winston.transports.File({
+					filename: log_dir + env + '.log',
+					json: false
+				})
+			],
+			meta: false,
+			msg: "{{req.headers.host}} - {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms"
 		});
 	}
-
-	return expressWinston.logger({
-		transports: [transport],
-		meta: false, 
-		msg: "{{req.headers.host}} - {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms"
-	});
 };
 
 var getErrorLogger = function(env, log_dir) {
@@ -54,7 +50,7 @@ var getErrorLogger = function(env, log_dir) {
 		});
 	} else {
 		transport = new winston.transports.File({
-			filename: log_dir + env + '.error.log' 
+			filename: log_dir + env + '.error.log'
 		});
 	}
 
@@ -99,7 +95,7 @@ module.exports = function(app, env) {
 
 	// Development error handler 
 	// TODO: Write your own error handler before getting to production
-	app.use(express.errorHandler());	
-	
+	app.use(express.errorHandler());
+
 
 };

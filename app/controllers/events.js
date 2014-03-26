@@ -65,10 +65,8 @@ exports.create = function(req, res, next) {
 			.error(function(error) {
 				t.rollback()
 					.success(function() {
-						res.jerror(500, error);
 						next(error);
 					}).error(function() {
-						res.jerror(500, error);
 						next(error);
 					});
 			});
@@ -160,8 +158,7 @@ var addSessionUpdateQuery = function(session_id, updates, t, chainer, res, next)
 		.success(function(session) {
 			chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
 				t.rollback().success(function() {
-					// res.jerror(500, error);
-					next(new Error(JSON.stringify(error)));
+					next(error);
 				});
 			}));
 		})
@@ -184,7 +181,7 @@ var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 
 			chainer.add(db.AgentBump.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
-					next(new Error(JSON.stringify(error)));
+					next(error);
 				});
 			}));
 
@@ -194,7 +191,6 @@ var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 
 			chainer.add(db.RegionSwitch.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
-					res.jerror(500, error);
 					next(error);
 				});
 			}));
@@ -205,7 +201,6 @@ var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 
 			chainer.add(query = db.GameCompletion.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
-					res.jerror(500, error);
 					next(error);
 				});
 			}));
@@ -219,7 +214,6 @@ var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 
 			chainer.add(cet.save(transaction).error(function(error) {
 				t.rollback().success(function() {
-					res.jerror(500, error);
 					next(error);
 				});
 			}));
