@@ -142,7 +142,6 @@ var updateDataTable = function(data, categorize_by) {
  	// Here, we take the first result and simply take its keys as the column titles of the datatable
  	var first_result = data.results[0];
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
-		console.log(getColumnDef(key, categorize_by));
 		return getColumnDef(key, categorize_by);
 	});
 
@@ -221,6 +220,5 @@ var getColumnTitleForCategory = function(categorization_type) {
  */
 $(document).ready(function() {
 	initDatePicker();
-	$("#page-title-header").text(GLOBAL_TEXT);
 });
 
