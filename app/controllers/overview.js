@@ -1,6 +1,7 @@
 var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
+
 /**
  * Given a draft id and a time range,
  * Returns:

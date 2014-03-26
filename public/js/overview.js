@@ -15,6 +15,8 @@ var initDatePicker = function() {
 	var default_end_date = moment().endOf('day');
 	var default_categorize_by = $('#categorizer').val();
 
+
+	// TODO: PROBS MOVE THIS SOMEWHERE ELSE
 	// Make the initial AJAX request for the page data
 	getOverviewStats(default_start_date, default_end_date, default_categorize_by);
 
@@ -46,6 +48,8 @@ var initDatePicker = function() {
 	});
 };
 
+// !!!! MAKE NON-PAGE SPECIFIC !!!!
+// I.E THIS HAPPENS WHEN YOU CLICK THE FILTER BUTTON
 /**
  * Gets stats for the overview page
  * @param  {Moment} start_time [Moment date representing start time]
@@ -77,6 +81,7 @@ var getOverviewStats = function(start_time, end_time, categorize_by) {
 	});
 };
 
+// !!!!! OVERVIEW SPECIFIC !!!!!!
 /**
  * Updates the stats boxes on the Overview page
  * @param  {Object} stats [Object with the following keys: 'sessions_initiated', 'sessions_completed', 'avg_completion_time', 'download_count']
@@ -115,7 +120,7 @@ var updateDataTable = function(data, categorize_by) {
 	if (data.results == null) {
 		return;
 	}
-	
+
 	var dataTable = $('#dataTable');
 
 	if (data.results.length == 0) {
@@ -133,6 +138,7 @@ var updateDataTable = function(data, categorize_by) {
 	// How to use JSON objects as datatable entries instead of arrays
  	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
 
+ 	// !!!! PROBABLY GAMES PLAYED SPECIFIC; THIS WILL BE WEIRD WITH AGENT BUMPS
  	// Here, we take the first result and simply take its keys as the column titles of the datatable
  	var first_result = data.results[0];
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
@@ -148,6 +154,7 @@ var updateDataTable = function(data, categorize_by) {
 	});
 };
 
+// !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!! 
 // look at the fields returned by the API and map them to specific columns
 var getColumnDef = function(key, categorization_type) {
 	var columnDef = { mData: key };
@@ -187,6 +194,7 @@ var getColumnDef = function(key, categorization_type) {
 	return columnDef;
 };
 
+// !!! DEFINITELY GAMES PLAYED SPECIFIC
 var getColumnTitleForCategory = function(categorization_type) {
 	switch (categorization_type) {
 		case CATEGORIZATION_TYPE.DEFAULT: 
@@ -213,5 +221,6 @@ var getColumnTitleForCategory = function(categorization_type) {
  */
 $(document).ready(function() {
 	initDatePicker();
+	$("#page-title-header").text(GLOBAL_TEXT);
 });
 
