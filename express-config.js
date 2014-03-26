@@ -1,6 +1,10 @@
 var express = require('express');
 var ECT = require('ect');
 
+// Logging
+var winston = require('winston');
+var expressWinston = require('express-winston');
+
 //////////////////////////////////////
 // Express Middleware Configuration //
 //////////////////////////////////////
@@ -10,9 +14,12 @@ module.exports = function(app, env) {
 	// IMPORTANT: DECLARATION ORDER MATTERS //
 	//////////////////////////////////////////
 
-	// Set the view directory and templating engine	
+	// Set the view directory and templating engine
 	app.set('views', __dirname + '/app/views');
-	var ectRenderer = ECT({ watch: true, root: app.get('views') });
+	var ectRenderer = ECT({
+		watch: true,
+		root: app.get('views')
+	});
 	app.engine('.ect', ectRenderer.render);
 
 	app.use(express.favicon());
@@ -24,16 +31,45 @@ module.exports = function(app, env) {
 	// The order that middleware is passed to app.use is the order that requests will be handled
 	// e.g. static -> router serves static file first; router -> static serves the defined route first
 	// http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
-	if (env == 'development') {
-		app.use(express.logger('dev'));	
+	if (true) {
+		// app.use(express.logger('dev'));
+		app.use(expressWinston.logger({
+			transports: [
+				new winston.transports.Console({
+					json: false,
+					colorize: true
+				}),
+				new winston.transports.File({
+					json: false,
+					filename: 'requests.log'
+				})
+			]
+		}));
 	}
-	
+
 	app.use(app.router);
 	app.use(express.static(__dirname + '/public'));
 
-	// Development error handler
+	// Error logger
+	if (true) {
+		app.use(expressWinston.errorLogger({
+			transports: [
+				new winston.transports.Console({
+					json: false,
+					colorize: true
+				}),
+				new winston.transports.File({
+					json: false,
+					filename: 'error.log'
+				})
+			]
+		}))
+	}
+
+
+	// Development error handler 
 	if (env == 'development') {
-		app.use(express.errorHandler());	
+		app.use(express.errorHandler());
 	}
 
 };
