@@ -5,8 +5,8 @@ var moment = require('moment');
 var CATEGORIZE_TYPE = {
 	DEFAULT: 'default', // Consider renaming this to DATE b/c that's what it really is
 	GAME_VERSION: 'game_version',
-	ROLE: 'roles',
-	SCENARIO: 'scenarios'
+	ROLE: 'role',
+	SCENARIO: 'scenario'
 };
 
 exports.show = function(req, res, next) {
@@ -38,47 +38,9 @@ exports.show = function(req, res, next) {
 
 	getSessions(draft_id, start_time, end_time, next, query_conditions, function(sessions) {
 		if (sessions) {
-			// needs to bucket by categories
-			// make a method
-			var bucketed_values = {};
 
-			var session_values = _.map(sessions, function(session) {
-				var sess = session.values;
-				sess = _.omit(sess, 'id');
-				var dateString = moment(sess.started_at).format('MMM D YYYY');
-				sess.started_at = moment(sess.started_at).format('MMM D YYYY');
-				sess.completed = (sess.completed == true);
-
-				if (bucketed_values[dateString] == null) {
-					if (sess.completed) {
-						bucketed_values[dateString] = {
-							initiated: 0,
-							completed: sess.count
-						};
-					} else {
-						bucketed_values[dateString] = {
-							initiated: sess.count,
-							completed: 0
-						};
-					}
-				} else {
-					if (sess.completed) {
-						bucketed_values[dateString].completed = bucketed_values[dateString].completed + sess.count;
-					} else {
-						bucketed_values[dateString].initiated = bucketed_values[dateString].initiated + sess.count;
-					}
-				}
-				return sess;
-			});
-
-			var results = _.map(Object.keys(bucketed_values), function(date) {
-				var x = {
-					date: date,
-					total_games: (bucketed_values[date].completed + bucketed_values[date].initiated)
-				};
-				_.extend(x, bucketed_values[date]);
-				return x;
-			});
+			var results = getCalculatedStats(sessions, categorize_by);
+			console.log(results);
 
 			data = {
 				results: results
@@ -97,10 +59,39 @@ exports.show = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
-var getCalculatedStats = function(sessions) {
-	var bucketedStats = {};
+var getCalculatedStats = function(sessions, categorize_type) {
+	var stats = {};
 
+	// Bucket sessions by 
+	_.each(sessions, function(session) {
+		var rawSession = session.values;
+		rawSession = _.omit(rawSession, 'id'); // Remove the primary key
 
+		var sessionComplete = (rawSession.completed == true);
+
+		var bucketKey = getBucketKey(rawSession, categorize_type);
+
+		var bucketValue = stats[bucketKey];
+
+		if (bucketValue != null) {
+			var valToIncrement = sessionComplete ? 'completed' : 'initiated';
+			bucketValue[valToIncrement] += rawSession.count;
+			bucketValue.total += rawSession.count;
+		} else {
+			var completed = sessionComplete ? rawSession.count : 0;
+			var initiated = sessionComplete ? 0 : rawSession.count;
+
+			stats[bucketKey] = {};
+			stats[bucketKey][categorize_type] = bucketKey;
+			stats[bucketKey].initiated = initiated;
+			stats[bucketKey].completed = completed;
+			stats[bucketKey].total = completed + initiated;
+		}
+	});
+
+	var results = _.values(stats);
+
+	return results;
 };
 
 var getBucketKey = function(session, categorize_type) {
