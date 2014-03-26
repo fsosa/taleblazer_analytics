@@ -1,3 +1,10 @@
+var CATEGORIZATION_TYPE = {
+	DEFAULT: 'default', 
+	GAME_VERSION: 'game_version', 
+	ROLE: 'role', 
+	SCENARIO: 'scenario'
+}
+
 var initDatePicker = function() {
 	// DatePicker docs at http://eonasdan.github.io/bootstrap-datetimepicker/
 	var startPicker = $('#startPicker');
@@ -66,7 +73,7 @@ var getOverviewStats = function(start_time, end_time, categorize_by) {
 		updateStats(response.data); // for overview (stats)
 
 		// NOTE: WE REALLY NEED TO SEPARATE THIS STUFF OUT!
-		updateDataTable(response.data);
+		updateDataTable(response.data, categorize_by);
 	});
 };
 
@@ -104,7 +111,7 @@ var updateDateRangeHeader = function(start_time, end_time) {
  * Creates the DataTable (https://datatables.net/) for the given set of analytics data
  * @param  {[type]} data [Object containing results of API call]
  */
-var updateDataTable = function(data) {
+var updateDataTable = function(data, categorize_by) {
 	var dataTable = $('#dataTable');
 
 	if (data.results.length == 0) {
@@ -125,11 +132,8 @@ var updateDataTable = function(data) {
  	// Here, we take the first result and simply take its keys as the column titles of the datatable
  	var first_result = data.results[0];
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
-		return {
-			mData: key,
-			sTitle: key,
-			aTargets: [i]
-		};
+		console.log(getColumnDef(key, categorize_by));
+		return getColumnDef(key, categorize_by);
 	});
 
 	dataTable.dataTable({
@@ -139,6 +143,66 @@ var updateDataTable = function(data) {
 		aaData: data.results
 	});
 };
+
+// look at the fields returned by the API and map them to specific columns
+var getColumnDef = function(key, categorization_type) {
+	var columnDef = { mData: key };
+	var entityIndex = null;
+
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+		entityIndex = 1;
+	} else {
+		entityIndex = 2;
+		
+	}
+
+	switch (key) {
+		case categorization_type: 
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			columnDef.aTargets = [0]; // The first element
+			break;
+		case 'initiated': 
+			columnDef.sTitle = 'Games Initiated (Not Completed)';
+			columnDef.aTargets = [entityIndex];
+			break;
+		case 'completed':
+			columnDef.sTitle = 'Games Completed';
+			columnDef.aTargets = [entityIndex + 1];
+			break;
+		case 'total':
+			columnDef.sTitle = 'Total Games Played';
+			columnDef.aTargets = [entityIndex + 2];
+			break;
+		case 'entityName':
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [entityIndex - 1];
+		default: 
+			break;
+	}
+
+	return columnDef;
+};
+
+var getColumnTitleForCategory = function(categorization_type) {
+	switch (categorization_type) {
+		case CATEGORIZATION_TYPE.DEFAULT: 
+			return 'Date';
+			break;
+		case CATEGORIZATION_TYPE.GAME_VERSION: 
+			return 'Game Version'; 
+			break;
+		case CATEGORIZATION_TYPE.ROLE: 
+			return 'Role'; 
+			break;
+		case CATEGORIZATION_TYPE.SCENARIO:
+			return 'Scenario';
+			break;
+		default:
+			return categorization_type;
+			break;
+	}
+
+}
 
 /**
  * Let's GO!

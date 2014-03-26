@@ -69,9 +69,11 @@ var getCalculatedStats = function(sessions, categorize_type) {
 
 		var sessionComplete = (rawSession.completed == true);
 
-		var bucketKey = getBucketKey(rawSession, categorize_type);
+		var bucketInfo = getBucketInfo(rawSession, categorize_type);
+		var key = bucketInfo.key;
+		var keyEntityName = bucketInfo.keyEntityName;
 
-		var bucketValue = stats[bucketKey];
+		var bucketValue = stats[key];
 
 		if (bucketValue != null) {
 			var valToIncrement = sessionComplete ? 'completed' : 'initiated';
@@ -80,12 +82,14 @@ var getCalculatedStats = function(sessions, categorize_type) {
 		} else {
 			var completed = sessionComplete ? rawSession.count : 0;
 			var initiated = sessionComplete ? 0 : rawSession.count;
+			var total = completed + initiated;
 
-			stats[bucketKey] = {};
-			stats[bucketKey][categorize_type] = bucketKey;
-			stats[bucketKey].initiated = initiated;
-			stats[bucketKey].completed = completed;
-			stats[bucketKey].total = completed + initiated;
+			stats[key] = { initiated: initiated, completed: completed, total: total }
+			stats[key][categorize_type] = key;
+
+			if (keyEntityName != null) {
+				stats[key].entityName = keyEntityName;
+			}
 		}
 	});
 
@@ -94,26 +98,29 @@ var getCalculatedStats = function(sessions, categorize_type) {
 	return results;
 };
 
-var getBucketKey = function(session, categorize_type) {
-	var bucket_key = null;
+var getBucketInfo = function(session, categorize_type) {
+	var bucketInfo = { key : null };
 	switch (categorize_type) {
 		case CATEGORIZE_TYPE.DEFAULT:
-			bucket_key = moment(session.started_at).format('MMM D YYYY');
+			bucketInfo.key = moment(session.started_at).format('MMM D YYYY');
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
-			bucket_key = session.draft_state_id;
+			bucketInfo.key = session.draft_state_id;
+			// Need to figure out where this user-defined version name comes from: broadcasts table ?
 			break;
 		case CATEGORIZE_TYPE.ROLE:
-			bucket_key = session.role_id;
+			bucketInfo.key = session.role_id;
+			bucketInfo.keyEntityName = session.role_name;
 			break;
 		case CATEGORIZE_TYPE.SCENARIO:
-			bucket_key = session.scenario_id;
+			bucketInfo.key = session.scenario_id;
+			bucketInfo.keyEntityName = session.scenario_name;
 			break;
 		default:
 			break;
 	}
 
-	return bucket_key;
+	return bucketInfo;
 };
 
 /**
