@@ -13,9 +13,9 @@ module.exports = function(app) {
 	session_routes(app);
 	events_routes(app);
 
-	/////////////
-	// Views  //
-	/////////////
+	/////////////////////////////////
+	// Analytics Site API / Views //
+	/////////////////////////////////
 	app.get('/overview/:draft_id', overview.index);
-	app.get('/games-initiated/:draft_id', session_stats.sessionsInitiated);
+	app.get('/games-played/:draft_id', session_stats.show);
 };

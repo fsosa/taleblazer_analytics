@@ -9,49 +9,55 @@ var CATEGORIZE_TYPE = {
 	SCENARIO: 'scenarios'
 };
 
-exports.sessionsInitiated = function(req, res, next) {
+exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
+
+	// Render the page if it's not an AJAX request
+	if (!req.xhr) {
+		res.render('games-initiated.ect', {
+			draft_id: draft_id,
+			title: 'Games Played',
+			script: 'overview.js'
+		});
+		return;
+	}
+
+	// Otherwise we start processing the query
 	var start_time = req.body.start_time || req.query.start_time;
 	var end_time = req.body.end_time || req.query.end_time;
-	// categorize_by defines the attributes we want to get (i.e. count(*) or not)
-	// and how we group stuff
-	// none: no count, no group
-	// game_version: attributes: count, group_by: draft_state_id
-	// role: attributes: count, group_by: role_id
-	// scenario: attributes: count, group_by: scenario_id
 	var categorize_by = req.body.categorize_by || req.query.categorize_by;
 
 	if (start_time == null || end_time == null) {
-		// Default: beginning of week to end of current day
-		start_time = moment().startOf('week');
-		end_time = moment().endOf('day');
-	} else {
-		start_time = moment(start_time).startOf('day');
-		end_time = moment(end_time).endOf('day');
+		res.jerror(400, "start_time and end_time parameters are required");
+		return;
 	}
 
 	var query_options = getCategorizeQueryOptions(categorize_by);
 
 	getSessions(draft_id, start_time, end_time, next, query_options, function(sessions) {
 		if (sessions) {
-			var stats = getSessionStats(sessions);
-
 			// needs to bucket by categories
 			// make a method
-			var bucketed_values = { }
+			var bucketed_values = {};
 
 			var session_values = _.map(sessions.rows, function(session) {
-				var sess = session.values
+				var sess = session.values;
 				sess = _.omit(sess, 'id');
 				var dateString = moment(sess.started_at).format('MMM D YYYY');
-				sess.started_at = moment(sess.started_at).format('MMM D YYYY')
+				sess.started_at = moment(sess.started_at).format('MMM D YYYY');
 				sess.completed = (sess.completed == true);
 
 				if (bucketed_values[dateString] == null) {
 					if (sess.completed) {
-						bucketed_values[dateString] = { initiated: 0, completed: sess.count }
+						bucketed_values[dateString] = {
+							initiated: 0,
+							completed: sess.count
+						};
 					} else {
-						bucketed_values[dateString] = { initiated: sess.count, completed: 0 }  
+						bucketed_values[dateString] = {
+							initiated: sess.count,
+							completed: 0
+						};
 					}
 				} else {
 					if (sess.completed) {
@@ -59,41 +65,26 @@ exports.sessionsInitiated = function(req, res, next) {
 					} else {
 						bucketed_values[dateString].initiated = bucketed_values[dateString].initiated + sess.count;
 					}
-				}				
+				}
 				return sess;
 			});
 
-			console.log(bucketed_values);
-
 			var results = _.map(Object.keys(bucketed_values), function(date) {
-				var x = { date: date };
-				console.log(date);
-				console.log(bucketed_values[date]);
+				var x = {
+					date: date,
+					total_games: (bucketed_values[date].completed + bucketed_values[date].initiated)
+				};
 				_.extend(x, bucketed_values[date]);
-				console.log(x);
 				return x;
 			});
 
-			console.log(results);
-
-
 			data = {
 				results: results,
-				stats: stats
 			};
 
 			if (req.xhr) {
 				res.jsend(200, data);
-			} else {
-				res.render('games-initiated.ect', {
-					draft_id: draft_id,
-					title: 'Games Played',
-					stats: stats,
-					sessions: session_values,
-					script: 'overview.js'
-				});
 			}
-
 		}
 	});
 
@@ -104,6 +95,14 @@ exports.sessionsInitiated = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
+/**
+ * Given a category type, returns an object containing conditions for the Session query
+ * @param  {String} categorize_by 	CATEGORIZE_TYPE 
+ * @return {Object}                	- object with 'attributes' and 'group' options as used in Sequelize queries
+ *                                    - attributes: Array of columns to return in the query result 
+ *                                    - group: Array of grouping options
+ *                                    - See: http://sequelizejs.com/docs/latest/models#finders
+ */
 var getCategorizeQueryOptions = function(categorize_by) {
 	var attributes = null;
 	var group = null;
@@ -128,46 +127,27 @@ var getCategorizeQueryOptions = function(categorize_by) {
 	}
 
 	var options = {
-		attributes: attributes, 
+		attributes: attributes,
 		group: group
-	}
+	};
 
 	return options;
 };
 
-var getSessionStats = function(sessions) {
-	var stats = {
-		sessions_initiated: sessions.count
-	};
-
-	var sessions_completed = 0;
-	var sum_completion_time = 0;
-
-	for (i = 0; i < sessions.rows.length; i++) {
-		var session = sessions.rows[i];
-		if (session.completed) {
-			sessions_completed = sessions_completed + 1;
-
-			var game_length_sec = (session.last_event_at - session.started_at) / 1000;
-
-			sum_completion_time = sum_completion_time + game_length_sec;
-		}
-	}
-
-	stats.sessions_completed = sessions_completed;
-
-	var avg_completion_time = (sessions_completed == 0) ? 0 : Math.round((sum_completion_time / sessions_completed) / 60);
-	stats.avg_completion_time = avg_completion_time;
-
-	stats.download_count = 0;
-
-	return stats;
-};
-
-var getSessions = function(draft_id, start_time, end_time, next, options, callback) {
+/**
+ * Gets a list of sessions for the given draft, started between the start and end time
+ * @param  {String}   draft_id   			[ID of the draft (game)]
+ * @param  {String}   start_time 			[number of milliseconds from unix epoch]
+ * @param  {String}   end_time   			[number of milliseconds from unix epoch]
+ * @param  {Function} next       			[Express middleware function (for error processing)]
+ * @param  {[type]}   queryConditions    	[object containing 'attributes' and 'group' arrays representing Sequelize query conditions]
+ * @param  {Function} callback   			[function to call once queries have been processed]
+ * @return {Array}              			[results of query as Session objects]
+ */
+var getSessions = function(draft_id, start_time, end_time, next, queryConditions, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
-	start_time = start_time.toDate();
-	end_time = end_time.toDate();
+	start_time = new Date(parseInt(start_time));
+	end_time = new Date(parseInt(end_time));
 
 	db.DraftState
 		.findAll({
@@ -190,8 +170,8 @@ var getSessions = function(draft_id, start_time, end_time, next, options, callba
 						},
 						draft_state_id: draft_state_ids
 					},
-					attributes: options.attributes,
-					group: options.group
+					attributes: queryConditions.attributes,
+					group: queryConditions.group
 				})
 				.success(function(sessions) {
 					callback(sessions);
@@ -204,7 +184,3 @@ var getSessions = function(draft_id, start_time, end_time, next, options, callba
 			next(error);
 		});
 };
-
-
-// attributes: [db.sequelize.col('*'), [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']],
-// 					group: [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id']
