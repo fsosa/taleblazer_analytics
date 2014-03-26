@@ -3,7 +3,7 @@ var _ = require('underscore');
 var moment = require('moment');
 
 var CATEGORIZE_TYPE = {
-	DEFAULT: 'default',
+	DEFAULT: 'default', // Consider renaming this to DATE b/c that's what it really is
 	GAME_VERSION: 'game_version',
 	ROLE: 'roles',
 	SCENARIO: 'scenarios'
@@ -19,28 +19,30 @@ exports.show = function(req, res, next) {
 			title: 'Games Played',
 			script: 'overview.js'
 		});
+
 		return;
 	}
 
-	// Otherwise we start processing the query
-	var start_time = req.body.start_time || req.query.start_time;
-	var end_time = req.body.end_time || req.query.end_time;
-	var categorize_by = req.body.categorize_by || req.query.categorize_by;
+	// Otherwise we start processing the API call
+	var start_time = req.query.start_time;
+	var end_time = req.query.end_time;
+	var categorize_by = req.query.categorize_by;
+	// TODO: add CSV option (which would just stop the bucketing from happening)
 
 	if (start_time == null || end_time == null) {
-		res.jerror(400, "start_time and end_time parameters are required");
+		res.jerror(400, 'start_time and end_time parameters are required');
 		return;
 	}
 
-	var query_options = getCategorizeQueryOptions(categorize_by);
+	var query_conditions = getQueryConditions(categorize_by);
 
-	getSessions(draft_id, start_time, end_time, next, query_options, function(sessions) {
+	getSessions(draft_id, start_time, end_time, next, query_conditions, function(sessions) {
 		if (sessions) {
 			// needs to bucket by categories
 			// make a method
 			var bucketed_values = {};
 
-			var session_values = _.map(sessions.rows, function(session) {
+			var session_values = _.map(sessions, function(session) {
 				var sess = session.values;
 				sess = _.omit(sess, 'id');
 				var dateString = moment(sess.started_at).format('MMM D YYYY');
@@ -79,7 +81,7 @@ exports.show = function(req, res, next) {
 			});
 
 			data = {
-				results: results,
+				results: results
 			};
 
 			if (req.xhr) {
@@ -95,15 +97,44 @@ exports.show = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
+var getCalculatedStats = function(sessions) {
+	var bucketedStats = {};
+
+
+};
+
+var getBucketKey = function(session, categorize_type) {
+	var bucket_key = null;
+	switch (categorize_type) {
+		case CATEGORIZE_TYPE.DEFAULT:
+			bucket_key = moment(session.started_at).format('MMM D YYYY');
+			break;
+		case CATEGORIZE_TYPE.GAME_VERSION:
+			bucket_key = session.draft_state_id;
+			break;
+		case CATEGORIZE_TYPE.ROLE:
+			bucket_key = session.role_id;
+			break;
+		case CATEGORIZE_TYPE.SCENARIO:
+			bucket_key = session.scenario_id;
+			break;
+		default:
+			break;
+	}
+
+	return bucket_key;
+};
+
 /**
  * Given a category type, returns an object containing conditions for the Session query
- * @param  {String} categorize_by 	CATEGORIZE_TYPE 
+ * @param  {String} categorize_by 	CATEGORIZE_TYPE
  * @return {Object}                	- object with 'attributes' and 'group' options as used in Sequelize queries
- *                                    - attributes: Array of columns to return in the query result 
+ *                                    - attributes: Array of columns to return in the query result
  *                                    - group: Array of grouping options
  *                                    - See: http://sequelizejs.com/docs/latest/models#finders
+ *                                    	(specifically the section: "Manipulating the dataset with limit, offset, order and group")
  */
-var getCategorizeQueryOptions = function(categorize_by) {
+var getQueryConditions = function(categorize_by) {
 	var attributes = null;
 	var group = null;
 
@@ -123,6 +154,8 @@ var getCategorizeQueryOptions = function(categorize_by) {
 		case CATEGORIZE_TYPE.SCENARIO:
 			attributes = ['scenario_id', 'scenario_name', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
 			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'scenario_id'];
+			break;
+		default:
 			break;
 	}
 
@@ -163,7 +196,7 @@ var getSessions = function(draft_id, start_time, end_time, next, queryConditions
 			});
 
 			db.Session
-				.findAndCountAll({
+				.findAll({
 					where: {
 						started_at: {
 							between: [start_time, end_time]
