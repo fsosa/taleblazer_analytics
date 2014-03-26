@@ -2,7 +2,7 @@ var db = require('../models');
 var _  = require('underscore');
 
 
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
 	db.DraftState
 		.findAll({ where: { draft_id: 4, published_game: 1 }, attributes: ['id'] })
 		.success(function(resu) {
@@ -14,15 +14,17 @@ exports.index = function(req, res) {
 				})
 				.error(function(error){
 					res.jerror(500, error);	
+					next(error);
 				})							
 		})
 		.error(function(error) {
 			res.jerror(500, error);
+			next(error);
 		})
 
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
 	db.Device
 		.find({ where: { device_id: req.body.device_id } })
 		.success(function(device) {
@@ -38,6 +40,7 @@ exports.create = function(req, res) {
 		.error(function(error) {
 			// There was an error retrieving the object from the database
 			res.jerror(500, error);
+			next(error);
 		});
 };
 

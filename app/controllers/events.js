@@ -10,7 +10,7 @@ var EVENT_TYPES = {
 	TTV_ENABLED: 'TTV_ENABLED'
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
 	var events = req.body.events;
 
 	// Validate required fields and types
@@ -43,30 +43,34 @@ exports.create = function(req, res) {
 			// Extract changes to sessions (latest event times / ttv enabled) so that we know what to update
 			extractSessionChanges(raw_event, session_changes);
 
-			addEventCreationQuery(raw_event, t, chainer, res);
+			addEventCreationQuery(raw_event, t, chainer, res, next);
 		}
 
 		// Update the session with the updated last_event_at timestamp
 		for (var session_id in session_changes) {
 			var updates = session_changes[session_id];
-			addSessionUpdateQuery(session_id, updates, t, chainer, res);
+			addSessionUpdateQuery(session_id, updates, t, chainer, res, next);
 		}
 
 		chainer.run()
 			.success(function(results) {
-				t.commit().success(function() {
-					res.jsend(201, results);
-				})
+				t.commit()
+					.success(function() {
+						res.jsend(201, results);
+					})
 					.error(function(error) {
-						res.jerror(500, results);
+						next(error);
 					});
 			})
 			.error(function(error) {
-				t.rollback().success(function() {
-					res.jerror(500, error);
-				}).error(function() {
-					res.jerror(500, error);
-				});
+				t.rollback()
+					.success(function() {
+						res.jerror(500, error);
+						next(error);
+					}).error(function() {
+						res.jerror(500, error);
+						next(error);
+					});
 			});
 
 	});
@@ -142,8 +146,10 @@ var extractSessionChanges = function(event, session_changes) {
 };
 
 
-var addSessionUpdateQuery = function(session_id, updates, t, chainer, res) {
-	var transaction = { transaction: t };
+var addSessionUpdateQuery = function(session_id, updates, t, chainer, res, next) {
+	var transaction = {
+		transaction: t
+	};
 
 	db.Session
 		.find({
@@ -154,20 +160,23 @@ var addSessionUpdateQuery = function(session_id, updates, t, chainer, res) {
 		.success(function(session) {
 			chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
 				t.rollback().success(function() {
-					res.jerror(500, error);
+					// res.jerror(500, error);
+					next(new Error(JSON.stringify(error)));
 				});
 			}));
 		})
 		.error(function(error) {
-			console.log(error);
+			next(error);
 		});
 };
 
-var addEventCreationQuery = function(raw_event, t, chainer, res) {
+var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 	var event_fields = null;
 	var event_type = raw_event.event_type;
 	var query = null;
-	var transaction = { transaction: t };
+	var transaction = {
+		transaction: t
+	};
 
 	switch (event_type) {
 		case EVENT_TYPES.AGENT_BUMP:
@@ -175,7 +184,7 @@ var addEventCreationQuery = function(raw_event, t, chainer, res) {
 
 			chainer.add(db.AgentBump.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
-					res.jerror(500, error);
+					next(new Error(JSON.stringify(error)));
 				});
 			}));
 
@@ -186,6 +195,7 @@ var addEventCreationQuery = function(raw_event, t, chainer, res) {
 			chainer.add(db.RegionSwitch.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
 					res.jerror(500, error);
+					next(error);
 				});
 			}));
 
@@ -196,6 +206,7 @@ var addEventCreationQuery = function(raw_event, t, chainer, res) {
 			chainer.add(query = db.GameCompletion.create(event_fields, transaction).error(function(error) {
 				t.rollback().success(function() {
 					res.jerror(500, error);
+					next(error);
 				});
 			}));
 
@@ -209,6 +220,7 @@ var addEventCreationQuery = function(raw_event, t, chainer, res) {
 			chainer.add(cet.save(transaction).error(function(error) {
 				t.rollback().success(function() {
 					res.jerror(500, error);
+					next(error);
 				});
 			}));
 

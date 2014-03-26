@@ -448,7 +448,7 @@ describe('Events API', function() {
 					agent_id: 6,
 					agent_name: 'BAD PERSON',
 					session_id: 1,
-					occurred_at: (new Date() - 10000)
+					occurred_at: (new Date() - 10000) // i.e. bad b/c missing BUMP_TYPE
 				}]
 			}
 			request

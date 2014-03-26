@@ -11,14 +11,17 @@ module.exports = {
   development: {
     db: dbConfig.development, 
     PORT: 3000,
+    LOG_DIR: './logs/'
   },
   test: {
     db: dbConfig.test, 
     PORT: 3000,
+    LOG_DIR: './logs/'
   },
   production: {
     db: dbConfig.production, 
-    PORT: 3000
+    PORT: 3000,
+    LOG_DIR: './logs/'
   }
 };
 

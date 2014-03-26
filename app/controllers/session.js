@@ -1,20 +1,21 @@
 var db = require('../models');
 var _ = require('underscore');
 
-exports.index = function(req, res) {
+exports.index = function(req, res, next) {
 	db.Session.findAll()
 		.success(function(sessions) {
 			res.jsend(sessions);
 		}).error(function(error) {
 			res.jerror(error);
+			next(error);
 		});
 };
 
-exports.create = function(req, res) {
-	createSession(req, res);
+exports.create = function(req, res, next) {
+	createSession(req, res, next);
 };
 
-exports.update = function(req, res) {
+exports.update = function(req, res, next) {
 	// Currently we only update sessions if tap_to_visit was enabled
 	if (!_.isBoolean(req.body.tap_to_visit)) {
 		res.jsend(400, "tap_to_visit must be a boolean");
@@ -26,6 +27,7 @@ exports.update = function(req, res) {
 			res.jsend(200, result);
 		}).error(function(err) {
 			res.jerror(500, err);
+			next(error);
 		});
 	}
 };
@@ -34,7 +36,7 @@ exports.update = function(req, res) {
 // Utility Methods //
 /////////////////////
 
-var createSession = function(req, res) {
+var createSession = function(req, res, next) {
 	if (req.body.draft_state_id == null || req.body.device_id == null || req.body.started_at == null) {
 		res.jerror(400, "Missing required parameter");
 		return;
@@ -77,10 +79,12 @@ var createSession = function(req, res) {
 				.error(function(error) {
 					// Session creation error e.g. model validation failed
 					res.jerror(400, error);
+					next(error);
 				});
 		})
 		.error(function(error) {
 			res.jerror(400, error);
+			next(error);
 		});
 
 
