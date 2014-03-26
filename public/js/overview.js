@@ -173,15 +173,15 @@ var getColumnDef = function(key, categorization_type) {
 			break;
 		case 'initiated': 
 			columnDef.sTitle = 'Games Initiated (Not Completed)';
-			columnDef.aTargets = [entityIndex];
+			columnDef.aTargets = [entityIndex+ 1];
 			break;
 		case 'completed':
 			columnDef.sTitle = 'Games Completed';
-			columnDef.aTargets = [entityIndex + 1];
+			columnDef.aTargets = [entityIndex + 2];
 			break;
 		case 'total':
 			columnDef.sTitle = 'Total Games Played';
-			columnDef.aTargets = [entityIndex + 2];
+			columnDef.aTargets = [entityIndex];
 			break;
 		case 'entityName':
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
