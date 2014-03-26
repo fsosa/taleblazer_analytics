@@ -12,17 +12,24 @@ var moment = require('moment');
  */
 exports.index = function(req, res, next) {
 	var draft_id = req.params.draft_id;
-	var start_time = req.body.start_time || req.query.start_time;
-	var end_time = req.body.end_time || req.query.end_time;
 
+	// Render the page if it's not an AJAX request
+	if (!req.xhr) {
+		res.render('overview.ect', {
+			draft_id: draft_id,
+			title: 'Overview',
+			script: 'overview.js'
+		});
+
+		return;
+	}
+
+	var start_time = req.query.start_time;
+	var end_time = req.query.end_time;
 
 	if (start_time == null || end_time == null) {
-		// If no time is provided, default to the time period from the beginning of the week to the end of the current day
-		start_time = moment().startOf('week');
-		end_time = moment().endOf('day');
-	} else {
-		start_time = moment(start_time).startOf('day');
-		end_time = moment(end_time).endOf('day');
+		res.jerror(400, 'start_time and end_time parameters are required');
+		return;
 	}
 
 	// Get the list of sessions for the draft between the start and end time
@@ -30,17 +37,7 @@ exports.index = function(req, res, next) {
 		function(results) {
 			if (results) {
 				var stats = getSessionStats(results);
-
-				if (req.xhr) {
-					res.jsend(stats);
-				} else {
-					res.render('overview.ect', {
-						draft_id: draft_id,
-						title: 'Overview',
-						script: 'overview.js'
-					});					
-				}
-
+				res.jsend(200, stats);
 			}
 		});
 
@@ -83,8 +80,8 @@ var getSessionStats = function(sessions) {
 
 var getSessions = function(draft_id, start_time, end_time, next, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
-	start_time = start_time.toDate();
-	end_time = end_time.toDate();
+	start_time = new Date(parseInt(start_time));
+	end_time = new Date(parseInt(end_time));
 
 	db.DraftState
 		.findAll({

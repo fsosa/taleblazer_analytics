@@ -73,7 +73,7 @@ var getOverviewStats = function(start_time, end_time, categorize_by) {
 		updateStats(response.data); // for overview (stats)
 
 		// NOTE: WE REALLY NEED TO SEPARATE THIS STUFF OUT!
-		updateDataTable(response.data, categorize_by);
+		updateDataTable(response.data, categorize_by); // for games played page
 	});
 };
 
@@ -112,6 +112,10 @@ var updateDateRangeHeader = function(start_time, end_time) {
  * @param  {[type]} data [Object containing results of API call]
  */
 var updateDataTable = function(data, categorize_by) {
+	if (data.results == null) {
+		return;
+	}
+	
 	var dataTable = $('#dataTable');
 
 	if (data.results.length == 0) {
