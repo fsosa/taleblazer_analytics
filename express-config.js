@@ -10,7 +10,7 @@ var expressWinston = require('./lib/express-winston');
 // Express Middleware Configuration //
 //////////////////////////////////////
 
-var setupWinston = function(env) {
+var setupLogDirectory = function(env) {
 	var config = require('./config/config')[env];
 	var LOG_DIR = config.LOG_DIR;
 
@@ -19,34 +19,52 @@ var setupWinston = function(env) {
 		fs.mkdirSync(LOG_DIR);
 	}
 
-	var filename = LOG_DIR + env + '.log'; // Make configurable
-	var consoleOptions = { colorize: true };
-	var fileOptions = { filename: filename, json: false, timestamp: false };
+	return LOG_DIR;
+};
 
-	if (env != 'dev') {
-		// By default, the Console transport is set on the default logger (winston)
-		winston.remove(winston.transports.Console); 
+var getRequestLogger = function(env, log_dir) {
+	var transport = null;
+
+	if (env == 'development') {
+		transport = new winston.transports.Console({
+			json: false,
+			colorize: true
+		});
+	} else {
+		transport = new winston.transports.File({
+			filename: log_dir + env + '.log', 
+			json: false
+		});
 	}
 
-	winston.add(winston.transports.File, fileOptions);
-}
+	return expressWinston.logger({
+		transports: [transport],
+		meta: false, 
+		msg: "{{req.headers.host}} - {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms"
+	});
+};
 
-var getRequestLogger = function(env) {
-	setupWinston(env);
+var getErrorLogger = function(env, log_dir) {
+	var transport = null;
 
-	var winstonStream = {
-		write: function(message, encoding) {
-			winston.info(message.trim());
-		}
+	if (env == 'development') {
+		transport = new winston.transports.Console({
+			json: false,
+			colorize: true
+		});
+	} else {
+		transport = new winston.transports.File({
+			filename: log_dir + env + '.error.log' 
+		});
 	}
 
-	// See (http://www.senchalabs.org/connect/logger.html) for format options
-	var format = (env == 'development') ? 'dev' : 'default';
-
-	return express.logger({ stream: winstonStream, format: format });
-}
+	return expressWinston.errorLogger({
+		transports: [transport]
+	});
+};
 
 module.exports = function(app, env) {
+
 	///////////////////////////////////////////
 	// IMPORTANT: DECLARATION ORDER MATTERS //
 	//////////////////////////////////////////
@@ -64,8 +82,9 @@ module.exports = function(app, env) {
 	app.use(express.methodOverride());
 	app.use(express.cookieParser());
 
-	var requestLogger = getRequestLogger(env);
-	app.use(requestLogger);
+	// Request logger MUST come before the router
+	var log_dir = setupLogDirectory(env);
+	app.use(getRequestLogger(env, log_dir));
 
 	// Router should be the second to last to load
 	// The order that middleware is passed to app.use is the order that requests will be handled
@@ -74,20 +93,13 @@ module.exports = function(app, env) {
 	app.use(app.router);
 	app.use(express.static(__dirname + '/public'));
 
-	// Error logger
-	// if (true) {
-	// 	app.use(expressWinston.errorLogger({
-	// 		transports: [
-	// 			new winston.transports.File({
-	// 				json: true,
-	// 				filename: './logs/error.log' // TODO: MAKE CONFIGURABLE VIA LOG_DIRECTORY OPTION
-	// 			})
-	// 		]
-	// 	}))
-	// }
+	// Error logger MUST come after the router (so that we can get the errors)
+	app.use(getErrorLogger(env, log_dir));
 
 
 	// Development error handler 
-	app.use(express.errorHandler());
+	// TODO: Write your own error handler before getting to production
+	app.use(express.errorHandler());	
+	
 
 };
