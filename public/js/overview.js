@@ -40,8 +40,11 @@ var initDatePicker = function() {
 
 	$('#dateFilter').click(function() {
 		// Note: DatePicker uses Moment dates (See: momentjs.com)
-		var start_time = startPicker.data('DateTimePicker').getDate();
-		var end_time = endPicker.data('DateTimePicker').getDate();
+		// For each time, make sure that we get the full range (i.e. from the beginning of the starting day to the end of the end day)
+		// as this is more in line with what the user expects the filter to do.
+		// The DateTimePicker can easily be configured to support time selection as well, in case that feature needs to be implemented in the future.
+		var start_time = startPicker.data('DateTimePicker').getDate().startOf('day');
+		var end_time = endPicker.data('DateTimePicker').getDate().endOf('day');
 		var categorize_by = $('#categorizer').val();
 
 		getOverviewStats(start_time, end_time, categorize_by);
