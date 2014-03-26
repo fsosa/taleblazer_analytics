@@ -11,8 +11,13 @@ var fs = require('fs'),
 	db = {};
 
 // Environment configuration
-var env = process.env.NODE_ENV || 'development';
+var env = process.argv[2] || process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
+
+if (config == null) {
+	console.log("Environment must be development / test / production");
+	return;
+}
 
 // Configure database options
 var options = {
