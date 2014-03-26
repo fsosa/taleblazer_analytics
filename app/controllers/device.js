@@ -13,12 +13,10 @@ exports.index = function(req, res, next) {
 					res.jsend(results);
 				})
 				.error(function(error){
-					res.jerror(500, error);	
 					next(error);
 				})							
 		})
 		.error(function(error) {
-			res.jerror(500, error);
 			next(error);
 		})
 
@@ -34,12 +32,11 @@ exports.create = function(req, res, next) {
 				res.jerror(409, message);
 			} else {
 				// No device with matching device_id found, so create a new one
-				createDevice(req, res);
+				createDevice(req, res, next);
 			}
 		})
 		.error(function(error) {
 			// There was an error retrieving the object from the database
-			res.jerror(500, error);
 			next(error);
 		});
 };
@@ -48,7 +45,7 @@ exports.create = function(req, res, next) {
 // Utility Methods  //
 //////////////////////
 
-var createDevice = function(req, res) {
+var createDevice = function(req, res, next) {
 	var device_fields = {
 		device_id: req.body.device_id,
 		os_type: req.body.os_type,

@@ -6,7 +6,6 @@ exports.index = function(req, res, next) {
 		.success(function(sessions) {
 			res.jsend(sessions);
 		}).error(function(error) {
-			res.jerror(error);
 			next(error);
 		});
 };
@@ -26,7 +25,6 @@ exports.update = function(req, res, next) {
 		).success(function(result) {
 			res.jsend(200, result);
 		}).error(function(err) {
-			res.jerror(500, err);
 			next(error);
 		});
 	}
@@ -79,12 +77,10 @@ var createSession = function(req, res, next) {
 				.error(function(error) {
 					// Session creation error e.g. model validation failed
 					res.jerror(400, error);
-					next(error);
 				});
 		})
 		.error(function(error) {
 			res.jerror(400, error);
-			next(error);
 		});
 
 
