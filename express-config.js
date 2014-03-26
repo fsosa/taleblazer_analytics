@@ -45,7 +45,7 @@ var getErrorLogger = function(env, log_dir) {
 
 	if (env == 'development') {
 		transport = new winston.transports.Console({
-			json: false,
+			json: true,
 			colorize: true
 		});
 	} else {

@@ -40,7 +40,6 @@ exports.show = function(req, res, next) {
 		if (sessions) {
 
 			var results = getCalculatedStats(sessions, categorize_by);
-			console.log(results);
 
 			data = {
 				results: results
