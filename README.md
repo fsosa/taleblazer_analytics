@@ -16,11 +16,27 @@
 
 3. Configure your database connection.
     1. In the `config` directory, copy `config.example.json` to `config.json`.
-    2. Fill in the details for the environment that you're in and remove all other environments.            
-        - If you're deploying to production or dev, get the details from the `database.php` in `app/Config` of the [TaleBlazer Server repository](https://bitbucket.org/taleblazer/taleblazer_server).
-        - IMPORTANT: For production and dev environments, only leave ONE entry in this file. **DO NOT INCLUDE THE TEST ENVIRONMENT***
+    2. Fill in the details for the environment that you're in, according to your purpose:
+        - **For development purposes**: Fill in 'development' and 'test' so that you can run tests locally. Make sure that the database for 'test' is **different** from the 'development' database, as running tests clears and remakes analytics tables every time they are run.
+        - **For deployment purposes**: Only fill in the 'production' entry, and delete the rest. **DO NOT INCLUDE THE TEST ENVIRONMENT***
+        - *NOTE*: You can usually get the database details from the `database.php` in `app/Config` of the [TaleBlazer Server repository]( https://bitbucket.org/taleblazer/taleblazer_server).
 
-4.
-    
+4. (**For development purposes**) Set up testing
+    1. Install Mocha: `npm install mocha -g` 
+        - The `-g` flag installs it globally and is required for testing.
+    2. Run tests by running `npm test` in the top-level analytics directory.All tests should pass.
+
+5. (**For deployment purposes**) Install Forever and set the NODE_ENV environment variable.
+    1. Install Forever: `npm install forever -g`
+    2. Set the NODE_ENV variable via the following terminal commands:
+    ```
+    $ echo export NODE_ENV=production >> ~/.bash_profile
+    $ source ~/.bash_profile
+    ```
+
+6. Run the server
+    - Development: `node server.js`
+    - Deployment: `forever start -l forever.log -o out.log -e err.log -a server.js`
+        - You can stop the server with `forever stop server.js`
 
         

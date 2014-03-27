@@ -8,7 +8,7 @@ var express = require('express');
 require('./lib/jsend')(express);
 
 // Environment Configuration
-var env = process.argv[2] || process.env.NODE_ENV || 'development';
+var env = process.env.NODE_ENV || process.argv[2] || 'development';
 var config = require('./config/config')[env];
 
 if (config == null) {
