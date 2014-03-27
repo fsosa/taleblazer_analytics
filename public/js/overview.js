@@ -131,12 +131,14 @@ var updateDataTable = function(data, categorize_by) {
 		return;
 	}
 
-	// DataTables v1.10 does not support dynamic column addition and removal so in order to refresh it, we destroy the table and clear it out completely.
-	// On table destruction, the existing data gets shifted into the DOM so we have to call .empty() on the datatable DOM element to clear it out completely
+	// DataTables v1.10 does not support dynamic column addition and removal so in order to refresh it, we destroy the table.
 	if ($.fn.DataTable.fnIsDataTable(dataTable)) {
 		dataTable.dataTable().fnDestroy();
-		dataTable.empty();
 	}
+
+	// On table destruction, the existing data gets shifted into the DOM so we have to call .empty() on the datatable DOM element to clear it out completely
+	// In general, clear it out completely because DataTable will completely recreate the table DOM for us.
+	dataTable.empty();
 
 	// How to use JSON objects as datatable entries instead of arrays
  	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
@@ -147,7 +149,7 @@ var updateDataTable = function(data, categorize_by) {
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
 		return getColumnDef(key, categorize_by);
 	});
-
+	
 	dataTable.dataTable({
 		bDestroy: true,
 		bDeferRender: true,
