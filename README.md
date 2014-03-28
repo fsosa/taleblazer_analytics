@@ -36,7 +36,7 @@
 
 6. Run the server
     - Development: `node server.js`
-    - Deployment: `forever start -l forever.log -o out.log -e err.log -a server.js`
-        - You can stop the server with `forever stop server.js`
+    - Deployment: `npm start` 
+        + Stop the server with `npm stop`
 
         
