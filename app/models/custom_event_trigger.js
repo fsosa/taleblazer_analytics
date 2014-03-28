@@ -115,6 +115,7 @@ var createParentCustomEvent = function(models, custom_event_trigger, callback) {
 			// The unique index on custom_events prevents there from being two rows with the same event_id/draft_id combination
 			// Need to find a better way of creating the unique custom events per game
 			// Maybe an API call to analytics from the editor on creation? Would be a simple POST for creation and PUT for event name change
+			// IMPORTANT: If there's a duplicate entry, we don't consider it an error as it would cancel the entire transaction so we don't return an error!
 			if (error.code == 'ER_DUP_ENTRY') {
 				callback(null, custom_event_trigger);
 				return;

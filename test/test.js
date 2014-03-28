@@ -331,6 +331,13 @@ describe('Events API', function() {
 				occurred_at: latest_time + 5000,
 				session_id: 2,
 				draft_id: 89
+			},{
+				event_type: 'CUSTOM_EVENT_TRIGGER',
+				event_id: 9,
+				event_name: 'FUTURE COP MET',
+				occurred_at: latest_time + 6000,
+				session_id: 2,
+				draft_id: 89
 			}
 
 		]
