@@ -61,10 +61,13 @@ var getErrorLogger = function(env, log_dir) {
 
 module.exports = function(app, env) {
 
-	///////////////////////////////////////////
-	// IMPORTANT: DECLARATION ORDER MATTERS //
-	//////////////////////////////////////////
-
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// IMPORTANT: DECLARATION ORDER MATTERS                                                             //
+	// The order that middleware is passed to app.use is the order in which requests will be handled    //
+	// e.g. static -> router serves static file first; router -> static serves the defined route first  //
+	// http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work          //
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+			
 	// Set the view directory and templating engine
 	app.set('views', __dirname + '/app/views');
 	var ectRenderer = ECT({
@@ -78,18 +81,15 @@ module.exports = function(app, env) {
 	app.use(express.methodOverride());
 	app.use(express.cookieParser());
 
-	// Request logger MUST come before the router
+	app.use(express.static(__dirname + '/public'));
+
+	// Request logger must come BEFORE the router
 	var log_dir = setupLogDirectory(env);
 	app.use(getRequestLogger(env, log_dir));
 
-	// Router should be the second to last to load
-	// The order that middleware is passed to app.use is the order that requests will be handled
-	// e.g. static -> router serves static file first; router -> static serves the defined route first
-	// http://stackoverflow.com/questions/12695591/node-js-express-js-how-does-app-router-work
-	app.use(app.router);
-	app.use(express.static(__dirname + '/public'));
+	app.use(app.router);	
 
-	// Error logger MUST come after the router (so that we can get the errors)
+	// Error logger must come AFTER the router (so that we can get the errors)
 	app.use(getErrorLogger(env, log_dir));
 
 
