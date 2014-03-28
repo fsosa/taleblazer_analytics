@@ -156,11 +156,13 @@ var addSessionUpdateQuery = function(session_id, updates, t, chainer, res, next)
 			}
 		})
 		.success(function(session) {
-			chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
-				t.rollback().success(function() {
-					next(error);
-				});
-			}));
+			if (session) {
+				chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
+					t.rollback().success(function() {
+						next(error);
+					});
+				}));
+			}
 		})
 		.error(function(error) {
 			next(error);
