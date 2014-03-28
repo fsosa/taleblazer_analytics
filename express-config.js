@@ -35,7 +35,7 @@ var getRequestLogger = function(env, log_dir) {
 				})
 			],
 			meta: false,
-			msg: "{{req.headers.host}} - {{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms"
+			msg: "{{req.method}} {{req.url}} - {{res.statusCode}} {{res.responseTime}}ms"
 		});
 	}
 };
