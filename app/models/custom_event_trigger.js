@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			value: {
 				type: DataTypes.STRING,
-				allowNull: true,
+				allowNull: true
 			},
 			event_name: {
 				type: DataTypes.STRING,
@@ -50,18 +50,24 @@ module.exports = function(sequelize, DataTypes) {
 		{
 			setterMethods: {
 				draft_id: function(draft_id) {
-					this.draftId = draft_id
+					this.setDataValue('draft_id', draft_id);
 				},
 				game_event_id: function(game_event_id) {
-					this.gameEventId = game_event_id
+					this.setDataValue('game_event_id', game_event_id);
+				},
+				transaction: function(transaction) {
+					this.setDataValue('transaction', transaction);
 				}
 			},
 			getterMethods: {
 				draft_id: function() {
-					return this.draftId
+					return this.getDataValue('draft_id');
 				},
 				game_event_id: function() {
-					return this.gameEventId
+					return this.getDataValue('game_event_id');
+				},
+				transaction: function() {
+					return this.getDataValue('transaction');
 				}
 			},
 			classMethods: {
@@ -80,7 +86,7 @@ module.exports = function(sequelize, DataTypes) {
 				setupHooks: function(models) {
 					CustomEventTrigger.beforeCreate(function(custom_event_trigger, callback) {
 						createParentCustomEvent(models, custom_event_trigger, callback);
-					})
+					});
 				}
 			},
 
@@ -97,10 +103,10 @@ module.exports = function(sequelize, DataTypes) {
 var createParentCustomEvent = function(models, custom_event_trigger, callback) {
 	models.CustomEvent
 		.create({
-				event_id: custom_event_trigger.game_event_id,
-				draft_id: custom_event_trigger.draft_id, 
-				name: custom_event_trigger.event_name,
-		})
+			event_id: custom_event_trigger.game_event_id,
+			draft_id: custom_event_trigger.draft_id,
+			name: custom_event_trigger.event_name
+		}, custom_event_trigger.transaction)
 		.success(function(custom_event, created) {
 			callback(null, custom_event_trigger);
 		})
@@ -109,11 +115,11 @@ var createParentCustomEvent = function(models, custom_event_trigger, callback) {
 			// The unique index on custom_events prevents there from being two rows with the same event_id/draft_id combination
 			// Need to find a better way of creating the unique custom events per game
 			// Maybe an API call to analytics from the editor on creation? Would be a simple POST for creation and PUT for event name change
-			if (error.code == 'ER_DUP_ENTRY'){
+			if (error.code == 'ER_DUP_ENTRY') {
 				callback(null, custom_event_trigger);
 				return;
 			}
 
 			callback(error, null);
 		});
-}
+};

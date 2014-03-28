@@ -275,7 +275,7 @@ describe('Session API', function() {
 // Events //
 ////////////
 
-describe('Events API', function() { 
+describe('Events API', function() {
 	var latest_time = Date.now(); // in milliseconds
 
 	var events = {
@@ -380,7 +380,7 @@ describe('Events API', function() {
 					assert.equal(session.last_event_at.toString(), new Date(latest_time + 10000).toString(), "Session date and latest time should be equal");
 					assert.equal(session.tap_to_visit, true);
 					assert.notEqual(session.completed, true);
-					
+
 					app.get('db').Session
 						.find({
 							where: {
@@ -437,7 +437,7 @@ describe('Events API', function() {
 				})
 		})
 
-		it('rolls back db operations for a batch if there was an error with one of the events', function(done) {
+		it('rolls back db operations for a batch if there was an error with one of the events (request performed 2x)', function(done) {
 			var bad_events = {
 				events: [{
 					event_type: 'GAME_COMPLETION',
@@ -451,29 +451,39 @@ describe('Events API', function() {
 					occurred_at: (new Date() - 10000) // i.e. bad b/c missing BUMP_TYPE
 				}]
 			}
+
 			request
 				.post('/events')
 				.send(bad_events)
 				.expect(500)
 				.expect(isErrorResponseFormat)
 				.end(function(err, res) {
-					app.get('db').Session
-						.find({
-							where: {
-								id: 2
-							}
-						})
-						.success(function(session) {
-							assert.equal(session.completion_id, null);
-							done();
-						})
-						.error(function(error) {
-							done(err);
+
+					request
+						.post('/events')
+						.send(bad_events)
+						.expect(500)
+						.expect(isErrorResponseFormat)
+						.end(function(err, res) {
+							app.get('db').Session
+								.find({
+									where: {
+										id: 2
+									}
+								})
+								.success(function(session) {
+									assert.equal(session.completion_id, null);
+									done();
+								})
+								.error(function(error) {
+									done(err);
+								})
+
 						})
 
 				})
 
-			
+
 		});
 
 	});

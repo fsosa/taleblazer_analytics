@@ -56,18 +56,18 @@ exports.create = function(req, res, next) {
 			.success(function(results) {
 				t.commit()
 					.success(function() {
-						res.jsend(201, results);
+						res.jsend(201, "OK");
 					})
 					.error(function(error) {
-						next(error);
+						next(new Error("Transaction failed to commit"));
 					});
 			})
-			.error(function(error) {
+			.error(function(errors) {
 				t.rollback()
 					.success(function() {
-						next(error);
+						next(errors);	// Send back the query execution errors that happened (e.g. validation)
 					}).error(function() {
-						next(error);
+						next(new Error("Transaction failed to rollback"));
 					});
 			});
 
@@ -154,19 +154,12 @@ var addSessionUpdateQuery = function(session_id, updates, t, chainer, res, next)
 			where: {
 				id: session_id
 			}
-		})
+		}, transaction)
 		.success(function(session) {
 			if (session) {
-				chainer.add(session.updateAttributes(updates, transaction).error(function(error) {
-					t.rollback().success(function() {
-						next(error);
-					});
-				}));
+				chainer.add(session.updateAttributes(updates, transaction));
 			}
 		})
-		.error(function(error) {
-			next(error);
-		});
 };
 
 var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
@@ -181,44 +174,32 @@ var addEventCreationQuery = function(raw_event, t, chainer, res, next) {
 		case EVENT_TYPES.AGENT_BUMP:
 			event_fields = parseAgentBumpFields(raw_event);
 
-			chainer.add(db.AgentBump.create(event_fields, transaction).error(function(error) {
-				t.rollback().success(function() {
-					next(error);
-				});
-			}));
+			chainer.add(db.AgentBump.create(event_fields, transaction));
 
 			break;
 		case EVENT_TYPES.REGION_SWITCH:
 			event_fields = parseRegionSwitchFields(raw_event);
 
-			chainer.add(db.RegionSwitch.create(event_fields, transaction).error(function(error) {
-				t.rollback().success(function() {
-					next(error);
-				});
-			}));
+			chainer.add(db.RegionSwitch.create(event_fields, transaction));
 
 			break;
 		case EVENT_TYPES.GAME_COMPLETION:
 			event_fields = parseGameCompletionFields(raw_event);
 
-			chainer.add(query = db.GameCompletion.create(event_fields, transaction).error(function(error) {
-				t.rollback().success(function() {
-					next(error);
-				});
-			}));
+			chainer.add(query = db.GameCompletion.create(event_fields, transaction));
 
 			break;
 		case EVENT_TYPES.CUSTOM_EVENT_TRIGGER:
 			event_fields = parseCustomEventFields(raw_event);
+
+			// We build up the CustomEventTrigger because there is a setupHook that creates the CustomEvents at the same time
+			// We have to set the draft and event ID to pass it through to the CustomEvent that will be created
 			var cet = db.CustomEventTrigger.build(event_fields);
 			cet.draft_id = raw_event.draft_id;
 			cet.game_event_id = raw_event.event_id;
+			cet.transaction = transaction;
 
-			chainer.add(cet.save(transaction).error(function(error) {
-				t.rollback().success(function() {
-					next(error);
-				});
-			}));
+			chainer.add(cet.save(transaction));
 
 			break;
 	}
