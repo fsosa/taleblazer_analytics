@@ -17,6 +17,8 @@
     "winston": "~0.7.3"
   },
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec", 
+    "start": "forever start -l forever.log -o ./logs/forever.out.log -e ./logs/forever.err.log -a server.js",
+    "stop": "forever stop server.js"
   }
 }
