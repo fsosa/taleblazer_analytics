@@ -56,17 +56,6 @@ before(function(done) {
 
 describe('Device API', function() {
 
-	describe('GET /device', function() {
-
-		it('responds with a list of devices', function(done) {
-			request
-				.get('/device')
-				.expect(200)
-				.expect(isSuccessResponseFormat)
-				.end(done);
-		});
-	});
-
 	describe('POST /device', function() {
 		random_device_id = crypto.randomBytes(8).toString('hex');
 
@@ -135,6 +124,26 @@ describe('Device API', function() {
 				.expect(409)
 				.expect(isErrorResponseFormat)
 				.end(done);
+		});
+	});
+
+	describe('GET /device', function() {
+
+		it('responds with a list of devices', function(done) {
+			request
+				.get('/device')
+				.expect(200)
+				.expect(isSuccessResponseFormat)
+				.end(function(err, res) {
+					if (err) {
+						done(err);
+					} else {
+						res.body.data.should.be.a('array');
+						res.body.data[0].model.should.equal('iPhone 10');
+						res.body.data[0].id.should.equal(1);
+						done();
+					}
+				});
 		});
 	});
 
