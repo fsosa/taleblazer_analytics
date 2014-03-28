@@ -173,7 +173,8 @@ var getColumnDef = function(key, categorization_type) {
 
 	switch (key) {
 		case categorization_type: 
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' :  ' ID'
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // The first element
 			break;
 		case 'initiated': 
