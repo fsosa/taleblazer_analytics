@@ -14,7 +14,7 @@ exports.show = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		res.render('games-initiated.ect', {
+		res.render('games-played.ect', {
 			draft_id: draft_id,
 			title: 'Games Played',
 			script: 'overview.js'
