@@ -188,16 +188,16 @@ var getQueryConditions = function(categorize_by, bucketRange) {
 			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'durationBucket'];
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
-			attributes = ['draft_state_id', 'started_at', 'last_event_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'draft_state_id'];
+			attributes = ['draft_state_id', roundedDuration, [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = ['draft_state_id', 'durationBucket'];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
-			attributes = ['role_id', 'role_name', 'started_at', 'last_event_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'];
+			attributes = ['role_id', 'role_name', roundedDuration, [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = ['role_id', 'durationBucket'];
 			break;
 		case CATEGORIZE_TYPE.SCENARIO:
-			attributes = ['scenario_id', 'scenario_name', 'started_at', 'last_event_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'scenario_id'];
+			attributes = ['scenario_id', 'scenario_name', roundedDuration, [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
+			group = ['scenario_id', 'durationBucket'];
 			break;
 		default:
 			break;

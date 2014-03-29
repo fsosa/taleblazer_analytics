@@ -165,12 +165,30 @@ var updateDataTable = function(data, categorize_by) {
 var getColumnDefGameplay = function(key, categorization_type, i) {
 	var columnDef = { mData: key };
 	var entityIndex = null;
-	var isGroupKey = (key == CATEGORIZATION_TYPE.DEFAULT);
- 	var colIndex = isGroupKey ? 0 : i + 1;
- 	var colTitle = isGroupKey ? getColumnTitleForCategory(categorization_type) : key + ' min';
- 	
-	columnDef.sTitle = colTitle;
-	columnDef.aTargets = [colIndex];
+
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+		entityIndex = 1;
+	} else {
+		entityIndex = 2;
+		
+	}
+
+	switch(key) {
+		case categorization_type:
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			columnDef.aTargets = [0]; // first column
+			break;
+		case 'entityName':
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [entityIndex - 1];
+			break;
+		default:
+			columnDef.sTitle = key + ' min';
+			columnDef.aTargets = [entityIndex + i];
+			break;
+	}
+
+
 	return columnDef;
 };
 
