@@ -147,7 +147,11 @@ var updateDataTable = function(data, categorize_by) {
  	// Here, we take the first result and simply take its keys as the column titles of the datatable
  	var first_result = data.results[0];
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
-		return getColumnDef(key, categorize_by);
+		if (window.location.pathname.toString().indexOf('gameplay-duration') != -1) {
+			return getColumnDefGameplay(key, categorize_by, i);
+		} else {
+			return getColumnDef(key, categorize_by);	
+		}
 	});
 	
 	dataTable.dataTable({
@@ -156,6 +160,18 @@ var updateDataTable = function(data, categorize_by) {
 		aoColumnDefs: columnDefs,
 		aaData: data.results
 	});
+};
+
+var getColumnDefGameplay = function(key, categorization_type, i) {
+	var columnDef = { mData: key };
+	var entityIndex = null;
+	var isGroupKey = (key == CATEGORIZATION_TYPE.DEFAULT);
+ 	var colIndex = isGroupKey ? 0 : i + 1;
+ 	var colTitle = isGroupKey ? getColumnTitleForCategory(categorization_type) : key + ' min';
+ 	
+	columnDef.sTitle = colTitle;
+	columnDef.aTargets = [colIndex];
+	return columnDef;
 };
 
 // !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!! 
