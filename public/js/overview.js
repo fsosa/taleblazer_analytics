@@ -126,6 +126,8 @@ var updateDataTable = function(data, categorize_by) {
 
 	var dataTable = $('#dataTable');
 
+	$("#datatable-heading").text("Statistics (by " + getColumnTitleForCategory(categorize_by) + ")");
+
 	if (data.results.length == 0) {
 		dataTable.dataTable().fnClearTable();
 		return;
