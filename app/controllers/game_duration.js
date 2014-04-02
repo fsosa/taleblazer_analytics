@@ -256,9 +256,6 @@ var getSessions = function(draft_id, start_time, end_time, next, queryConditions
 				.error(function(error) {
 					next(error);
 				});
-			// rawQuery = "SELECT `started_at`, ROUND(TIMESTAMPDIFF(MINUTE, `started_at, `last_event_at`)) AS `duration`, COUNT(*) ";
-			// rawQuery += "FROM sessions WHERE (started_at BETWEEN " + start_time + " AND " + end_time + ") ";
-			// rawQuery += "AND `draft_state_id IN (" + _.each(draft_state_ids, )
 		})
 		.error(function(error) {
 			next(error);

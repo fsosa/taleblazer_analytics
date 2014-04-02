@@ -128,14 +128,20 @@ var updateDataTable = function(data, categorize_by) {
 
 	$("#datatable-heading").text("Statistics (by " + getColumnTitleForCategory(categorize_by) + ")");
 
-	if (data.results.length == 0) {
-		dataTable.dataTable().fnClearTable();
-		return;
-	}
 
 	// DataTables v1.10 does not support dynamic column addition and removal so in order to refresh it, we destroy the table.
 	if ($.fn.DataTable.fnIsDataTable(dataTable)) {
 		dataTable.dataTable().fnDestroy();
+	}
+
+	if (data.results.length == 0) {
+		// If the dataTable hasn't been created yet (e.g. first page load), this creates it (w/ custom empty table message) and clears it (b/c there's no data to display)
+		dataTable.dataTable({
+			oLanguage: {
+				sEmptyTable: 'No matching results'
+			}
+		}).fnClearTable();
+		return;
 	}
 
 	// On table destruction, the existing data gets shifted into the DOM so we have to call .empty() on the datatable DOM element to clear it out completely
@@ -160,7 +166,7 @@ var updateDataTable = function(data, categorize_by) {
 		bDestroy: true,
 		bDeferRender: true,
 		aoColumnDefs: columnDefs,
-		aaData: data.results
+		aaData: data.results, 
 	});
 };
 
@@ -177,7 +183,8 @@ var getColumnDefGameplay = function(key, categorization_type, i) {
 
 	switch(key) {
 		case categorization_type:
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' :  ' ID'
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // first column
 			break;
 		case 'entityName':
