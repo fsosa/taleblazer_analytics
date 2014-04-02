@@ -169,17 +169,17 @@ var getQueryConditions = function(categorize_by, bucketRange) {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// NOTE: In general, we're trying to build a query of this form (with differing group by options)                                        //
 	// 																																     	 //
-	// SELECT `started_at`, ROUND(TIMESTAMPDIFF(MINUTE, `started_at`, `last_event_at`)) as `duration`, COUNT(*) as `count` FROM `sessions`   //
+	// SELECT `started_at`, ROUND(TIMESTAMPDIFF(MINUTE, `started_at`, `last_event_at`)/bucketRange) as `duration`, COUNT(*) as `count` FROM `sessions`   //
 	// WHERE  (`started_at` BETWEEN `start_time_placeholder` AND 'end_time_placeholder')                                                     //
 	// AND `draft_state_id` IN (list_of_draft_state_ids_corresponding_to_this_draft_id)                                                      //
 	// GROUP BY DATE(`started_at`), `duration`;                                                                                              //
 	// 																																		 //
-	// -- The query will automatically group sessions by date first and then by their duration in minutes -- 							     //
-	// -- We perform addtl. bucketing later (e.g. placing things into buckets of 15 and so on) --											 //
+	// -- This query will automatically group sessions by date first and then by their duration in buckets of time ranges -- 		 		 //
+	// -- For example, if bucketRange is 15, then the query will bucket times into buckets of 15 --											 //
+	// -- e.g. if 4 games took between 0-15 minutes, then those 4 games would be bucketed into the 0th bucket (buckets are 0-indexed)		 //
+	// -- The difference between the queries are the GROUP BY options																	     //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	// var duration = db.sequelize.fn('TIMESTAMPDIFF', db.sequelize.literal('MINUTE'), db.sequelize.col('started_at'), db.sequelize.col('last_event_at'));
-	// var roundedDuration = [db.sequelize.fn('ROUND', duration), 'duration'];
 	var roundedDuration = db.sequelize.literal('ROUND(TIMESTAMPDIFF(MINUTE, `started_at`, `last_event_at`)/' + bucketRange +')  as `durationBucket`');
 
 	switch (categorize_by) {
