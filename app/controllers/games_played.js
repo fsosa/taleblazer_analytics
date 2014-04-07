@@ -1,6 +1,7 @@
 var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
+var csv = require('express-csv');
 
 var CATEGORIZE_TYPE = {
 	DEFAULT: 'default', // Consider renaming this to DATE b/c that's what it really is
@@ -11,9 +12,10 @@ var CATEGORIZE_TYPE = {
 
 exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
+	var type = req.query.type;
 
-	// Render the page if it's not an AJAX request
-	if (!req.xhr) {
+	// Render the page if it's not an AJAX and we're not asking for CSV/JSON
+	if (!req.xhr && type == null) {
 		res.render('games-played.ect', {
 			draft_id: draft_id,
 			title: 'Games Played',
@@ -26,8 +28,7 @@ exports.show = function(req, res, next) {
 	// Otherwise we start processing the API call
 	var start_time = req.query.start_time;
 	var end_time = req.query.end_time;
-	var categorize_by = req.query.categorize_by;
-	// TODO: add CSV option (which would just stop the bucketing from happening)
+	var categorize_by = req.query.categorize_by;	
 
 	if (start_time == null || end_time == null) {
 		res.jerror(400, 'start_time and end_time parameters are required');
@@ -38,16 +39,28 @@ exports.show = function(req, res, next) {
 
 	getSessions(draft_id, start_time, end_time, next, query_conditions, function(sessions) {
 		if (sessions) {
+			var results = null;
 
-			var results = getCalculatedStats(sessions, categorize_by);
+			if (categorize_by != null) {
+				results = getCalculatedStats(sessions, categorize_by);
+			} else {
+				results = getCleanedSessions(sessions);
+
+			}
 
 			data = {
 				results: results
 			};
 
-			if (req.xhr) {
+
+			if (type == 'csv') {
+				var filename = "sessions_game_id_" + draft_id + ".csv"
+				res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+				res.csv(results);
+			} else {
 				res.jsend(200, data);
 			}
+
 		}
 	});
 
@@ -58,13 +71,30 @@ exports.show = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
+var getCleanedSessions = function(sessions) {
+	var cleanedSessions = [];
+
+	var omittedFields = ['id', 'created_at', 'updated_at'];
+
+	// Insert the field names first (for CSVs)
+	var fieldNames = Object.keys( _.omit(sessions[0].values, omittedFields) )
+	cleanedSessions.push(fieldNames);
+
+	// Go through each session, get the raw values, and remove the omitted fields
+	_.each(sessions, function(session) {
+		var cleanedSession = _.omit(session.values, omittedFields)
+		cleanedSessions.push(cleanedSession);
+	});
+
+	return cleanedSessions;
+}
+
 var getCalculatedStats = function(sessions, categorize_type) {
 	var stats = {};
 
 	// Bucket sessions by 
 	_.each(sessions, function(session) {
 		var rawSession = session.values;
-		rawSession = _.omit(rawSession, 'id'); // Remove the primary key
 
 		var sessionComplete = (rawSession.completed == true);
 
@@ -83,7 +113,11 @@ var getCalculatedStats = function(sessions, categorize_type) {
 			var initiated = sessionComplete ? 0 : rawSession.count;
 			var total = completed + initiated;
 
-			stats[key] = { initiated: initiated, completed: completed, total: total }
+			stats[key] = {
+				initiated: initiated,
+				completed: completed,
+				total: total
+			}
 			stats[key][categorize_type] = key;
 
 			if (keyEntityName != null) {
@@ -98,7 +132,9 @@ var getCalculatedStats = function(sessions, categorize_type) {
 };
 
 var getBucketInfo = function(session, categorize_type) {
-	var bucketInfo = { key : null };
+	var bucketInfo = {
+		key: null
+	};
 	switch (categorize_type) {
 		case CATEGORIZE_TYPE.DEFAULT:
 			bucketInfo.key = moment(session.started_at).format('MMM D YYYY');
@@ -153,6 +189,8 @@ var getQueryConditions = function(categorize_by) {
 			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'scenario_id'];
 			break;
 		default:
+			// The ordering of these attributes determines the order they get returned in the query 
+			attributes = [['id', 'session_id'], ['draft_state_id', 'version_id'], 'device_id', 'started_at', 'last_event_at', 'role_id', 'role_name', 'scenario_id', 'scenario_name', 'tap_to_visit', 'completed']
 			break;
 	}
 
