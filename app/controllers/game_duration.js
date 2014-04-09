@@ -32,13 +32,22 @@ exports.show = function(req, res, next) {
 	if (start_time == null || end_time == null) {
 		res.jerror(400, 'start_time and end_time parameters are required');
 		return;
+	} else {
+		start_time = new Date(parseInt(start_time));
+		end_time = new Date(parseInt(end_time));
 	}
 
 	var query_conditions = getQueryConditions(categorize_by, 15);
 
-	getSessions(draft_id, start_time, end_time, next, query_conditions, function(sessions) {
-		if (sessions) {
+	var SessionService = req.app.services.SessionService;
 
+	SessionService.getSessions(draft_id, start_time, end_time, query_conditions, function(sessions, error) {
+		if (error) {
+			next(error);
+			return;
+		} 
+
+		if (sessions) {
 			var results = getCalculatedStats(sessions, categorize_by);
 
 			data = {
@@ -82,8 +91,7 @@ var getCalculatedStats = function(sessions, categorize_type) {
 	})
 	
 	_.each(sessions, function(session) {
-		var rawSession = session.values;
-		console.log(session.values);
+		var rawSession = session;
 		rawSession = _.omit(rawSession, 'id'); // Remove the primary key
 
 		// Our query already bucketed and grouped our sessions into timeBucketRange chunks (default: 15 min)
@@ -209,55 +217,4 @@ var getQueryConditions = function(categorize_by, bucketRange) {
 	};
 
 	return options;
-};
-
-/**
- * Gets a list of sessions for the given draft, started between the start and end time
- * @param  {String}   draft_id   			[ID of the draft (game)]
- * @param  {String}   start_time 			[number of milliseconds from unix epoch]
- * @param  {String}   end_time   			[number of milliseconds from unix epoch]
- * @param  {Function} next       			[Express middleware function (for error processing)]
- * @param  {[type]}   queryConditions    	[object containing 'attributes' and 'group' arrays representing Sequelize query conditions]
- * @param  {Function} callback   			[function to call once queries have been processed]
- * @return {Array}              			[results of query as Session objects]
- */
-var getSessions = function(draft_id, start_time, end_time, next, queryConditions, callback) {
-	// Retrieve a list of all published draft states and then find all sessions pertaining to those
-	start_time = new Date(parseInt(start_time));
-	end_time = new Date(parseInt(end_time));
-
-	db.DraftState
-		.findAll({
-			where: {
-				draft_id: draft_id,
-				published_game: 1
-			},
-			attributes: ['id']
-		})
-		.success(function(results) {
-			var draft_state_ids = _.map(results, function(result) {
-				return result.values['id'];
-			});
-
-			db.Session
-				.findAll({
-					where: {
-						started_at: {
-							between: [start_time, end_time]
-						},
-						draft_state_id: draft_state_ids
-					},
-					attributes: queryConditions.attributes,
-					group: queryConditions.group
-				})
-				.success(function(sessions) {
-					callback(sessions);
-				})
-				.error(function(error) {
-					next(error);
-				});
-		})
-		.error(function(error) {
-			next(error);
-		});
 };
