@@ -27,6 +27,9 @@ app.set('db', db); // SINGLETON
 // Express Configuration
 require('./express-config.js')(app, env);
 
+// Setup services
+require('./app/services')(app);
+
 // Setup routes
 require('./routes')(app);
 

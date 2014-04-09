@@ -31,16 +31,30 @@ exports.index = function(req, res, next) {
 	if (start_time == null || end_time == null) {
 		res.jerror(400, 'start_time and end_time parameters are required');
 		return;
+	} else {
+		start_time = new Date(parseInt(start_time));
+		end_time = new Date(parseInt(end_time));
 	}
 
 	// Get the list of sessions for the draft between the start and end time
-	var sessions = getSessions(draft_id, start_time, end_time, next,
-		function(results) {
-			if (results) {
-				var stats = getSessionStats(results);
-				res.jsend(200, stats);
+	req.app.services.SessionService.getSessions(draft_id, start_time, end_time, null, function(sessions, error) {
+		if(error) {
+			next(error);
+		} else {
+			if (sessions) {
+				console.log(sessions);
+				var stats = getSessionStats(sessions);
+				res.jsend(stats);
 			}
-		});
+		}
+	})
+	// getSessions(draft_id, start_time, end_time, next,
+	// 	function(results) {
+	// 		if (results) {
+	// 			var stats = getSessionStats(results);
+	// 			res.jsend(200, stats);
+	// 		}
+	// 	});
 
 };
 
@@ -79,42 +93,42 @@ var getSessionStats = function(sessions) {
 };
 
 
-var getSessions = function(draft_id, start_time, end_time, next, callback) {
-	// Retrieve a list of all published draft states and then find all sessions pertaining to those
-	start_time = new Date(parseInt(start_time));
-	end_time = new Date(parseInt(end_time));
+// var getSessions = function(draft_id, start_time, end_time, next, callback) {
+// 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
+// 	start_time = new Date(parseInt(start_time));
+// 	end_time = new Date(parseInt(end_time));
 
-	db.DraftState
-		.findAll({
-			where: {
-				draft_id: draft_id,
-				published_game: 1
-			},
-			attributes: ['id']
-		})
-		.success(function(results) {
-			var draft_state_ids = _.map(results, function(result) {
-				return result.values['id'];
-			});
+// 	db.DraftState
+// 		.findAll({
+// 			where: {
+// 				draft_id: draft_id,
+// 				published_game: 1
+// 			},
+// 			attributes: ['id']
+// 		})
+// 		.success(function(results) {
+// 			var draft_state_ids = _.map(results, function(result) {
+// 				return result.values['id'];
+// 			});
 
-			db.Session
-				.findAndCountAll({
-					where: {
-						started_at: {
-							between: [start_time, end_time]
-						},
-						draft_state_id: draft_state_ids
-					}
-				})
-				.success(function(sessions) {
-					callback(sessions);
-					return sessions;
-				})
-				.error(function(error) {
-					next(error);
-				});
-		})
-		.error(function(error) {
-			next(error);
-		});
-};
+// 			db.Session
+// 				.findAndCountAll({
+// 					where: {
+// 						started_at: {
+// 							between: [start_time, end_time]
+// 						},
+// 						draft_state_id: draft_state_ids
+// 					}
+// 				})
+// 				.success(function(sessions) {
+// 					callback(sessions);
+// 					return sessions;
+// 				})
+// 				.error(function(error) {
+// 					next(error);
+// 				});
+// 		})
+// 		.error(function(error) {
+// 			next(error);
+// 		});
+// };
