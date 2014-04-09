@@ -6,11 +6,15 @@ var SessionService = function(app) {
 };
 
 /**
- * Calls back with a list of Sessions for the given parameters
+ * Calls back with a list of Sessions for the specific draft_id, initiated between 
+ * the start_time and end_time. 
+ * 
  * @param  {Number}   draft_id        
  * @param  {Date}   start_time      
  * @param  {Date}   end_time        
- * @param  {Object}   queryConditions [Object with `attributes` and `group` keys]
+ * @param  {Object}   queryConditions [Object with `attributes` and `group` keys, each is an array of Sequelize conditions]
+ *                                    See http://sequelizejs.com/docs/latest/models#finders ('Manipulating the dataset with limit, offset, order, and group')
+ *                                 
  * @param  {Function} callback        [signature: (sessions, error)]
  */
 SessionService.prototype.getSessions = function(draft_id, start_time, end_time, queryConditions, callback) {

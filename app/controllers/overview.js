@@ -36,25 +36,19 @@ exports.index = function(req, res, next) {
 		end_time = new Date(parseInt(end_time));
 	}
 
+	var SessionService = req.app.services.SessionService;
+
 	// Get the list of sessions for the draft between the start and end time
-	req.app.services.SessionService.getSessions(draft_id, start_time, end_time, null, function(sessions, error) {
+	SessionService.getSessions(draft_id, start_time, end_time, null, function(sessions, error) {
 		if(error) {
 			next(error);
 		} else {
 			if (sessions) {
-				console.log(sessions);
-				var stats = getSessionStats(sessions);
+				var stats = calculateSessionStats(sessions);
 				res.jsend(stats);
 			}
 		}
 	})
-	// getSessions(draft_id, start_time, end_time, next,
-	// 	function(results) {
-	// 		if (results) {
-	// 			var stats = getSessionStats(results);
-	// 			res.jsend(200, stats);
-	// 		}
-	// 	});
 
 };
 
@@ -63,16 +57,17 @@ exports.index = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
-var getSessionStats = function(sessions) {
+var calculateSessionStats = function(sessions) {
 	var stats = {
-		sessions_initiated: sessions.count
+		sessions_initiated: sessions.length
 	};
 
 	var sessions_completed = 0;
 	var sum_completion_time = 0;
 
-	for (i = 0; i < sessions.rows.length; i++) {
-		var session = sessions.rows[i];
+	for (i = 0; i < sessions.length; i++) {
+		var session = sessions[i];
+
 		if (session.completed) {
 			sessions_completed = sessions_completed + 1;
 
@@ -91,44 +86,3 @@ var getSessionStats = function(sessions) {
 
 	return stats;
 };
-
-
-// var getSessions = function(draft_id, start_time, end_time, next, callback) {
-// 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
-// 	start_time = new Date(parseInt(start_time));
-// 	end_time = new Date(parseInt(end_time));
-
-// 	db.DraftState
-// 		.findAll({
-// 			where: {
-// 				draft_id: draft_id,
-// 				published_game: 1
-// 			},
-// 			attributes: ['id']
-// 		})
-// 		.success(function(results) {
-// 			var draft_state_ids = _.map(results, function(result) {
-// 				return result.values['id'];
-// 			});
-
-// 			db.Session
-// 				.findAndCountAll({
-// 					where: {
-// 						started_at: {
-// 							between: [start_time, end_time]
-// 						},
-// 						draft_state_id: draft_state_ids
-// 					}
-// 				})
-// 				.success(function(sessions) {
-// 					callback(sessions);
-// 					return sessions;
-// 				})
-// 				.error(function(error) {
-// 					next(error);
-// 				});
-// 		})
-// 		.error(function(error) {
-// 			next(error);
-// 		});
-// };
