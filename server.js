@@ -7,6 +7,9 @@ var express = require('express');
 // Extend Express with JSend responses
 require('./lib/jsend')(express);
 
+// Extend Underscore with custom utility methods
+require('./lib/underscore-mixins.js');
+
 // Environment Configuration
 var env = process.env.NODE_ENV || process.argv[2] || 'development';
 var config = require('./config/config')[env];
