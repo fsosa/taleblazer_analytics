@@ -2,6 +2,7 @@ var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
 var csv = require('express-csv');
+require('../../lib/underscore-mixins');
 
 var CATEGORIZE_TYPE = {
 	DEFAULT: 'default', // Consider renaming this to DATE b/c that's what it really is
@@ -45,7 +46,14 @@ exports.show = function(req, res, next) {
 		}
 
 		if (agent_bumps) {
-			res.jsend(200, agent_bumps);
+
+			var rawBumps = _.map(agent_bumps, function(bump) {
+				bump.session = bump.session.values;
+				var flattened = _.flattenObj(bump);
+				return _.omit(flattened, 'id');
+			})
+
+			res.jsend(200, rawBumps);
 		}
 	});
 
@@ -147,7 +155,10 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 					}]
 				})
 				.success(function(agent_bumps) {
-					callback(agent_bumps, null);
+					var result = _.map(agent_bumps, function(bump) {
+						return bump.values;
+					});
+					callback(result, null);
 				})
 				.error(function(error) {
 					callback(null, error);
