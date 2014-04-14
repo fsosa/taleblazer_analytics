@@ -51,7 +51,9 @@ exports.show = function(req, res, next) {
 				bump.session = bump.session.values;
 				var flattened = _.flattenObj(bump);
 				return _.omit(flattened, 'id');
-			})
+			});
+
+			getCalculatedStats(agent_bumps, categorize_by);
 
 			res.jsend(200, rawBumps);
 		}
@@ -62,6 +64,79 @@ exports.show = function(req, res, next) {
 //////////////////////
 // Utility Methods  //
 //////////////////////
+
+var getCalculatedStats = function(agent_bumps, categorize_type) {
+	var stats = {};
+
+	_.each(agent_bumps, function(agent_bump) {
+		var bucketInfo = getBucketInfo(agent_bump, categorize_type);
+		var key = bucketInfo.key;
+		var keyEntityName = bucketInfo.keyEntityName;
+
+		var agent_id = agent_bump.agent_id;
+		var bucketValue = stats[key];
+
+		if (bucketValue != null) {
+
+			if (stats[key][agent_id] == null) {
+				stats[key][agent_id] = {
+					agent_id: agent_id, 
+					agent_name: agent_bump.agent_name,
+					unique: 1,
+					total: agent_bump.total
+				};
+			} else {
+				stats[key][agent_id].unique += 1;
+				stats[key][agent_id].total += agent_bump.total;
+			}
+
+
+		} else {
+			stats[key] = {};
+
+			stats[key][agent_id] = {
+				agent_id: agent_bump.agent_id,
+				agent_name: agent_bump.agent_name,
+				unique: 1,
+				total: agent_bump.total
+			}
+
+			if (keyEntityName != null) {
+				stats[key].entityName = keyEntityName;
+			}
+		}
+	});
+
+	console.log(stats);
+
+};
+
+var getBucketInfo = function(agent_bump, categorize_type) {
+	var bucketInfo = {
+		key: null
+	};
+	switch (categorize_type) {
+		case CATEGORIZE_TYPE.DEFAULT:
+			bucketInfo.key = agent_bump.agent_id;
+			break;
+		case CATEGORIZE_TYPE.GAME_VERSION:
+			bucketInfo.key = agent_bump.session.draft_state_id;
+			// Need to figure out where this user-defined version name comes from: broadcasts table ?
+			break;
+		case CATEGORIZE_TYPE.ROLE:
+			bucketInfo.key = agent_bump.session.role_id;
+			bucketInfo.keyEntityName = agent_bump.session.role_name;
+			break;
+		case CATEGORIZE_TYPE.SCENARIO:
+			bucketInfo.key = agent_bump.session.scenario_id;
+			bucketInfo.keyEntityName = agent_bump.session.scenario_name;
+			break;
+		default:
+			break;
+	}
+
+	return bucketInfo;
+};
 
 var getQueryConditions = function(categorize_by) {
 	var attributes = null;
@@ -79,7 +154,7 @@ var getQueryConditions = function(categorize_by) {
 	// -- This query will group the results by agent id and session id, resulting in a list of unique agent bumps                                                                                                            //
 	//                                                                                                                                                                                                                       //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	var countAll = [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'total']; // Non-unique total
 
 	var groupBySessionId = db.sequelize.literal('session.id');
@@ -87,7 +162,7 @@ var getQueryConditions = function(categorize_by) {
 	var groupByRoleId = db.sequelize.literal('session.role_id');
 	var groupByScenarioId = db.sequelize.literal('session.scenario_id');
 
-	
+
 	switch (categorize_by) {
 		case CATEGORIZE_TYPE.DEFAULT:
 			attributes = ['agent_id', 'agent_name', countAll];
@@ -113,7 +188,7 @@ var getQueryConditions = function(categorize_by) {
 	}
 	var conditions = {
 		attributes: attributes,
-		group: group, 
+		group: group,
 		sessionAttributes: sessionAttributes
 	};
 
@@ -150,7 +225,7 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 						model: db.Session,
 						where: {
 							draft_state_id: draft_state_ids
-						}, 
+						},
 						attributes: queryConditions.sessionAttributes
 					}]
 				})
