@@ -58,6 +58,8 @@ exports.show = function(req, res, next) {
 var getQueryConditions = function(categorize_by) {
 	var attributes = null;
 	var group = null;
+	var sessionAttributes = []; // include's attributes don't act the same way as regular attributes, have to be empty
+	// TODO: probably better to change these all to empty arrays
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// In general, we're building a query of this form:                                                                                                                                                                      //
@@ -69,10 +71,42 @@ var getQueryConditions = function(categorize_by) {
 	// -- This query will group the results by agent id and session id, resulting in a list of unique agent bumps                                                                                                            //
 	//                                                                                                                                                                                                                       //
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	var countAll = [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'total']; // Non-unique total
 
+	var groupBySessionId = db.sequelize.literal('session.id');
+	var groupByRoleId = db.sequelize.literal('session.role_id');
+	var groupByDraftStateId = db.sequelize.literal('session.draft_state_id');
+	var groupByScenarioId = db.sequelize.literal('session.scenario_id');
+
+	
+	switch (categorize_by) {
+		case CATEGORIZE_TYPE.DEFAULT:
+			attributes = ['agent_id', 'agent_name', countAll];
+			group = ['agent_id', groupBySessionId];
+			break;
+		case CATEGORIZE_TYPE.GAME_VERSION:
+			attributes = ['agent_id', 'agent_name', countAll];
+			sessionAttributes = ['draft_state_id'];
+			group = ['agent_id', groupByDraftStateId];
+			break;
+		case CATEGORIZE_TYPE.ROLE:
+			attributes = ['agent_id', 'agent_name', countAll];
+			sessionAttributes = ['role_id', 'role_name'];
+			group = ['agent_id', groupByRoleId];
+			break;
+		case CATEGORIZE_TYPE.SCENARIO:
+			attributes = ['agent_id', 'agent_name', countAll];
+			sessionAttributes = ['scenario_id', 'scenario_name'];
+			group = ['agent_id', groupByScenarioId];
+			break;
+		default:
+			break;
+	}
 	var conditions = {
 		attributes: attributes,
-		group: group
+		group: group, 
+		sessionAttributes: sessionAttributes
 	};
 
 	return conditions;
@@ -108,7 +142,8 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 						model: db.Session,
 						where: {
 							draft_state_id: draft_state_ids
-						}
+						}, 
+						attributes: []
 					}]
 				})
 				.success(function(agent_bumps) {
