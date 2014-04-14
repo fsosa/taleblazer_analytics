@@ -83,8 +83,8 @@ var getQueryConditions = function(categorize_by) {
 	var countAll = [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'total']; // Non-unique total
 
 	var groupBySessionId = db.sequelize.literal('session.id');
-	var groupByRoleId = db.sequelize.literal('session.role_id');
 	var groupByDraftStateId = db.sequelize.literal('session.draft_state_id');
+	var groupByRoleId = db.sequelize.literal('session.role_id');
 	var groupByScenarioId = db.sequelize.literal('session.scenario_id');
 
 	
@@ -151,7 +151,7 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 						where: {
 							draft_state_id: draft_state_ids
 						}, 
-						attributes: []
+						attributes: queryConditions.sessionAttributes
 					}]
 				})
 				.success(function(agent_bumps) {
