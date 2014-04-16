@@ -16,15 +16,16 @@ exports.show = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	// TODO: or JSON/CSV
-	// if (!req.xhr) {
-	// 	res.render('agent-bumps.ect', {
-	// 		draft_id: draft_id,
-	// 		title: 'Agent Bumps',
-	// 		script: 'overview.js'
-	// 	});
+	if (!req.xhr) {
+		res.render('agent-bumps.ect', {
+			draft_id: draft_id,
+			title: 'Agent Bumps',
+			defaultCategorization: 'Agent',
+			script: 'overview.js'
+		});
 
-	// 	return;
-	// }
+		return;
+	}
 
 	// Otherwise we start processing the API call
 	var start_time = req.query.start_time;
@@ -55,7 +56,11 @@ exports.show = function(req, res, next) {
 
 			var stats = getCalculatedStats(agent_bumps, categorize_by);
 
-			res.jsend(200, stats);
+			var data = {
+				results: stats
+			}
+
+			res.jsend(200, data);
 		}
 	});
 

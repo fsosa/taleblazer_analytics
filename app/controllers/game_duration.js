@@ -17,6 +17,7 @@ exports.show = function(req, res, next) {
 		res.render('game-duration.ect', {
 			draft_id: draft_id,
 			title: 'Gameplay Duration',
+			defaultCategorization: 'Date',
 			script: 'overview.js'
 		});
 

@@ -19,6 +19,7 @@ exports.show = function(req, res, next) {
 		res.render('games-played.ect', {
 			draft_id: draft_id,
 			title: 'Games Played',
+			defaultCategorization: 'Date',
 			script: 'overview.js'
 		});
 

@@ -154,11 +154,19 @@ var updateDataTable = function(data, categorize_by) {
  	// !!!! PROBABLY GAMES PLAYED SPECIFIC; THIS WILL BE WEIRD WITH AGENT BUMPS
  	// Here, we take the first result and simply take its keys as the column titles of the datatable
  	var first_result = data.results[0];
+
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
-		if (window.location.pathname.toString().indexOf('gameplay-duration') != -1) {
-			return getColumnDefGameplay(key, categorize_by, i);
-		} else {
-			return getColumnDef(key, categorize_by);	
+		var page = window.location.pathname.split('/')[1];
+
+		switch(page) {
+			case 'games-played':
+				return getColumnDef(key, categorize_by);
+				break;
+			case 'gameplay-duration':
+				return getColumnDefGameplay(key, categorize_by, i);
+			case 'agent-bumps':
+				return getColumnDefAgentBump(key, categorize_by, i);
+				break;
 		}
 	});
 	
@@ -169,6 +177,34 @@ var updateDataTable = function(data, categorize_by) {
 		aaData: data.results, 
 	});
 };
+
+var getColumnDefAgentBump = function(key, categorization_type, i) {
+	var columnDef = { mData: key };
+
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+		entityIndex = 1;
+	} else {
+		entityIndex = 2;
+		
+	}
+
+	switch(key) {
+		case categorization_type:
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			columnDef.aTargets = [0]; // first column
+			break;
+		case 'entityName':
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [entityIndex - 1];
+			break;
+		default: 
+			columnDef.sTitle = key;
+			columnDef.aTargets = [entityIndex + i];
+			break;
+	}
+
+	return columnDef;
+}
 
 var getColumnDefGameplay = function(key, categorization_type, i) {
 	var columnDef = { mData: key };
@@ -246,7 +282,12 @@ var getColumnDef = function(key, categorization_type) {
 var getColumnTitleForCategory = function(categorization_type) {
 	switch (categorization_type) {
 		case CATEGORIZATION_TYPE.DEFAULT: 
-			return 'Date';
+		 	var page = window.location.pathname.split('/')[1]
+			if (page == 'agent-bumps' ) {
+				return 'Agent'
+			} else {
+				return 'Date';	
+			}
 			break;
 		case CATEGORIZATION_TYPE.GAME_VERSION: 
 			return 'Game Version'; 
