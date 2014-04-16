@@ -184,26 +184,46 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 		mData: key
 	};
 
+	var startOfAgentColIndex;
+	// Only here until we get version names in
 	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
-		entityIndex = 1;
+		startOfAgentColIndex = 1;
 	} else {
-		entityIndex = 2;
-
+		startOfAgentColIndex = 2;
 	}
+
+	var sortedDefault = categorization_type == CATEGORIZATION_TYPE.DEFAULT;
+	// When sorted by default (agent), the 'default' key provides the agent_id so there is no 'agent_id' key in the results
+	// This starting offset determines what index the agent_name and other columns belong in, based on that information
+	// i.e. if sorted by default, we use the 'default' key as the first column so 'agent_name' is the first column of agent data (placed at startOfAgentColIndex)
+	var startingOffset = sortedDefault ? 0 : 1;
 
 	switch (key) {
 		case categorization_type:
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' ID';
 			columnDef.aTargets = [0]; // first column
 			break;
 		case 'entityName':
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
-			columnDef.aTargets = [entityIndex - 1];
+			columnDef.aTargets = [startOfAgentColIndex - 1];
 			break;
-		default:
-			columnDef.sTitle = humanize(key);
-			columnDef.aTargets = [entityIndex + i];
+		case 'agent_id':
+			columnDef.sTitle = 'Agent ID';
+			columnDef.aTargets = [startOfAgentColIndex];
 			break;
+		case 'agent_name':
+			columnDef.sTitle = 'Agent name';
+			columnDef.aTargets = [startOfAgentColIndex + startingOffset];
+			break;
+		case 'unique':
+			columnDef.sTitle = 'Unique bumps';
+			columnDef.aTargets = [startOfAgentColIndex + startingOffset + 1];
+			break;
+		case 'total':
+			columnDef.sTitle = 'Total bumps';
+			columnDef.aTargets = [startOfAgentColIndex + startingOffset + 2];
+			break;
+	
 	}
 
 	return columnDef;
@@ -290,11 +310,13 @@ var getColumnTitleForCategory = function(categorization_type) {
 	switch (categorization_type) {
 		case CATEGORIZATION_TYPE.DEFAULT:
 			var page = window.location.pathname.split('/')[1];
+
 			if (page == 'agent-bumps') {
 				return 'Agent';
 			} else {
 				return 'Date';
 			}
+
 			break;
 		case CATEGORIZATION_TYPE.GAME_VERSION:
 			return 'Game Version';
