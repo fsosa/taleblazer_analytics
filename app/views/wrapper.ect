@@ -26,18 +26,18 @@
     <nav role="navigation" class="navbar-default navbar-static-side">
         <div class="sidebar-collapse">
             <ul id="side-menu" class="nav">
-                <div class="form-group">
+<!--                 <div class="form-group">
                     <select class="form-control">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option>4</option>
                     </select>
-                </div>
+                </div> -->
                 <li><a href="/overview/<%- @draft_id %>"><i class="fa fa-dashboard fa-fw"></i>Overview</a>
                 </li>
 
-                <li><a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Events<span class="fa arrow"></span></a>
+                <li class="active"><a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Events<span class="fa arrow"></span></a>
                     <ul id="eventsMenu" class="nav nav-second-level">
                         <li><a href="/games-played/<%- @draft_id %>">Games Played</a>
                         </li>
