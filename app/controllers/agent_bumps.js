@@ -219,7 +219,7 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 				draft_id: draft_id,
 				published_game: 1
 			},
-			attributes: ['id']
+			attributes: ['id'] // game version name: get the version attribute here, save in a list, return with results and add as entityname
 		})
 		.success(function(results) {
 			var draft_state_ids = _.map(results, function(result) {
