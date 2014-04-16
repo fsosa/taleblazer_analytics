@@ -53,9 +53,9 @@ exports.show = function(req, res, next) {
 				return _.omit(flattened, 'id');
 			});
 
-			getCalculatedStats(agent_bumps, categorize_by);
+			var stats = getCalculatedStats(agent_bumps, categorize_by);
 
-			res.jsend(200, rawBumps);
+			res.jsend(200, stats);
 		}
 	});
 
@@ -70,45 +70,50 @@ var getCalculatedStats = function(agent_bumps, categorize_type) {
 
 	_.each(agent_bumps, function(agent_bump) {
 		var bucketInfo = getBucketInfo(agent_bump, categorize_type);
-		var key = bucketInfo.key;
-		var keyEntityName = bucketInfo.keyEntityName;
+		var key = bucketInfo.key; // The key by which we group stats i.e. agent id, role id
+		var keyEntityName = bucketInfo.keyEntityName; // The name associated with the key e.g. role name
 
 		var agent_id = agent_bump.agent_id;
-		var bucketValue = stats[key];
 
-		if (bucketValue != null) {
-
-			if (stats[key][agent_id] == null) {
-				stats[key][agent_id] = {
-					agent_id: agent_id, 
-					agent_name: agent_bump.agent_name,
-					unique: 1,
-					total: agent_bump.total
-				};
-			} else {
-				stats[key][agent_id].unique += 1;
-				stats[key][agent_id].total += agent_bump.total;
-			}
-
-
-		} else {
+		// Stats[key] is the bucket where we group related agent bumps together 
+		// e.g. the stats for agent bumps pertaining to a role, scenario, etc.
+		if (stats[key] == null) {
 			stats[key] = {};
+		} 
 
+		if (stats[key][agent_id] != null) {
+			var agentStats = stats[key][agent_id];
+
+			agentStats.unique += 1;
+			agentStats.total += agent_bump.total;
+		} else {
 			stats[key][agent_id] = {
 				agent_id: agent_bump.agent_id,
 				agent_name: agent_bump.agent_name,
-				unique: 1,
+				unique: 1, 
 				total: agent_bump.total
 			}
 
+			stats[key][agent_id][categorize_type] = key;
+
 			if (keyEntityName != null) {
-				stats[key].entityName = keyEntityName;
+				stats[key][agent_id].entityName = keyEntityName;
 			}
 		}
 	});
 
-	console.log(stats);
+	// The stats are nested as the values two levels deep (level 1: ID we group by, level 2: agent id)
+	// So we just have to get the values of all second levels
+	var results = [];
 
+	var firstLevel = _.values(stats);
+
+	_.each(firstLevel, function(secondLevel) {
+		var agentStats = _.values(secondLevel);
+		results = results.concat(agentStats);
+	});
+
+	return results;
 };
 
 var getBucketInfo = function(agent_bump, categorize_type) {
