@@ -1,9 +1,9 @@
 var CATEGORIZATION_TYPE = {
-	DEFAULT: 'default', 
-	GAME_VERSION: 'game_version', 
-	ROLE: 'role', 
+	DEFAULT: 'default',
+	GAME_VERSION: 'game_version',
+	ROLE: 'role',
 	SCENARIO: 'scenario'
-}
+};
 
 var initDatePicker = function() {
 	// DatePicker docs at http://eonasdan.github.io/bootstrap-datetimepicker/
@@ -11,7 +11,8 @@ var initDatePicker = function() {
 	var endPicker = $('#endPicker');
 
 	// Set the default date range: from the beginning of the week to the end of the current day
-	var default_start_date = moment().startOf('week');
+	// var default_start_date = moment().startOf('week');
+	var default_start_date = moment('Mar 01 2014'); // TESTING !!!!
 	var default_end_date = moment().endOf('day');
 	var default_categorize_by = $('#categorizer').val();
 
@@ -59,7 +60,7 @@ var initDatePicker = function() {
  * @param  {Moment} end_time   [Moment date representing end time]
  */
 var getOverviewStats = function(start_time, end_time, categorize_by) {
-	if (start_time == null || end_time == null || start_time > end_time ) {
+	if (start_time == null || end_time == null || start_time > end_time) {
 		return;
 	}
 
@@ -126,7 +127,7 @@ var updateDataTable = function(data, categorize_by) {
 
 	var dataTable = $('#dataTable');
 
-	$("#datatable-heading").text("Statistics (by " + getColumnTitleForCategory(categorize_by) + ")");
+	$('#datatable-heading').text('Statistics (by ' + getColumnTitleForCategory(categorize_by) + ')');
 
 
 	// DataTables v1.10 does not support dynamic column addition and removal so in order to refresh it, we destroy the table.
@@ -149,16 +150,16 @@ var updateDataTable = function(data, categorize_by) {
 	dataTable.empty();
 
 	// How to use JSON objects as datatable entries instead of arrays
- 	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
+	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
 
- 	// !!!! PROBABLY GAMES PLAYED SPECIFIC; THIS WILL BE WEIRD WITH AGENT BUMPS
- 	// Here, we take the first result and simply take its keys as the column titles of the datatable
- 	var first_result = data.results[0];
+	// !!!! PROBABLY GAMES PLAYED SPECIFIC; THIS WILL BE WEIRD WITH AGENT BUMPS
+	// Here, we take the first result and simply take its keys as the column titles of the datatable
+	var first_result = data.results[0];
 
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
 		var page = window.location.pathname.split('/')[1];
 
-		switch(page) {
+		switch (page) {
 			case 'games-played':
 				return getColumnDef(key, categorize_by);
 				break;
@@ -169,26 +170,28 @@ var updateDataTable = function(data, categorize_by) {
 				break;
 		}
 	});
-	
+
 	dataTable.dataTable({
 		bDestroy: true,
 		bDeferRender: true,
 		aoColumnDefs: columnDefs,
-		aaData: data.results, 
+		aaData: data.results
 	});
 };
 
 var getColumnDefAgentBump = function(key, categorization_type, i) {
-	var columnDef = { mData: key };
+	var columnDef = {
+		mData: key
+	};
 
 	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
 		entityIndex = 1;
 	} else {
 		entityIndex = 2;
-		
+
 	}
 
-	switch(key) {
+	switch (key) {
 		case categorization_type:
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type);
 			columnDef.aTargets = [0]; // first column
@@ -197,29 +200,31 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
 			columnDef.aTargets = [entityIndex - 1];
 			break;
-		default: 
-			columnDef.sTitle = key;
+		default:
+			columnDef.sTitle = humanize(key);
 			columnDef.aTargets = [entityIndex + i];
 			break;
 	}
 
 	return columnDef;
-}
+};
 
 var getColumnDefGameplay = function(key, categorization_type, i) {
-	var columnDef = { mData: key };
+	var columnDef = {
+		mData: key
+	};
 	var entityIndex = null;
 
 	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
 		entityIndex = 1;
 	} else {
 		entityIndex = 2;
-		
+
 	}
 
-	switch(key) {
+	switch (key) {
 		case categorization_type:
-			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' :  ' ID'
+			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' : ' ID';
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // first column
 			break;
@@ -237,28 +242,30 @@ var getColumnDefGameplay = function(key, categorization_type, i) {
 	return columnDef;
 };
 
-// !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!! 
+// !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!!
 // look at the fields returned by the API and map them to specific columns
 var getColumnDef = function(key, categorization_type) {
-	var columnDef = { mData: key };
+	var columnDef = {
+		mData: key
+	};
 	var entityIndex = null;
 
 	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
 		entityIndex = 1;
 	} else {
 		entityIndex = 2;
-		
+
 	}
 
 	switch (key) {
-		case categorization_type: 
-			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' :  ' ID'
+		case categorization_type:
+			var suffix = (categorization_type == CATEGORIZATION_TYPE.DEFAULT) ? '' : ' ID';
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // The first element
 			break;
-		case 'initiated': 
+		case 'initiated':
 			columnDef.sTitle = 'Games Initiated (Not Completed)';
-			columnDef.aTargets = [entityIndex+ 1];
+			columnDef.aTargets = [entityIndex + 1];
 			break;
 		case 'completed':
 			columnDef.sTitle = 'Games Completed';
@@ -271,7 +278,7 @@ var getColumnDef = function(key, categorization_type) {
 		case 'entityName':
 			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
 			columnDef.aTargets = [entityIndex - 1];
-		default: 
+		default:
 			break;
 	}
 
@@ -281,19 +288,19 @@ var getColumnDef = function(key, categorization_type) {
 // !!! DEFINITELY GAMES PLAYED SPECIFIC
 var getColumnTitleForCategory = function(categorization_type) {
 	switch (categorization_type) {
-		case CATEGORIZATION_TYPE.DEFAULT: 
-		 	var page = window.location.pathname.split('/')[1]
-			if (page == 'agent-bumps' ) {
-				return 'Agent'
+		case CATEGORIZATION_TYPE.DEFAULT:
+			var page = window.location.pathname.split('/')[1];
+			if (page == 'agent-bumps') {
+				return 'Agent';
 			} else {
-				return 'Date';	
+				return 'Date';
 			}
 			break;
-		case CATEGORIZATION_TYPE.GAME_VERSION: 
-			return 'Game Version'; 
+		case CATEGORIZATION_TYPE.GAME_VERSION:
+			return 'Game Version';
 			break;
-		case CATEGORIZATION_TYPE.ROLE: 
-			return 'Role'; 
+		case CATEGORIZATION_TYPE.ROLE:
+			return 'Role';
 			break;
 		case CATEGORIZATION_TYPE.SCENARIO:
 			return 'Scenario';
@@ -303,7 +310,14 @@ var getColumnTitleForCategory = function(categorization_type) {
 			break;
 	}
 
-}
+};
+
+var humanize = function(text) {
+	return text.replace(/_/g, ' ')
+		.replace(/(\w+)/g, function(match) {
+			return match.charAt(0).toUpperCase() + match.slice(1);
+		});
+};
 
 /**
  * Let's GO!
@@ -311,4 +325,3 @@ var getColumnTitleForCategory = function(categorization_type) {
 $(document).ready(function() {
 	initDatePicker();
 });
-

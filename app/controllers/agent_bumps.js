@@ -58,7 +58,7 @@ exports.show = function(req, res, next) {
 
 			var data = {
 				results: stats
-			}
+			};
 
 			res.jsend(200, data);
 		}
@@ -80,11 +80,11 @@ var getCalculatedStats = function(agent_bumps, categorize_type) {
 
 		var agent_id = agent_bump.agent_id;
 
-		// Stats[key] is the bucket where we group related agent bumps together 
+		// Stats[key] is the bucket where we group related agent bumps together
 		// e.g. the stats for agent bumps pertaining to a role, scenario, etc.
 		if (stats[key] == null) {
 			stats[key] = {};
-		} 
+		}
 
 		if (stats[key][agent_id] != null) {
 			var agentStats = stats[key][agent_id];
@@ -95,9 +95,9 @@ var getCalculatedStats = function(agent_bumps, categorize_type) {
 			stats[key][agent_id] = {
 				agent_id: agent_bump.agent_id,
 				agent_name: agent_bump.agent_name,
-				unique: 1, 
+				unique: 1,
 				total: agent_bump.total
-			}
+			};
 
 			stats[key][agent_id][categorize_type] = key;
 
