@@ -78,7 +78,7 @@ var getDraftStateIds = function(draft_id, callback) {
 		})
 		.error(function(error) {
 			callback(null, error);
-		})
+		});
 };
 
 
@@ -96,36 +96,61 @@ var getAllAttributes = function(draft_ids) {
 	};
 };
 
+/**
+ * Constructs the portion of the SQL query that specifies the attributes (i.e. columns) that we want to be included in the query
+ * 
+ * @param  {Array}   attributes      [List of column names pertaining to a table]
+ * @param  {String}  tableName       [The table name pertaining to the columns]
+ * @param  {String}  aliasPrefix     [The prefix for the set of columns included in the final result e.g. aliasPrefix.attribute]
+ * @param  {Boolean} isNull          [True if we're filling in NULL for the columns, false otherwise]
+ * @param  {Boolean} lastSetOfFields [True if this is the last set of fields before the FROM statement, false otherwise]
+ * @return {String}                  [the fields that we're interested in]
+ *                                        e.g. "`sessions`.`id` as `session.id`, `sessions`.`draft_state_id` as `session.draft_state_id` "
+ */
+var buildAttributeString = function(attributes, tableName, aliasPrefix, isNull, lastSetOfFields) {
+	var fields = '';
+
+	_.each(attributes, function(attr, i) {
+		// The field right before the FROM statement cannot have a trailing comma; this tells us when we can append the comma (i.e. what fieldSeparator should be)
+		var appendComma = !(lastSetOfFields && attributes.length - 1 == i);
+		var fieldSeparator = appendComma ? ', ' : ' ';
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// In general, we're building one of two types of fields.                                                                    //
+		// 1. If we're getting fields related to the query (i.e. the agent_bump fields for the agentBump query), we build a string:  //
+		//     "`tableName`.`field` as `aliasPrefix.field`, "                                                                        //
+		// 2. If the fields are unrelated to the query (i.e. the region switch fields for the agentBump query), we build:            //
+		//     "NULL as `aliasPrefix.field`, "                                                                                       //
+		//                                                                                                                           //
+		// (Note the backticks (`): They're not strictly necessary, but they're good practice!)                                       //
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		if (isNull) {
+			fields += 'NULL as ' + '`' + aliasPrefix + '.' + attr + '`' + fieldSeparator;
+		} else {
+			fields += '`' + tableName + '`.`' + attr + '` as ' + '`' + tableName + '.' + attr + '`' + fieldSeparator;
+		}
+
+	});
+
+	return fields;
+};
+
 var queryStringForAgentBumps = function(draft_ids) {
 	var attributes = getAllAttributes();
 	var select = 'SELECT ';
 
 	var fields = '';
 
-	_.each(attributes.sessionAttributes, function(attr) {
-		fields += '`sessions`.`' + attr + '` as' + '`session.' + attr + '`, ';
-	});
+	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
+	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', false, false);
+	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', true, false);
+	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', true, true);
 
-	_.each(attributes.agentBumpAttributes, function(attr) {
-		fields += '`agent_bumps`.`' + attr + '` as' + '`agentBump.' + attr + '`, ';
-	});
-
-	_.each(attributes.customEventAttributes, function(attr) {
-		fields += 'NULL as ' + '`customEvent.' + attr + '`, ';
-	});
-
-	_.each(attributes.regionSwitchAttributes, function(attr, i) {
-		fields += 'NULL as ' + '`regionSwitch.' + attr + '` ';
-		var lastElem = attributes.regionSwitchAttributes.length - 1;
-
-		if (i != lastElem) {
-			fields += ', ';
-		}
-	});
 
 	var from = 'FROM `agent_bumps` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `agent_bumps`.`session_id` = `sessions`.`id`';
-	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')'
+	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	return select + fields + from + leftJoin + availableDrafts;
 };
@@ -136,30 +161,15 @@ var queryStringForCustomEvents = function(draft_ids) {
 
 	var fields = '';
 
-	_.each(attributes.sessionAttributes, function(attr) {
-		fields += '`sessions`.`' + attr + '` as' + '`session.' + attr + '`, ';
-	});
+	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
+	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', true, false);
+	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', false, false);
+	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', true, true);
 
-	_.each(attributes.agentBumpAttributes, function(attr) {
-		fields += 'NULL as ' + '`agentBump.' + attr + '`, ';
-	});
-
-	_.each(attributes.customEventAttributes, function(attr, i) {
-		fields += '`custom_event_triggers`.`' + attr + '` as' + '`customEvent.' + attr + '`, ';
-	});
-
-	_.each(attributes.regionSwitchAttributes, function(attr, i) {
-		fields += 'NULL as ' + '`regionSwitch.' + attr + '` ';
-		var lastElem = attributes.regionSwitchAttributes.length - 1;
-
-		if (i != lastElem) {
-			fields += ', ';
-		}
-	});
 
 	var from = 'FROM `custom_event_triggers` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `custom_event_triggers`.`session_id` = `sessions`.`id`';
-	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')'
+	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	return select + fields + from + leftJoin + availableDrafts;
 };
@@ -169,31 +179,15 @@ var queryStringForRegionSwitches = function(draft_ids) {
 	var select = 'SELECT ';
 
 	var fields = '';
+	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
+	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', true, false);
+	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', true, false);
+	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', false, true);
 
-	_.each(attributes.sessionAttributes, function(attr) {
-		fields += '`sessions`.`' + attr + '` as' + '`session.' + attr + '`, ';
-	});
-
-	_.each(attributes.agentBumpAttributes, function(attr) {
-		fields += 'NULL as ' + '`agentBump.' + attr + '`, ';
-	});
-
-	_.each(attributes.customEventAttributes, function(attr, i) {
-		fields += 'NULL as ' + '`customEvent.' + attr + '`, ';
-	});
-
-	_.each(attributes.regionSwitchAttributes, function(attr, i) {
-		fields += '`region_switches`.`' + attr + '` as' + '`regionSwitch.' + attr + '` ';
-		var lastElem = attributes.regionSwitchAttributes.length - 1;
-
-		if (i != lastElem) {
-			fields += ', ';
-		}
-	});
 
 	var from = 'FROM `region_switches` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `region_switches`.`session_id` = `sessions`.`id`';
-	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')'
+	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	return select + fields + from + leftJoin + availableDrafts;
 };
