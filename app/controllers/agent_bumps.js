@@ -1,11 +1,9 @@
 var db = require('../models');
 var _ = require('underscore');
-var moment = require('moment');
 var csv = require('express-csv');
-require('../../lib/underscore-mixins');
 
 var CATEGORIZE_TYPE = {
-	DEFAULT: 'default', // Consider renaming this to DATE b/c that's what it really is
+	DEFAULT: 'default',
 	GAME_VERSION: 'game_version',
 	ROLE: 'role',
 	SCENARIO: 'scenario'
@@ -15,7 +13,6 @@ exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
 
 	// Render the page if it's not an AJAX request
-	// TODO: or JSON/CSV
 	if (!req.xhr) {
 		res.render('agent-bumps.ect', {
 			draft_id: draft_id,
@@ -31,7 +28,6 @@ exports.show = function(req, res, next) {
 	var start_time = req.query.start_time;
 	var end_time = req.query.end_time;
 	var categorize_by = req.query.categorize_by;
-	// TODO: ADD TYPE options (JSON or CSV)
 
 	if (start_time == null || end_time == null) {
 		res.jerror(400, 'start_time and end_time parameters are required');
@@ -47,12 +43,6 @@ exports.show = function(req, res, next) {
 		}
 
 		if (agent_bumps) {
-
-			var rawBumps = _.map(agent_bumps, function(bump) {
-				bump.session = bump.session.values;
-				var flattened = _.flattenObj(bump);
-				return _.omit(flattened, 'id');
-			});
 
 			var stats = getCalculatedStats(agent_bumps, categorize_by);
 
@@ -156,7 +146,7 @@ var getQueryConditions = function(categorize_by) {
 	var attributes = null;
 	var group = null;
 	var sessionAttributes = []; // include's attributes don't act the same way as regular attributes, have to be empty
-	// TODO: probably better to change these all to empty arrays
+	// TODO: probably better to change these all to empty arrays to be consistent
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// In general, we're building a query of this form:                                                                                                                                                                      //
