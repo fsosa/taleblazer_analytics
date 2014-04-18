@@ -38,8 +38,14 @@ db
     if (err) {
       throw err;
     } else {
-      app.listen(config.PORT);
-      console.log('Listening on port %d', config.PORT);
+
+      app.listen(config.PORT, config.HOST);
+
+      if (config.HOST) {
+        console.log('Listening on %s:%d', config.HOST, config.PORT);
+      } else {
+        console.log('Listening on port %d', config.PORT);
+      }
     }
   });
 
