@@ -19,7 +19,10 @@ var initDatePicker = function() {
 
 	// TODO: PROBS MOVE THIS SOMEWHERE ELSE
 	// Make the initial AJAX request for the page data
-	getOverviewStats(default_start_date, default_end_date, default_categorize_by);
+	var page = window.location.pathname.split('/')[1];
+	if (page != 'download-data') {
+		getOverviewStats(default_start_date, default_end_date, default_categorize_by);
+	}
 
 	// Set the human-readable range in the header
 	updateDateRangeHeader(default_start_date, default_end_date);
@@ -223,7 +226,7 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 			columnDef.sTitle = 'Total bumps';
 			columnDef.aTargets = [startOfAgentColIndex + startingOffset + 2];
 			break;
-	
+
 	}
 
 	return columnDef;
@@ -341,9 +344,71 @@ var humanize = function(text) {
 		});
 };
 
+window.downloadFile = function(sUrl) {
+
+	//iOS devices do not support downloading. We have to inform user about this.
+	if (/(iP)/g.test(navigator.userAgent)) {
+		alert('Your device does not support files downloading. Please try again in desktop browser.');
+		return false;
+	}
+
+	//If in Chrome or Safari - download via virtual link click
+	if (window.downloadFile.isChrome || window.downloadFile.isSafari) {
+		//Creating new link node.
+		var link = document.createElement('a');
+		link.href = sUrl;
+
+		if (link.download !== undefined) {
+			//Set HTML5 download attribute. This will prevent file from opening if supported.
+			var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+			link.download = fileName;
+		}
+
+		//Dispatching click event.
+		if (document.createEvent) {
+			var e = document.createEvent('MouseEvents');
+			e.initEvent('click', true, true);
+			link.dispatchEvent(e);
+			return true;
+		}
+	}
+
+	// Force file download (whether supported by server).
+	sUrl += '?download';
+
+	window.open(sUrl, '_self');
+	return true;
+}
+
+window.downloadFile.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
+
 /**
  * Let's GO!
  */
 $(document).ready(function() {
 	initDatePicker();
+
+
+
+	$("#downloadButton").click(function(e) {
+		var startPicker = $("#startPicker");
+		var endPicker = $("#endPicker");
+		var start_time = startPicker.data('DateTimePicker').getDate();
+		var end_time = endPicker.data('DateTimePicker').getDate();
+
+		var validDates = start_time.isValid() && end_time.isValid();
+
+		if (validDates) {
+			start_time = start_time.startOf('day').valueOf(); // the unix offset (ms) of the start of the chosen day
+			end_time = end_time.endOf('day').valueOf(); // the unix offset (ms) of the end of the chosen day
+			var url = window.location + '?start_time=' + start_time + '&end_time=' + end_time + '&download=true';
+			window.downloadFile(url);
+		} else {
+			// TODO: Flash an error message or something
+		}
+
+
+	});
+
 });
