@@ -3,11 +3,11 @@
 1. Install Node **v.0.10.18** or higher.
     - If you've installed Titanium Studio, then you most likely have already installed Node and NPM. Otherwise, check the [official Node installation instructions](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
     - For Ubuntu, you will most likely have to run the following commands (**but check the official instructions first**):
-      ```  
-      sudo add-apt-repository ppa:chris-lea/node.js
-      sudo apt-get update
-      sudo apt-get install python-software-properties python g++ make nodejs
-      ```
+    
+            sudo add-apt-repository ppa:chris-lea/node.js
+            sudo apt-get update
+            sudo apt-get install python-software-properties python g++ make nodejs
+
     - Verify that `node -v ` returns `0.10.xx` and `npm -v` returns `1.4.x`
 
 2. Checkout the analytics server from Git.
@@ -29,10 +29,9 @@
 5. (**For deployment purposes**) Install Forever and set the NODE_ENV environment variable.
     1. Install Forever: `npm install forever -g`
     2. Set the NODE_ENV variable via the following terminal commands:
-    ```
-    $ echo export NODE_ENV=production >> ~/.bash_profile
-    $ source ~/.bash_profile
-    ```
+    
+            $ echo export NODE_ENV=production >> ~/.bash_profile
+            $ source ~/.bash_profile
 
 6. Run the server
     - Development: `node server.js`
