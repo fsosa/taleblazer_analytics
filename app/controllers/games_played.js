@@ -179,15 +179,15 @@ var getQueryConditions = function(categorize_by) {
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
 			attributes = ['draft_state_id', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'draft_state_id'];
+			group = ['draft_state_id', 'completed'];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
 			attributes = ['role_id', 'role_name', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'role_id'];
+			group = ['role_id', 'completed'];
 			break;
 		case CATEGORIZE_TYPE.SCENARIO:
 			attributes = ['scenario_id', 'scenario_name', 'started_at', 'completed', [db.sequelize.fn('COUNT', db.sequelize.col('*')), 'count']];
-			group = [db.sequelize.fn('DATE', db.sequelize.col('started_at')), 'scenario_id'];
+			group = ['scenario_id', 'completed'];
 			break;
 		default:
 			// The ordering of these attributes determines the order they get returned in the query 
