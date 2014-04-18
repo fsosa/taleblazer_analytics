@@ -30,8 +30,8 @@
     1. Install Forever: `npm install forever -g`
     2. Set the NODE_ENV variable via the following terminal commands:
     
-            $ echo export NODE_ENV=production >> ~/.bash_profile
-            $ source ~/.bash_profile
+            echo export NODE_ENV=production >> ~/.bash_profile
+            source ~/.bash_profile
 
 6. Run the server
     - Development: `node server.js`
