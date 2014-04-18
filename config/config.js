@@ -9,17 +9,19 @@ dbConfig = require('./config.json')
 
 module.exports = {
   development: {
-    db: dbConfig.development, 
+    db: dbConfig.development,  
+    HOST: '',
     PORT: 3000,
     LOG_DIR: './logs/'
   },
   test: {
-    db: dbConfig.test, 
+    db: dbConfig.test,  // Remove this or set as empty string to have Node serve requests to any IP
     PORT: 3000,
     LOG_DIR: './logs/'
   },
   production: {
     db: dbConfig.production, 
+    HOST: '127.0.0.1', // Remove this or set as empty string to have Node serve requests to any IP
     PORT: 3000,
     LOG_DIR: './logs/'
   }
