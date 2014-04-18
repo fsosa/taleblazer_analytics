@@ -1,5 +1,6 @@
 var db = require('../models');
 var _ = require('underscore');
+var moment = require('moment');
 var csv = require('express-csv');
 require('../../lib/underscore-mixins');
 
@@ -17,8 +18,14 @@ exports.show = function(req, res, next) {
 		return;
 	}
 
-	var start_time = req.query.start_time;
-	var end_time = req.query.end_time;
+	var start_time = moment(parseInt(req.query.start_time));
+	var end_time = moment(parseInt(req.query.end_time));
+	var validDates = start_time.isValid() && end_time.isValid();
+
+	if (!validDates) {
+		res.send(400, 'start_time and end_time must be valid');
+		return;
+	}
 
 	getDraftStateIds(draft_id, function(ids, error) {
 		if (error) {
@@ -26,9 +33,9 @@ exports.show = function(req, res, next) {
 			return;
 		}
 
-		var agentQuery = queryStringForAgentBumps(ids);
-		var customEventQuery = queryStringForCustomEvents(ids);
-		var regionSwitchQuery = queryStringForRegionSwitches(ids);
+		var agentQuery = queryStringForAgentBumps(ids, start_time, end_time);
+		var customEventQuery = queryStringForCustomEvents(ids, start_time, end_time);
+		var regionSwitchQuery = queryStringForRegionSwitches(ids, start_time, end_time);
 		var unionQuery = '(' + agentQuery + ')' + ' UNION ALL ' + '(' + customEventQuery + ')' + ' UNION ALL' + '(' + regionSwitchQuery + ');';
 
 		db.sequelize.query(unionQuery, null, {
@@ -59,11 +66,12 @@ exports.show = function(req, res, next) {
 					cleaned = cleaned.concat(flattened);
 				}
 
-				var filename = "data_" + draft_id + ".csv"
+				var startText = start_time.format('YYYY-MM-DD');
+				var endText = end_time.format('YYYY-MM-DD');
+				var filename = 'data_' + draft_id + '_' + startText + '_' + endText + '.csv';
+
 				res.setHeader('Content-disposition', 'attachment; filename=' + filename);
 				res.csv(cleaned);
-				// res.jsend(cleaned);
-
 			})
 			.error(function(error) {
 				next(error);
@@ -113,7 +121,7 @@ var getAllAttributes = function(draft_ids) {
 
 /**
  * Constructs the portion of the SQL query that specifies the attributes (i.e. columns) that we want to be included in the query
- * 
+ *
  * @param  {Array}   attributes      [List of column names pertaining to a table]
  * @param  {String}  tableName       [The table name pertaining to the columns]
  * @param  {String}  aliasPrefix     [The prefix for the set of columns included in the final result e.g. aliasPrefix.attribute]
@@ -151,7 +159,7 @@ var buildAttributeString = function(attributes, tableName, aliasPrefix, isNull, 
 	return fields;
 };
 
-var queryStringForAgentBumps = function(draft_ids) {
+var queryStringForAgentBumps = function(draft_ids, start_time, end_time) {
 	var attributes = getAllAttributes();
 	var select = 'SELECT ';
 
@@ -167,10 +175,14 @@ var queryStringForAgentBumps = function(draft_ids) {
 	var leftJoin = 'LEFT JOIN `sessions` on `agent_bumps`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
-	return select + fields + from + leftJoin + availableDrafts;
+	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
+	var end_time = end_time.format('YYYY-MM-DD');
+	var where = " WHERE `agent_bumps`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+
+	return select + fields + from + leftJoin + availableDrafts + where;
 };
 
-var queryStringForCustomEvents = function(draft_ids) {
+var queryStringForCustomEvents = function(draft_ids, start_time, end_time) {
 	var attributes = getAllAttributes();
 	var select = 'SELECT ';
 
@@ -186,10 +198,14 @@ var queryStringForCustomEvents = function(draft_ids) {
 	var leftJoin = 'LEFT JOIN `sessions` on `custom_event_triggers`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
-	return select + fields + from + leftJoin + availableDrafts;
+	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
+	var end_time = end_time.format('YYYY-MM-DD');
+	var where = " WHERE `custom_event_triggers`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+
+	return select + fields + from + leftJoin + availableDrafts + where;
 };
 
-var queryStringForRegionSwitches = function(draft_ids) {
+var queryStringForRegionSwitches = function(draft_ids, start_time, end_time) {
 	var attributes = getAllAttributes();
 	var select = 'SELECT ';
 
@@ -204,5 +220,9 @@ var queryStringForRegionSwitches = function(draft_ids) {
 	var leftJoin = 'LEFT JOIN `sessions` on `region_switches`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
-	return select + fields + from + leftJoin + availableDrafts;
+	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
+	var end_time = end_time.format('YYYY-MM-DD');
+	var where = " WHERE `region_switches`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+
+	return select + fields + from + leftJoin + availableDrafts + where;
 };
