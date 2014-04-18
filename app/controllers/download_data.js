@@ -5,7 +5,20 @@ require('../../lib/underscore-mixins');
 
 exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
+	var download = req.query.download;
 
+	if (!req.xhr && !download) {
+		res.render('download-data.ect', {
+			draft_id: draft_id,
+			title: 'Download Data',
+			script: 'overview.js'
+		});
+
+		return;
+	}
+
+	var start_time = req.query.start_time;
+	var end_time = req.query.end_time;
 
 	getDraftStateIds(draft_id, function(ids, error) {
 		if (error) {
@@ -46,8 +59,10 @@ exports.show = function(req, res, next) {
 					cleaned = cleaned.concat(flattened);
 				}
 
-				// res.csv(cleaned);
-				res.jsend(cleaned);
+				var filename = "data_" + draft_id + ".csv"
+				res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+				res.csv(cleaned);
+				// res.jsend(cleaned);
 
 			})
 			.error(function(error) {
