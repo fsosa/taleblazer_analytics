@@ -50,7 +50,9 @@ exports.index = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
-var getSessionStats = function(sessions) {
+var getSessionStats = function(results) {
+	var sessions = results.sessions;
+
 	var stats = {
 		sessions_initiated: sessions.count
 	};
@@ -74,7 +76,7 @@ var getSessionStats = function(sessions) {
 	var avg_completion_time = (sessions_completed == 0) ? 0 : Math.round((sum_completion_time / sessions_completed) / 60);
 	stats.avg_completion_time = avg_completion_time;
 
-	stats.download_count = 0;
+	stats.download_count = results.download_count;
 
 	return stats;
 };
@@ -91,11 +93,15 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 				draft_id: draft_id,
 				published_game: 1
 			},
-			attributes: ['id']
+			attributes: ['id', 'download_count']
 		})
 		.success(function(results) {
-			var draft_state_ids = _.map(results, function(result) {
-				return result.values['id'];
+			var draft_state_ids = [];
+			var download_count = 0;
+
+			_.each(results, function(draft_state) {
+				draft_state_ids.push(draft_state.id);
+				download_count += draft_state.download_count;
 			});
 
 			db.Session
@@ -108,8 +114,12 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 					}
 				})
 				.success(function(sessions) {
-					callback(sessions);
-					return sessions;
+					var data = {
+						sessions: sessions, 
+						download_count : download_count
+					}
+
+					callback(data);
 				})
 				.error(function(error) {
 					next(error);

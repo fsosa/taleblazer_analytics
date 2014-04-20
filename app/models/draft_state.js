@@ -54,6 +54,12 @@ module.exports = function(sequelize, DataTypes) {
 			previous_draft_state_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false
+			}, 
+			version: {
+				type: DataTypes.STRING, 
+			}, 
+			download_count: {
+				type: DataTypes.INTEGER, 
 			}
 
 		},
