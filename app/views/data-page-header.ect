@@ -9,53 +9,54 @@
     </div>
 </div>
 
-<div class="row">
-    
-    <% if @title != 'Overview' : %>
-        <!-- Only show the Categorize By input if we're not on the Overview page -->
-        <div class="col-md-3">
-            <div class="form-group form-inline">
-                <label>Categorize by:</label>
-                <select id="categorizer" class="form-control">
-                    <option value="default"><%- @defaultCategorization %></option>
-                    <option value="game_version">Game Version</option>
-                    <option value="role">Roles</option>
-                    <option value="scenario">Scenarios</option>
-                </select>
-            </div>
-        </div>
+<div id="filterWell" class="well well-sm">
+    <div id="filterRow" class="row">
 
-        <!-- The declaration for the From datepicker column -->
-        <div class='col-md-3 col-md-offset-2'> <!-- For non-overview pages, the offset is smaller because the categorize column exists -->
-    <% else : %>
-        <div class='col-md-3 col-md-offset-5'>
-    <% end %>
-
-            <div class="form-group form-inline">
-                <div class='input-group date' id='startPicker'>
-                    <span class="input-group-addon">From</span>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
+        <% if @title != 'Overview' : %>
+            <!-- Only show the Categorize By input if we're not on the Overview page -->
+            <div class="col-md-3">
+                <div class="form-group form-inline">
+                    <label>Categorize by:</label>
+                    <select id="categorizer" class="form-control">
+                        <option value="default"><%- @defaultCategorization %></option>
+                        <option value="game_version">Game Version</option>
+                        <option value="role">Roles</option>
+                        <option value="scenario">Scenarios</option>
+                    </select>
                 </div>
             </div>
-        </div>
 
-        <div class='col-md-3'>
-            <div class="form-group form-inline">
-                <div class='input-group date' id='endPicker'>
-                    <span class="input-group-addon">To</span>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
+            <!-- The declaration for the From datepicker column -->
+            <div class='col-md-3 col-md-offset-2'> <!-- For non-overview pages, the offset is smaller because the categorize column exists -->
+        <% else : %>
+            <div class='col-md-3 col-md-offset-5'>
+        <% end %>
+
+                <div class="form-group form-inline">
+                    <div class='input-group date' id='startPicker'>
+                        <span class="input-group-addon">From</span>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-1">
-            <button id='dateFilter' type="button" class="btn btn-default">Filter</button>
-        </div>
+            <div class='col-md-3'>
+                <div class="form-group form-inline">
+                    <div class='input-group date' id='endPicker'>
+                        <span class="input-group-addon">To</span>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
 
+            <div class="col-md-1">
+                <button id='dateFilter' type="button" class="btn btn-default">Filter</button>
+            </div>
+    </div>
 </div>

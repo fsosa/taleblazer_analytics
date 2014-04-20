@@ -18,3 +18,8 @@
   }
 
 }
+
+/* Remove the margin bottom on the filtering controls because it's already inside a well */
+#filterRow .form-group {
+	margin-bottom: 0;
+}
