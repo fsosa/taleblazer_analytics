@@ -80,6 +80,7 @@ module.exports = function(app, env) {
 	app.use(express.json());
 	app.use(express.methodOverride());
 	app.use(express.cookieParser());
+	app.use(express.cookieSession({key: 'ta.sess', secret: 'Q7DXD3EWMa', cookie: { maxAge: 60 * 60 * 1000 }, proxy: true }));
 
 	app.use(express.static(__dirname + '/public'));
 
