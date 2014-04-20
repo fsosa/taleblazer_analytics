@@ -1,25 +1,30 @@
 var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
+var utils = require('../utils/utils');
 
 var CATEGORIZE_TYPE = {
 	DEFAULT: 'default',
 	GAME_VERSION: 'game_version',
 	ROLE: 'role',
 	SCENARIO: 'scenario'
-}
+};
 
 exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		res.render('game-duration.ect', {
-			draft_id: draft_id,
-			title: 'Gameplay Duration',
-			defaultCategorization: 'Date',
-			script: 'overview.js'
-		});
+		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
+
+		if (draft_state_title) {
+			renderPage(res, draft_id, draft_state_title);
+		} else {
+			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
+				req.session.draft_state_title = draft_state.name; // Store the title for later
+				renderPage(res, draft_id, draft_state_title);
+			});
+		}
 
 		return;
 	}
@@ -44,7 +49,7 @@ exports.show = function(req, res, next) {
 
 			data = {
 				results: results
-			}
+			};
 
 			if (req.xhr) {
 				res.jsend(200, data);
@@ -59,6 +64,16 @@ exports.show = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
+var renderPage = function(res, draft_id, draft_state_title) {
+	res.render('game-duration.ect', {
+		draft_id: draft_id,
+		title: 'Gameplay Duration',
+		draftStateTitle: draft_state_title,
+		defaultCategorization: 'Date',
+		script: 'overview.js'
+	});
+};
+
 var getCalculatedStats = function(sessions, categorize_type) {
 	var stats = {};
 
@@ -72,16 +87,16 @@ var getCalculatedStats = function(sessions, categorize_type) {
 		'90-105',
 		'105-120',
 		'120+'
-	]
+	];
 
 	var timeBucketRange = 15;
 	var maxTimeValue = 120;
 
-	var timeBuckets = {}
+	var timeBuckets = {};
 	_.each(timeKey, function(key) {
 		timeBuckets[key] = 0;
-	})
-	
+	});
+
 	_.each(sessions, function(session) {
 		var rawSession = session.values;
 		console.log(session.values);
@@ -98,7 +113,7 @@ var getCalculatedStats = function(sessions, categorize_type) {
 		}
 
 		// This just gets the label key for where we should increase the count (i.e. '0-15')
-		var timeBucketKey = timeKey[timeKeyIndex]; 
+		var timeBucketKey = timeKey[timeKeyIndex];
 
 		// As usual get the top-level bucketkey (e.g. what we categorize/group by) and the entity name for the key (e.g. ROLE has role_name, etc.)
 		var bucketInfo = getBucketInfo(rawSession, categorize_type);
@@ -120,7 +135,7 @@ var getCalculatedStats = function(sessions, categorize_type) {
 			}
 		}
 	});
-	
+
 	var results = _.values(stats);
 	console.log(results);
 	return results;
@@ -166,7 +181,7 @@ var getQueryConditions = function(categorize_by, bucketRange) {
 	var attributes = null;
 	var group = null;
 
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// NOTE: In general, we're trying to build a query of this form (with differing group by options)                                        				//
 	// 																																     	 				//
@@ -180,8 +195,8 @@ var getQueryConditions = function(categorize_by, bucketRange) {
 	// -- e.g. if 4 games took between 0-15 minutes, then those 4 games would be bucketed into the 0th bucket (buckets are 0-indexed)		 				//
 	// -- The difference between the queries are the GROUP BY options																	     				//
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	var roundedDuration = db.sequelize.literal('ROUND(TIMESTAMPDIFF(MINUTE, `started_at`, `last_event_at`)/' + bucketRange +')  as `durationBucket`');
+
+	var roundedDuration = db.sequelize.literal('ROUND(TIMESTAMPDIFF(MINUTE, `started_at`, `last_event_at`)/' + bucketRange + ')  as `durationBucket`');
 
 	switch (categorize_by) {
 		case CATEGORIZE_TYPE.DEFAULT:

@@ -2,6 +2,7 @@ var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
 var csv = require('express-csv');
+var utils = require('../utils/utils');
 require('../../lib/underscore-mixins');
 
 exports.show = function(req, res, next) {
@@ -9,11 +10,17 @@ exports.show = function(req, res, next) {
 	var download = req.query.download;
 
 	if (!req.xhr && !download) {
-		res.render('download-data.ect', {
-			draft_id: draft_id,
-			title: 'Download Data',
-			script: 'overview.js'
-		});
+
+		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
+
+		if (draft_state_title) {
+			renderPage(res, draft_id, draft_state_title);
+		} else {
+			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
+				req.session.draft_state_title = draft_state.name; // Store the title for later
+				renderPage(res, draft_id, draft_state_title);
+			});
+		}
 
 		return;
 	}
@@ -82,6 +89,15 @@ exports.show = function(req, res, next) {
 //////////////////////
 // Utility Methods  //
 //////////////////////
+
+var renderPage = function(res, draft_id, draft_state_title) {
+	res.render('download-data.ect', {
+		draft_id: draft_id,
+		title: 'Download Data',
+		draftStateTitle: draft_state_title,
+		script: 'overview.js'
+	});
+};
 
 var getDraftStateIds = function(draft_id, callback) {
 	db.DraftState

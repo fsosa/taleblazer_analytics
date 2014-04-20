@@ -1,6 +1,7 @@
 var db = require('../models');
 var _ = require('underscore');
 var csv = require('express-csv');
+var utils = require('../utils/utils');
 
 var CATEGORIZE_TYPE = {
 	DEFAULT: 'default',
@@ -14,12 +15,17 @@ exports.show = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		res.render('agent-bumps.ect', {
-			draft_id: draft_id,
-			title: 'Agent Bumps',
-			defaultCategorization: 'Agent',
-			script: 'overview.js'
-		});
+
+		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
+
+		if (draft_state_title) {
+			renderPage(res, draft_id, draft_state_title);
+		} else {
+			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
+				req.session.draft_state_title = draft_state.name; // Store the title for later
+				renderPage(res, draft_id, draft_state_title);
+			});
+		}
 
 		return;
 	}
@@ -59,6 +65,16 @@ exports.show = function(req, res, next) {
 //////////////////////
 // Utility Methods  //
 //////////////////////
+
+var renderPage = function(res, draft_id, draft_state_title) {
+	res.render('agent-bumps.ect', {
+		draft_id: draft_id,
+		title: 'Agent Bumps',
+		draftStateTitle: draft_state_title,
+		defaultCategorization: 'Agent',
+		script: 'overview.js'
+	});
+};
 
 var getCalculatedStats = function(agent_bumps, categorize_type) {
 	var stats = {};
