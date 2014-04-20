@@ -9,7 +9,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-            </button><a href="/overview/<%- @draft_id %>" class="navbar-brand">TaleBlazer Analytics</a>
+            </button>
+            <div class="navbar-inner">
+            <a href="/overview/<%- @draft_id %>" class="navbar-brand"><%- @draftStateTitle %> - TaleBlazer Analytics</a>
+            </div>
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle"><i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i></a>

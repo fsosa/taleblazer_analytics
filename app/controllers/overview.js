@@ -1,6 +1,7 @@
 var db = require('../models');
 var _ = require('underscore');
 var moment = require('moment');
+var utils = require('../utils/utils');
 
 /**
  * Given a draft id and a time range,
@@ -16,16 +17,21 @@ exports.index = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		res.render('overview.ect', {
-			draft_id: draft_id,
-			title: 'Overview',
-			defaultCategorization: 'Date',
-			script: 'overview.js'
-		});
+		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
+
+		if (draft_state_title) {
+			renderPage(res, draft_id, draft_state_title);
+		} else {
+			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
+				req.session.draft_state_title = draft_state.name; // Store the title for later
+				renderPage(res, draft_id, draft_state_title);
+			})
+		}
 
 		return;
 	}
 
+	// Otherwise, process the API request
 	var start_time = req.query.start_time;
 	var end_time = req.query.end_time;
 
@@ -49,6 +55,16 @@ exports.index = function(req, res, next) {
 /////////////////////
 // Utility Methods //
 /////////////////////
+
+var renderPage = function(res, draft_id, draft_state_title) {
+	res.render('overview.ect', {
+		draft_id: draft_id,
+		title: 'Overview',
+		draftStateTitle: draft_state_title,
+		defaultCategorization: 'Date',
+		script: 'overview.js'
+	});
+}
 
 var getSessionStats = function(results) {
 	var sessions = results.sessions;
@@ -115,8 +131,8 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 				})
 				.success(function(sessions) {
 					var data = {
-						sessions: sessions, 
-						download_count : download_count
+						sessions: sessions,
+						download_count: download_count
 					}
 
 					callback(data);
@@ -129,3 +145,33 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 			next(error);
 		});
 };
+
+var getPublishedDraftState = function(draft_id, callback) {
+	db.Draft
+		.find({
+			where: {
+				id: draft_id
+			},
+			attributes: ['publish_draft_state_id']
+		})
+		.success(function(draft) {
+			if (draft == null) {
+				callback(null, null);
+				return;
+			}
+
+			db.DraftState
+				.find({
+					where: {
+						id: draft.publish_draft_state_id
+					},
+					attributes: ['name', 'image']
+				})
+				.success(function(draft_state) {
+					callback(draft_state, null);
+				})
+		})
+		.error(function(error) {
+			callback(null, error);
+		})
+}

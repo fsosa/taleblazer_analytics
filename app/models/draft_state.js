@@ -60,6 +60,10 @@ module.exports = function(sequelize, DataTypes) {
 			}, 
 			download_count: {
 				type: DataTypes.INTEGER, 
+			}, 
+			image: {
+				type: DataTypes.STRING,
+				allowNull: false
 			}
 
 		},
