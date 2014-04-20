@@ -43,8 +43,6 @@ exports.show = function(req, res, next) {
 			type: db.Sequelize.QueryTypes.SELECT // Must be defined in order to let Sequelize know that we're doing a SELECT query (https://github.com/sequelize/sequelize/issues/1259)
 		})
 			.success(function(results) {
-				res.jsend(results);
-				return;
 				var cleaned = [];
 
 				// The result object returns to as a nested object with keys for sessions, agent bumps, etc.
@@ -108,8 +106,8 @@ var getDraftStateIds = function(draft_id, callback) {
 
 
 var getAllAttributes = function(draft_ids) {
-	var draftStateAttributes = ['version'];
-	var sessionAttributes = ['id', 'device_id', 'draft_state_id', 'started_at', 'last_event_at', 'role_id', 'role_name', 'scenario_id', 'scenario_name', 'tap_to_visit', 'completed'];
+	var draftStateAttributes = ['id', 'version'];
+	var sessionAttributes = ['id', 'device_id', 'started_at', 'last_event_at', 'role_id', 'role_name', 'scenario_id', 'scenario_name', 'tap_to_visit', 'completed'];
 	var agentBumpAttributes = ['occurred_at', 'bump_type', 'agent_id', 'agent_name'];
 	var customEventAttributes = ['occurred_at', 'event_id', 'event_name', 'value'];
 	var regionSwitchAttributes = ['occurred_at', 'region_id', 'region_name'];
