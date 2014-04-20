@@ -25,10 +25,13 @@
             </div>
         </div>
 
+        <!-- The declaration for the From datepicker column -->
+        <div class='col-md-3 col-md-offset-2'> <!-- For non-overview pages, the offset is smaller because the categorize column exists -->
+    <% else : %>
+        <div class='col-md-3 col-md-offset-5'>
     <% end %>
 
-        <div class='col-md-3 col-md-offset-2'>
-            <div class="form-group">
+            <div class="form-group form-inline">
                 <div class='input-group date' id='startPicker'>
                     <span class="input-group-addon">From</span>
                     <input type='text' class="form-control" />
@@ -38,8 +41,9 @@
                 </div>
             </div>
         </div>
+
         <div class='col-md-3'>
-            <div class="form-group">
+            <div class="form-group form-inline">
                 <div class='input-group date' id='endPicker'>
                     <span class="input-group-addon">To</span>
                     <input type='text' class="form-control" />
