@@ -43,6 +43,8 @@ exports.show = function(req, res, next) {
 			type: db.Sequelize.QueryTypes.SELECT // Must be defined in order to let Sequelize know that we're doing a SELECT query (https://github.com/sequelize/sequelize/issues/1259)
 		})
 			.success(function(results) {
+				res.jsend(results);
+				return;
 				var cleaned = [];
 
 				// The result object returns to as a nested object with keys for sessions, agent bumps, etc.
@@ -106,12 +108,14 @@ var getDraftStateIds = function(draft_id, callback) {
 
 
 var getAllAttributes = function(draft_ids) {
+	var draftStateAttributes = ['version'];
 	var sessionAttributes = ['id', 'device_id', 'draft_state_id', 'started_at', 'last_event_at', 'role_id', 'role_name', 'scenario_id', 'scenario_name', 'tap_to_visit', 'completed'];
 	var agentBumpAttributes = ['occurred_at', 'bump_type', 'agent_id', 'agent_name'];
 	var customEventAttributes = ['occurred_at', 'event_id', 'event_name', 'value'];
 	var regionSwitchAttributes = ['occurred_at', 'region_id', 'region_name'];
 
 	return {
+		draftStateAttributes: draftStateAttributes,
 		sessionAttributes: sessionAttributes,
 		agentBumpAttributes: agentBumpAttributes,
 		customEventAttributes: customEventAttributes,
@@ -151,7 +155,7 @@ var buildAttributeString = function(attributes, tableName, aliasPrefix, isNull, 
 		if (isNull) {
 			fields += 'NULL as ' + '`' + aliasPrefix + '.' + attr + '`' + fieldSeparator;
 		} else {
-			fields += '`' + tableName + '`.`' + attr + '` as ' + '`' + tableName + '.' + attr + '`' + fieldSeparator;
+			fields += '`' + tableName + '`.`' + attr + '` as ' + '`' + aliasPrefix + '.' + attr + '`' + fieldSeparator;
 		}
 
 	});
@@ -165,19 +169,20 @@ var queryStringForAgentBumps = function(draft_ids, start_time, end_time) {
 
 	var fields = '';
 
+	fields += buildAttributeString(attributes.draftStateAttributes, 'draft_states', 'game', false, false);
 	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
 	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', false, false);
 	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', true, false);
 	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', true, true);
 
 
-	var from = 'FROM `agent_bumps` ';
+	var from = 'FROM `draft_states`, `agent_bumps` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `agent_bumps`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
 	var end_time = end_time.format('YYYY-MM-DD');
-	var where = " WHERE `agent_bumps`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+	var where = " WHERE `agent_bumps`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "' AND `sessions`.`draft_state_id` = `draft_states`.`id`";
 
 	return select + fields + from + leftJoin + availableDrafts + where;
 };
@@ -188,19 +193,20 @@ var queryStringForCustomEvents = function(draft_ids, start_time, end_time) {
 
 	var fields = '';
 
+	fields += buildAttributeString(attributes.draftStateAttributes, 'draft_states', 'game', false, false);
 	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
 	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', true, false);
 	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', false, false);
 	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', true, true);
 
 
-	var from = 'FROM `custom_event_triggers` ';
+	var from = 'FROM `draft_states`, `custom_event_triggers` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `custom_event_triggers`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
 	var end_time = end_time.format('YYYY-MM-DD');
-	var where = " WHERE `custom_event_triggers`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+	var where = " WHERE `custom_event_triggers`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "' AND `sessions`.`draft_state_id` = `draft_states`.`id`";
 
 	return select + fields + from + leftJoin + availableDrafts + where;
 };
@@ -210,19 +216,21 @@ var queryStringForRegionSwitches = function(draft_ids, start_time, end_time) {
 	var select = 'SELECT ';
 
 	var fields = '';
+
+	fields += buildAttributeString(attributes.draftStateAttributes, 'draft_states', 'game', false, false);
 	fields += buildAttributeString(attributes.sessionAttributes, 'sessions', 'session', false, false);
 	fields += buildAttributeString(attributes.agentBumpAttributes, 'agent_bumps', 'agentBump', true, false);
 	fields += buildAttributeString(attributes.customEventAttributes, 'custom_event_triggers', 'customEvent', true, false);
 	fields += buildAttributeString(attributes.regionSwitchAttributes, 'region_switches', 'regionSwitch', false, true);
 
 
-	var from = 'FROM `region_switches` ';
+	var from = 'FROM `draft_states`, `region_switches` ';
 	var leftJoin = 'LEFT JOIN `sessions` on `region_switches`.`session_id` = `sessions`.`id`';
 	var availableDrafts = ' AND `sessions`.`draft_state_id` IN (' + draft_ids.toString() + ')';
 
 	var start_time = start_time.format('YYYY-MM-DD'); // Dates must be formatted this way for SQL query
 	var end_time = end_time.format('YYYY-MM-DD');
-	var where = " WHERE `region_switches`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "'";
+	var where = " WHERE `region_switches`.`occurred_at` BETWEEN '" + start_time + "' AND '" + end_time + "' AND `sessions`.`draft_state_id` = `draft_states`.`id`";
 
 	return select + fields + from + leftJoin + availableDrafts + where;
 };
