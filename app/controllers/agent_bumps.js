@@ -1,5 +1,6 @@
 var db = require('../models');
 var _ = require('underscore');
+var csv = require('express-csv');
 var utils = require('../utils/utils');
 
 var CATEGORIZE_TYPE = {
@@ -189,17 +190,17 @@ var getQueryConditions = function(categorize_by) {
 		case CATEGORIZE_TYPE.GAME_VERSION:
 			attributes = ['agent_id', 'agent_name', countAll];
 			sessionAttributes = ['draft_state_id'];
-			group = ['agent_id', groupByDraftStateId];
+			group = ['agent_id', groupByDraftStateId, groupBySessionId];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
 			attributes = ['agent_id', 'agent_name', countAll];
 			sessionAttributes = ['role_id', 'role_name'];
-			group = ['agent_id', groupByRoleId];
+			group = ['agent_id', groupByRoleId, groupBySessionId];
 			break;
 		case CATEGORIZE_TYPE.SCENARIO:
 			attributes = ['agent_id', 'agent_name', countAll];
 			sessionAttributes = ['scenario_id', 'scenario_name'];
-			group = ['agent_id', groupByScenarioId];
+			group = ['agent_id', groupByScenarioId, groupBySessionId];
 			break;
 		default:
 			break;
