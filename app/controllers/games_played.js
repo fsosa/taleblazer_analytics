@@ -13,10 +13,9 @@ var CATEGORIZE_TYPE = {
 
 exports.show = function(req, res, next) {
 	var draft_id = req.params.draft_id;
-	var type = req.query.type;
 
 	// Render the page if it's not an AJAX and we're not asking for CSV/JSON
-	if (!req.xhr && type == null) {
+	if (!req.xhr) {
 		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
 
 		if (draft_state_title) {
@@ -47,26 +46,13 @@ exports.show = function(req, res, next) {
 		if (sessions) {
 			var results = null;
 
-			if (categorize_by != null) {
-				results = getCalculatedStats(sessions, categorize_by);
-			} else {
-				results = getCleanedSessions(sessions);
-
-			}
+			results = getCalculatedStats(sessions, categorize_by);
 
 			data = {
 				results: results
 			};
 
-
-			if (type == 'csv') {
-				var filename = 'sessions_game_id_' + draft_id + '.csv';
-				res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-				res.csv(results);
-			} else {
-				res.jsend(200, data);
-			}
-
+			res.jsend(200, data);
 		}
 	});
 
@@ -88,25 +74,25 @@ var renderPage = function(res, draft_id, draft_state_title) {
 
 };
 
-var getCleanedSessions = function(sessions) {
-	var cleanedSessions = [];
+// var getCleanedSessions = function(sessions) {
+// 	var cleanedSessions = [];
 
-	var omittedFields = ['id', 'created_at', 'updated_at'];
+// 	var omittedFields = ['id', 'created_at', 'updated_at'];
 
-	// Insert the field names first (for CSVs)
-	var fieldNames = Object.keys(_.omit(sessions[0].values, omittedFields));
-	cleanedSessions.push(fieldNames);
+// 	// Insert the field names first (for CSVs)
+// 	var fieldNames = Object.keys(_.omit(sessions[0].values, omittedFields));
+// 	cleanedSessions.push(fieldNames);
 
-	// Go through each session, get the raw values, and remove the omitted fields
-	_.each(sessions, function(session) {
-		var cleanedSession = _.omit(session.values, omittedFields);
-		cleanedSessions.push(cleanedSession);
-	});
+// 	// Go through each session, get the raw values, and remove the omitted fields
+// 	_.each(sessions, function(session) {
+// 		var cleanedSession = _.omit(session.values, omittedFields);
+// 		cleanedSessions.push(cleanedSession);
+// 	});
 
-	return cleanedSessions;
-};
+// 	return cleanedSessions;
+// };
 
-var getCalculatedStats = function(sessions, categorize_type) {
+var getCalculatedStats = function(results, categorize_type) {
 	var stats = {};
 
 	// Bucket sessions by
