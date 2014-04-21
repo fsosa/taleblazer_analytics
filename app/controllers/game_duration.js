@@ -141,7 +141,6 @@ var getBucketInfo = function(session, categorize_type, idToVersion) {
 		key: null
 	};
 
-	console.log(idToVersion);
 	switch (categorize_type) {
 		case CATEGORIZE_TYPE.DEFAULT:
 			bucketInfo.key = moment(session.started_at).format('MMM D YYYY');

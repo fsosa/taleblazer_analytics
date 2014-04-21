@@ -27,4 +27,5 @@
 /* Underline the active side menu link */
 .active-menu {
 	text-decoration: underline;
+	font-weight: bold;
 }
