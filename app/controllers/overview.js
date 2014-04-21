@@ -17,14 +17,14 @@ exports.index = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
+		var draft_state_title = req.session.draft_state_title || null; // Check the session cookie for the most recent draft_state title
 
-		if (draft_state_title) {
+		if (draft_state_title != null) {
 			renderPage(res, draft_id, draft_state_title);
 		} else {
 			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
 				req.session.draft_state_title = draft_state.name; // Store the title for later
-				renderPage(res, draft_id, draft_state_title);
+				renderPage(res, draft_id, draft_state.name);
 			})
 		}
 
