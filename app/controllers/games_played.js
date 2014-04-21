@@ -74,24 +74,6 @@ var renderPage = function(res, draft_id, draft_state_title) {
 
 };
 
-// var getCleanedSessions = function(sessions) {
-// 	var cleanedSessions = [];
-
-// 	var omittedFields = ['id', 'created_at', 'updated_at'];
-
-// 	// Insert the field names first (for CSVs)
-// 	var fieldNames = Object.keys(_.omit(sessions[0].values, omittedFields));
-// 	cleanedSessions.push(fieldNames);
-
-// 	// Go through each session, get the raw values, and remove the omitted fields
-// 	_.each(sessions, function(session) {
-// 		var cleanedSession = _.omit(session.values, omittedFields);
-// 		cleanedSessions.push(cleanedSession);
-// 	});
-
-// 	return cleanedSessions;
-// };
-
 var getCalculatedStats = function(results, categorize_type) {
 	var stats = {};
 
