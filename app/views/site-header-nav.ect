@@ -33,10 +33,14 @@
                     </ul>
                 </li>
 
-                <li><a href="#"><i class="fa fa-check-circle-o fa-fw"></i>Custom Events<span class="fa arrow"></span></a>
+                <li class="active"><a href="#"><i class="fa fa-check-circle-o fa-fw"></i>Custom Events<span class="fa arrow"></span></a>
                     <ul id="custom-events-menu" class="nav nav-second-level">
-                        <li><a href="#"> CUSTOM EVENTS LISTED HERE</a>
-                        </li>
+
+                        <% for event in @customEvents : %>
+                            <li><a href="/custom-events/4/<%- event.id %>"> <%- event.name %> </a>
+                            </li>
+                        <% end %>
+
                     </ul>
                 </li>
                 <li><a href="/download-data/<%- @draft_id %>"><i class="fa fa-download fa-fw"></i>Download Data</span></a>

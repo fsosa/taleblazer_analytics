@@ -33,11 +33,7 @@ exports.getPageVariables = function(draft_id, callback) {
 				if (err) {
 					cb(err, null);
 				} else {
-					var custom_event_names = _.map(custom_events, function(custom_event) {
-						return custom_event.name;
-					});
-
-					cb(null, custom_event_names);
+					cb(null, custom_events);
 				}
 			});
 		},
@@ -95,7 +91,8 @@ var getCustomEvents = exports.getCustomEvents = function(draft_id, callback) {
 		.findAll({
 			where: {
 				draft_id: draft_id
-			}
+			}, 
+			attributes: ['id', 'name']
 		})
 		.success(function(custom_events) {
 			callback(null, custom_events);
