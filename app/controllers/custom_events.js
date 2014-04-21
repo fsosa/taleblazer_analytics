@@ -66,7 +66,7 @@ var renderPage = function(res, custom_event_id, page_vars) {
 	var eventTitle = null;
 
 	_.each(page_vars.custom_events, function(event) {
-		if (event.id == custom_event_id) {
+		if (event.event_id == custom_event_id) {
 			eventTitle = event.name;
 		}
 	});

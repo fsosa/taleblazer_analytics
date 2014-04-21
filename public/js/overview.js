@@ -168,8 +168,12 @@ var updateDataTable = function(data, categorize_by) {
 				break;
 			case 'gameplay-duration':
 				return getColumnDefGameplayDuration(key, categorize_by, i);
+				break;
 			case 'agent-bumps':
 				return getColumnDefAgentBump(key, categorize_by, i);
+				break;
+			case 'custom-events':
+				return getColumnDefCustomEvents(key, categorize_by, i);
 				break;
 		}
 	});
@@ -181,6 +185,54 @@ var updateDataTable = function(data, categorize_by) {
 		aaData: data.results
 	});
 };
+
+var getColumnDefCustomEvents = function(key, categorization_type, i) {
+	var columnDef = {
+		mData: key
+	};
+
+	var startOfAgentColIndex;
+	// Only here until we get version names in
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT) {
+		startOfDataColIndex = 1;
+	} else {
+		startOfDataColIndex = 2;
+	}
+
+	var sortedDefault = categorization_type == CATEGORIZATION_TYPE.DEFAULT;
+
+	// The starting offset determines what index the custom event data start at
+	// i.e. if sorted by default, we use the 'default' key as the first column and there is no entityName so 'value' is the first data column
+	var startingOffset = sortedDefault ? 0 : 1;
+
+	switch (key) {
+		case categorization_type:
+			var suffix = sortedDefault ? '' : ' ID';
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
+			columnDef.aTargets = [0]; // first column
+			break;
+		case 'entityName':
+			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [startOfDataColIndex - 1];
+			break;
+		case 'value':
+			columnDef.sTitle = 'Value';
+			columnDef.aTargets = [startOfDataColIndex];
+			break;
+		case 'unique':
+			columnDef.sTitle = 'Unique Events';
+			columnDef.aTargets = [startOfDataColIndex + startingOffset];
+			break;
+		case 'total':
+			columnDef.sTitle = 'Total Events';
+			columnDef.aTargets = [startOfDataColIndex + startingOffset + 1];
+			break;
+
+	}
+
+	return columnDef;
+};
+
 
 var getColumnDefAgentBump = function(key, categorization_type, i) {
 	var columnDef = {
