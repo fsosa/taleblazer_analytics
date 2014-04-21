@@ -17,16 +17,14 @@ exports.index = function(req, res, next) {
 
 	// Render the page if it's not an AJAX request
 	if (!req.xhr) {
-		var draft_state_title = req.session.draft_state_title || null; // Check the session cookie for the most recent draft_state title
 
-		if (draft_state_title != null) {
-			renderPage(res, draft_id, draft_state_title);
-		} else {
-			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
-				req.session.draft_state_title = draft_state.name; // Store the title for later
-				renderPage(res, draft_id, draft_state.name);
-			})
-		}
+		utils.getPageVariables(draft_id, function(error, page_vars) {
+			if (error) {
+				next(error);
+			} else {
+				renderPage(res, page_vars);
+			}
+		})
 
 		return;
 	}
@@ -56,15 +54,16 @@ exports.index = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
-var renderPage = function(res, draft_id, draft_state_title) {
+var renderPage = function(res, page_vars) {
 	res.render('overview.ect', {
-		draft_id: draft_id,
+		draft_id: page_vars.draft_id,
 		title: 'Overview',
-		draftStateTitle: draft_state_title,
+		draftStateTitle: page_vars.draft_title,
+		customEvents: page_vars.custom_events,
 		defaultCategorization: 'Date',
 		script: 'overview.js'
 	});
-}
+};
 
 var getSessionStats = function(results) {
 	var sessions = results.sessions;
@@ -133,7 +132,7 @@ var getSessionsAndDownloadCount = function(draft_id, start_time, end_time, next,
 					var data = {
 						sessions: sessions,
 						download_count: download_count
-					}
+					};
 
 					callback(data);
 				})
