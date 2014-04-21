@@ -14,19 +14,6 @@
             <a href="/overview/<%- @draft_id %>" class="navbar-brand"><%- @draftStateTitle %> - TaleBlazer Analytics</a>
             </div>
         </div>
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle"><i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i></a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i>User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i>Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i>Logout</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
     </nav>
 
     <nav role="navigation" class="navbar-default navbar-static-side">
@@ -36,7 +23,7 @@
                 </li>
 
                 <li class="active"><a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Events<span class="fa arrow"></span></a>
-                    <ul id="eventsMenu" class="nav nav-second-level">
+                    <ul id="events-menu" class="nav nav-second-level">
                         <li><a href="/games-played/<%- @draft_id %>">Games Played</a>
                         </li>
                         <li><a href="/gameplay-duration/<%- @draft_id %>">Gameplay Duration</a>
@@ -47,7 +34,7 @@
                 </li>
 
                 <li><a href="#"><i class="fa fa-check-circle-o fa-fw"></i>Custom Events<span class="fa arrow"></span></a>
-                    <ul id="customEventsMenu" class="nav nav-second-level">
+                    <ul id="custom-events-menu" class="nav nav-second-level">
                         <li><a href="#"> CUSTOM EVENTS LISTED HERE</a>
                         </li>
                     </ul>
