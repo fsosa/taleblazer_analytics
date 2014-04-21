@@ -254,7 +254,7 @@ var getSessionsAndVersionInfo = function(draft_id, start_time, end_time, next, q
 
 			_.each(results, function(draft_state) {
 				draft_state_ids.push(draft_state.id);
-				idToVersion[draft_state.id] = draft_state.version  || null;
+				idToVersion[draft_state.id] = draft_state.version;
 			});
 
 			db.Session

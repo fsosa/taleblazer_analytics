@@ -189,7 +189,7 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 
 	var startOfAgentColIndex;
 	// Only here until we get version names in
-	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT) {
 		startOfAgentColIndex = 1;
 	} else {
 		startOfAgentColIndex = 2;

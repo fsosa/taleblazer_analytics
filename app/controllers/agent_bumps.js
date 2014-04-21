@@ -42,15 +42,15 @@ exports.show = function(req, res, next) {
 
 	var query_conditions = getQueryConditions(categorize_by);
 
-	getAgentBumps(draft_id, start_time, end_time, query_conditions, function(agent_bumps, error) {
+	getAgentBumpsAndVersionInfo(draft_id, start_time, end_time, query_conditions, function(results, error) {
 		if (error) {
 			next(error);
 			return;
 		}
 
-		if (agent_bumps) {
+		if (results) {
 
-			var stats = getCalculatedStats(agent_bumps, categorize_by);
+			var stats = getCalculatedStats(results, categorize_by);
 
 			var data = {
 				results: stats
@@ -76,11 +76,14 @@ var renderPage = function(res, draft_id, draft_state_title) {
 	});
 };
 
-var getCalculatedStats = function(agent_bumps, categorize_type) {
+var getCalculatedStats = function(results, categorize_type) {
+	var agent_bumps = results.agent_bumps;
+	var idToVersion = results.idToVersion;
+
 	var stats = {};
 
 	_.each(agent_bumps, function(agent_bump) {
-		var bucketInfo = getBucketInfo(agent_bump, categorize_type);
+		var bucketInfo = getBucketInfo(agent_bump, categorize_type, idToVersion);
 		var key = bucketInfo.key; // The key by which we group stats i.e. agent id, role id
 		var keyEntityName = bucketInfo.keyEntityName; // The name associated with the key e.g. role name
 
@@ -111,9 +114,7 @@ var getCalculatedStats = function(agent_bumps, categorize_type) {
 				stats[key][agent_id].agent_id = agent_id;
 			}
 
-			if (keyEntityName != null) {
-				stats[key][agent_id].entityName = keyEntityName;
-			}
+			stats[key][agent_id].entityName = keyEntityName;
 		}
 	});
 
@@ -131,7 +132,7 @@ var getCalculatedStats = function(agent_bumps, categorize_type) {
 	return results;
 };
 
-var getBucketInfo = function(agent_bump, categorize_type) {
+var getBucketInfo = function(agent_bump, categorize_type, idToVersion) {
 	var bucketInfo = {
 		key: null
 	};
@@ -141,7 +142,7 @@ var getBucketInfo = function(agent_bump, categorize_type) {
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
 			bucketInfo.key = agent_bump.session.draft_state_id;
-			// Need to figure out where this user-defined version name comes from: broadcasts table ?
+			bucketInfo.keyEntityName = idToVersion[agent_bump.session.draft_state_id];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
 			bucketInfo.key = agent_bump.session.role_id;
@@ -215,7 +216,7 @@ var getQueryConditions = function(categorize_by) {
 	return conditions;
 };
 
-var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, callback) {
+var getAgentBumpsAndVersionInfo = function(draft_id, start_time, end_time, queryConditions, callback) {
 	start_time = new Date(parseInt(start_time));
 	end_time = new Date(parseInt(end_time));
 
@@ -225,11 +226,15 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 				draft_id: draft_id,
 				published_game: 1
 			},
-			attributes: ['id'] // game version name: get the version attribute here, save in a list, return with results and add as entityname
+			attributes: ['id', 'version']
 		})
 		.success(function(results) {
-			var draft_state_ids = _.map(results, function(result) {
-				return result.values['id'];
+			var draft_state_ids = [];
+			var idToVersion = {}; // Mapping of draft state ID to their version string
+
+			_.each(results, function(draft_state) {
+				draft_state_ids.push(draft_state.id);
+				idToVersion[draft_state.id] = draft_state.version;
 			});
 
 			db.AgentBump
@@ -250,10 +255,16 @@ var getAgentBumps = function(draft_id, start_time, end_time, queryConditions, ca
 					}]
 				})
 				.success(function(agent_bumps) {
-					var result = _.map(agent_bumps, function(bump) {
+					var agentBumps = _.map(agent_bumps, function(bump) {
 						return bump.values;
 					});
-					callback(result, null);
+
+					data = {
+						agent_bumps: agentBumps,
+						idToVersion: idToVersion 
+					}
+
+					callback(data, null);
 				})
 				.error(function(error) {
 					callback(null, error);
