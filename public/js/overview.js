@@ -389,7 +389,12 @@ window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari
 $(document).ready(function() {
 	initDatePicker();
 
-
+	$("#side-menu li a").each(function(i, el) {
+		var href = $(el).attr('href');
+		if (href == window.location.pathname) {
+			$(el).addClass("active-menu");
+		}
+	});
 
 	$("#downloadButton").click(function(e) {
 		var startPicker = $("#startPicker");
