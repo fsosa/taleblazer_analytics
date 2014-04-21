@@ -42,14 +42,13 @@ exports.show = function(req, res, next) {
 
 	var query_conditions = getQueryConditions(categorize_by);
 
-	getSessions(draft_id, start_time, end_time, next, query_conditions, function(sessions) {
-		if (sessions) {
-			var results = null;
+	getSessionsAndVersionInfo(draft_id, start_time, end_time, next, query_conditions, function(results) {
+		if (results) {
 
-			results = getCalculatedStats(sessions, categorize_by);
+			var stats = getCalculatedStats(results, categorize_by);
 
-			data = {
-				results: results
+			var data = {
+				results: stats
 			};
 
 			res.jsend(200, data);
@@ -75,15 +74,18 @@ var renderPage = function(res, draft_id, draft_state_title) {
 };
 
 var getCalculatedStats = function(results, categorize_type) {
+	var sessions = results.sessions;
+	var idToVersion = results.idToVersion;
+
 	var stats = {};
 
-	// Bucket sessions by
+	// Bucket sessions
 	_.each(sessions, function(session) {
 		var rawSession = session.values;
 
 		var sessionComplete = (rawSession.completed == true);
 
-		var bucketInfo = getBucketInfo(rawSession, categorize_type);
+		var bucketInfo = getBucketInfo(rawSession, categorize_type, idToVersion);
 		var key = bucketInfo.key;
 		var keyEntityName = bucketInfo.keyEntityName;
 
@@ -103,11 +105,9 @@ var getCalculatedStats = function(results, categorize_type) {
 				completed: completed,
 				total: total
 			};
+			
 			stats[key][categorize_type] = key;
-
-			if (keyEntityName != null) {
-				stats[key].entityName = keyEntityName;
-			}
+			stats[key].entityName = keyEntityName;	
 		}
 	});
 
@@ -116,7 +116,7 @@ var getCalculatedStats = function(results, categorize_type) {
 	return results;
 };
 
-var getBucketInfo = function(session, categorize_type) {
+var getBucketInfo = function(session, categorize_type, idToVersion) {
 	var bucketInfo = {
 		key: null
 	};
@@ -126,7 +126,7 @@ var getBucketInfo = function(session, categorize_type) {
 			break;
 		case CATEGORIZE_TYPE.GAME_VERSION:
 			bucketInfo.key = session.draft_state_id;
-			// Need to figure out where this user-defined version name comes from: broadcasts table ?
+			bucketInfo.keyEntityName = idToVersion[session.draft_state_id];
 			break;
 		case CATEGORIZE_TYPE.ROLE:
 			bucketInfo.key = session.role_id;
@@ -200,7 +200,7 @@ var getQueryConditions = function(categorize_by) {
  * @param  {Function} callback   			[function to call once queries have been processed]
  * @return {Array}              			[results of query as Session objects]
  */
-var getSessions = function(draft_id, start_time, end_time, next, queryConditions, callback) {
+var getSessionsAndVersionInfo = function(draft_id, start_time, end_time, next, queryConditions, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
 	start_time = new Date(parseInt(start_time));
 	end_time = new Date(parseInt(end_time));
@@ -211,11 +211,15 @@ var getSessions = function(draft_id, start_time, end_time, next, queryConditions
 				draft_id: draft_id,
 				published_game: 1
 			},
-			attributes: ['id']
+			attributes: ['id', 'version']
 		})
 		.success(function(results) {
-			var draft_state_ids = _.map(results, function(result) {
-				return result.values['id'];
+			var draft_state_ids = [];
+			var idToVersion = {}; // Mapping of draft state IDs to their version string
+
+			_.each(results, function(draft_state) {
+				draft_state_ids.push(draft_state.id);
+				idToVersion[draft_state.id] = draft_state.version;
 			});
 
 			db.Session
@@ -230,7 +234,12 @@ var getSessions = function(draft_id, start_time, end_time, next, queryConditions
 					group: queryConditions.group
 				})
 				.success(function(sessions) {
-					callback(sessions);
+					var data = {
+						sessions: sessions,
+						idToVersion: idToVersion
+					};
+
+					callback(data);
 				})
 				.error(function(error) {
 					next(error);

@@ -41,7 +41,7 @@ exports.index = function(req, res, next) {
 	}
 
 	// Get the list of sessions for the draft between the start and end time
-	var sessions = getSessions(draft_id, start_time, end_time, next,
+	var sessions = getSessionsAndDownloadCount(draft_id, start_time, end_time, next,
 		function(results) {
 			if (results) {
 				var stats = getSessionStats(results);
@@ -98,7 +98,7 @@ var getSessionStats = function(results) {
 };
 
 
-var getSessions = function(draft_id, start_time, end_time, next, callback) {
+var getSessionsAndDownloadCount = function(draft_id, start_time, end_time, next, callback) {
 	// Retrieve a list of all published draft states and then find all sessions pertaining to those
 	start_time = new Date(parseInt(start_time));
 	end_time = new Date(parseInt(end_time));
@@ -145,33 +145,3 @@ var getSessions = function(draft_id, start_time, end_time, next, callback) {
 			next(error);
 		});
 };
-
-var getPublishedDraftState = function(draft_id, callback) {
-	db.Draft
-		.find({
-			where: {
-				id: draft_id
-			},
-			attributes: ['publish_draft_state_id']
-		})
-		.success(function(draft) {
-			if (draft == null) {
-				callback(null, null);
-				return;
-			}
-
-			db.DraftState
-				.find({
-					where: {
-						id: draft.publish_draft_state_id
-					},
-					attributes: ['name', 'image']
-				})
-				.success(function(draft_state) {
-					callback(draft_state, null);
-				})
-		})
-		.error(function(error) {
-			callback(null, error);
-		})
-}

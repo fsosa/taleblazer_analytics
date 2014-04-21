@@ -164,10 +164,10 @@ var updateDataTable = function(data, categorize_by) {
 
 		switch (page) {
 			case 'games-played':
-				return getColumnDef(key, categorize_by);
+				return getColumnDefGamesPlayed(key, categorize_by);
 				break;
 			case 'gameplay-duration':
-				return getColumnDefGameplay(key, categorize_by, i);
+				return getColumnDefGameplayDuration(key, categorize_by, i);
 			case 'agent-bumps':
 				return getColumnDefAgentBump(key, categorize_by, i);
 				break;
@@ -232,13 +232,13 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 	return columnDef;
 };
 
-var getColumnDefGameplay = function(key, categorization_type, i) {
+var getColumnDefGameplayDuration = function(key, categorization_type, i) {
 	var columnDef = {
 		mData: key
 	};
 	var entityIndex = null;
 
-	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT) {
 		entityIndex = 1;
 	} else {
 		entityIndex = 2;
@@ -267,13 +267,13 @@ var getColumnDefGameplay = function(key, categorization_type, i) {
 
 // !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!!
 // look at the fields returned by the API and map them to specific columns
-var getColumnDef = function(key, categorization_type) {
+var getColumnDefGamesPlayed = function(key, categorization_type) {
 	var columnDef = {
 		mData: key
 	};
 	var entityIndex = null;
 
-	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT || categorization_type == CATEGORIZATION_TYPE.GAME_VERSION) {
+	if (categorization_type == CATEGORIZATION_TYPE.DEFAULT) {
 		entityIndex = 1;
 	} else {
 		entityIndex = 2;
