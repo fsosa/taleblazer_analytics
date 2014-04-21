@@ -92,7 +92,7 @@ var getCustomEvents = exports.getCustomEvents = function(draft_id, callback) {
 			where: {
 				draft_id: draft_id
 			}, 
-			attributes: ['id', 'name']
+			attributes: ['event_id', 'name']
 		})
 		.success(function(custom_events) {
 			callback(null, custom_events);

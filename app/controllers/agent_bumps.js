@@ -1,6 +1,5 @@
 var db = require('../models');
 var _ = require('underscore');
-var csv = require('express-csv');
 var utils = require('../utils/utils');
 
 var CATEGORIZE_TYPE = {
