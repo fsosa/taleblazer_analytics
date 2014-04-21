@@ -24,7 +24,7 @@ exports.index = function(req, res, next) {
 			} else {
 				renderPage(res, page_vars);
 			}
-		})
+		});
 
 		return;
 	}

@@ -16,16 +16,14 @@ exports.show = function(req, res, next) {
 
 	// Render the page if it's not an AJAX and we're not asking for CSV/JSON
 	if (!req.xhr) {
-		var draft_state_title = req.session.draft_state_title; // Check the session cookie for the most recent draft_state title
 
-		if (draft_state_title) {
-			renderPage(res, draft_id, draft_state_title);
-		} else {
-			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
-				req.session.draft_state_title = draft_state.name; // Store the title for later
-				renderPage(res, draft_id, draft_state.name);
-			});
-		}
+		utils.getPageVariables(draft_id, function(error, page_vars) {
+			if (error) {
+				next(error);
+			} else {
+				renderPage(res, page_vars);
+			}
+		});
 
 		return;
 	}
@@ -62,11 +60,12 @@ exports.show = function(req, res, next) {
 // Utility Methods //
 /////////////////////
 
-var renderPage = function(res, draft_id, draft_state_title) {
+var renderPage = function(res, page_vars) {
 	res.render('games-played.ect', {
-		draft_id: draft_id,
+		draft_id: page_vars.draft_id,
 		title: 'Games Played',
-		draftStateTitle: draft_state_title,
+		draftStateTitle: page_vars.draft_title,
+		customEvents: page_vars.custom_events,
 		defaultCategorization: 'Date',
 		script: 'overview.js'
 	});
@@ -105,9 +104,9 @@ var getCalculatedStats = function(results, categorize_type) {
 				completed: completed,
 				total: total
 			};
-			
+
 			stats[key][categorize_type] = key;
-			stats[key].entityName = keyEntityName;	
+			stats[key].entityName = keyEntityName;
 		}
 	});
 
