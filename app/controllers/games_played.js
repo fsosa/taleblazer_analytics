@@ -24,7 +24,7 @@ exports.show = function(req, res, next) {
 		} else {
 			utils.getPublishedDraftState(draft_id, function(draft_state, error) {
 				req.session.draft_state_title = draft_state.name; // Store the title for later
-				renderPage(res, draft_id, draft_state_title);
+				renderPage(res, draft_id, draft_state.name);
 			});
 		}
 
