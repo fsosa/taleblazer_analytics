@@ -416,4 +416,37 @@ $(document).ready(function() {
 
 	});
 
+	$(".filter-btn").each(function(i, el) {
+		$(el).on("click", function() {
+			var val = $(this).attr('data-value');
+			var startPicker = $('#startPicker').data("DateTimePicker");
+			var endPicker = $('#endPicker').data("DateTimePicker");
+
+			var start_date = null;
+			var end_date = null;
+
+			switch (val) {
+				case '0':
+					start_date = moment().startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '1':
+					start_date = moment().subtract('days', 7).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '2':
+					start_date = moment().subtract('days', 30).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '3':
+					start_date = moment().subtract('days', 90).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+			}
+
+			startPicker.setDate(start_date);
+			endPicker.setDate(end_date);
+		})
+	});
+
 });

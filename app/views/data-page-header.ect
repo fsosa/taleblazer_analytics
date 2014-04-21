@@ -10,6 +10,7 @@
 </div>
 
 <div id="filterWell" class="well well-sm">
+
     <div id="filterRow" class="row">
 
         <% if @title != 'Overview' : %>
@@ -34,7 +35,7 @@
 
                 <div class="form-group form-inline">
                     <div class='input-group date' id='startPicker'>
-                        <span class="input-group-addon">From</span>
+                        <span class="input-group-addon">From:</span>
                         <input type='text' class="form-control" />
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
@@ -46,7 +47,7 @@
             <div class='col-md-3'>
                 <div class="form-group form-inline">
                     <div class='input-group date' id='endPicker'>
-                        <span class="input-group-addon">To</span>
+                        <span class="input-group-addon">To:</span>
                         <input type='text' class="form-control" />
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
@@ -59,4 +60,17 @@
                 <button id='dateFilter' type="button" class="btn btn-default">Filter</button>
             </div>
     </div>
+
+    <div id="fast-filters" class="row">
+        <div class="col-md-6 col-md-offset-5 ">
+                <div class="btn-group input-group">
+                    <span class="input-group-addon">Fast filters:</span>
+                    <button type="button" class="btn btn-default filter-btn" data-value="0">Today</button>
+                    <button type="button" class="btn btn-default filter-btn" data-value="1">1 week</button>
+                    <button type="button" class="btn btn-default filter-btn" data-value="2">1 month</button>
+                    <button type="button" class="btn btn-default filter-btn" data-value="3">3 months</button>
+                </div>
+        </div>
+    </div>
+
 </div>
