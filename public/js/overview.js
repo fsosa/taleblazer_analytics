@@ -201,10 +201,6 @@ var getColumnDefCustomEvents = function(key, categorization_type, i) {
 
 	var sortedDefault = categorization_type == CATEGORIZATION_TYPE.DEFAULT;
 
-	// The starting offset determines what index the custom event data start at
-	// i.e. if sorted by default, we use the 'default' key as the first column and there is no entityName so 'value' is the first data column
-	var startingOffset = sortedDefault ? 0 : 1;
-
 	switch (key) {
 		case categorization_type:
 			var suffix = sortedDefault ? '' : ' ID';
@@ -221,11 +217,11 @@ var getColumnDefCustomEvents = function(key, categorization_type, i) {
 			break;
 		case 'unique':
 			columnDef.sTitle = 'Unique Events';
-			columnDef.aTargets = [startOfDataColIndex + startingOffset];
+			columnDef.aTargets = [startOfDataColIndex + 1];
 			break;
 		case 'total':
 			columnDef.sTitle = 'Total Events';
-			columnDef.aTargets = [startOfDataColIndex + startingOffset + 1];
+			columnDef.aTargets = [startOfDataColIndex + 2];
 			break;
 
 	}
