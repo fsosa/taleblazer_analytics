@@ -7,10 +7,30 @@ tba.CATEGORIZE_TYPE = {
 	SCENARIO: 'scenario'
 };
 
+tba.PAGE = {
+	OVERVIEW: 'overview',
+	GAMES_PLAYED: 'games-played',
+	GAME_DURATION: 'gameplay-duration',
+	AGENT_BUMPS: 'agent-bumps',
+	CUSTOM_EVENTS: 'custom-events',
+	DOWNLOAD_DATA: 'download-data'
+};
+
+/**
+ * Initialize the variables for page input elements
+ */
+tba.initInputVars = function() {
+	tba.startPicker = $('#startPicker');
+	tba.endPicker = $('#endPicker');
+	tba.categorizeSelect = $('#categorizeSelect');
+	tba.dataTable = $('#dataTable');
+};
+
 tba.initDatePicker = function() {
 	// DatePicker docs at http://eonasdan.github.io/bootstrap-datetimepicker/
-	var startPicker = $('#startPicker');
-	var endPicker = $('#endPicker');
+	// Note: DatePicker uses Moment dates (See: momentjs.com)
+	tba.startPicker = $('#startPicker');
+	tba.endPicker = $('#endPicker');
 
 	// Set the default date range: from the beginning of the week to the end of the current day
 	var default_start_date = moment().startOf('week');
@@ -18,86 +38,112 @@ tba.initDatePicker = function() {
 	var default_categorize_by = $('#categorizer').val();
 
 	// Initialize datepickers components
-	startPicker.datetimepicker({
+	tba.startPicker.datetimepicker({
 		pickTime: false,
 		defaultDate: default_start_date
 	});
-	endPicker.datetimepicker({
+	tba.endPicker.datetimepicker({
 		pickTime: false,
 		defaultDate: default_end_date
 	});
+
+	// Once the start date is picked, limit the end date to only be on or after the start date
+	tba.startPicker.on('dp.change', function(data) {
+		tba.endPicker.data('DateTimePicker').setMinDate(data.date);
+	});
 };
 
-tba.getPage = function() {
-	var page = window.location.pathname.split('/')[1];
-	return page;
-};
+/**
+ * Initializes the page by making the first data request
+ */
+tba.initPage = function() {
+	tba.updateDateRangeHeader();
+	tba.updateSideMenu();
 
+	var start_date = tba.getStartDate();
+	var end_date = tba.getEndDate();
+	var categorize_by = tba.getCategorizeValue();
 
-
-var initDatePicker = function() {
-	// DatePicker docs at http://eonasdan.github.io/bootstrap-datetimepicker/
-	var startPicker = $('#startPicker');
-	var endPicker = $('#endPicker');
-
-	// Set the default date range: from the beginning of the week to the end of the current day
-	// var default_start_date = moment().startOf('week');
-	var default_start_date = moment('Mar 01 2014'); // TESTING !!!!
-	var default_end_date = moment().endOf('day');
-	var default_categorize_by = $('#categorizer').val();
-
-
-	// TODO: PROBS MOVE THIS SOMEWHERE ELSE
 	// Make the initial AJAX request for the page data
-	var page = window.location.pathname.split('/')[1];
-	if (page != 'download-data') {
-		getOverviewStats(default_start_date, default_end_date, default_categorize_by);
+	var page = tba.getPage();
+	if (page != tba.PAGE.DOWNLOAD_DATA) {
+		tba.requestPageStats(start_date, end_date, categorize_by);
 	}
 
-	// Set the human-readable range in the header
-	updateDateRangeHeader(default_start_date, default_end_date);
-
-	// Initialize datepickers components
-	startPicker.datetimepicker({
-		pickTime: false,
-		defaultDate: default_start_date
-	});
-	endPicker.datetimepicker({
-		pickTime: false,
-		defaultDate: default_end_date
-	});
-
-	// Once the start date is picked, limit the end date to be only dates on or after the start date
-	startPicker.on('dp.change', function(data) {
-		endPicker.data('DateTimePicker').setMinDate(data.date);
-	});
-
-	$('#dateFilter').click(function() {
-		// Note: DatePicker uses Moment dates (See: momentjs.com)
-		// For each time, make sure that we get the full range (i.e. from the beginning of the starting day to the end of the end day)
-		// as this is more in line with what the user expects the filter to do.
-		// The DateTimePicker can easily be configured to support time selection as well, in case that feature needs to be implemented in the future.
-		var start_time = startPicker.data('DateTimePicker').getDate().startOf('day');
-		var end_time = endPicker.data('DateTimePicker').getDate().endOf('day');
-		var categorize_by = $('#categorizer').val();
-
-		getOverviewStats(start_time, end_time, categorize_by);
-	});
 };
 
-// !!!! MAKE NON-PAGE SPECIFIC !!!!
-// I.E THIS HAPPENS WHEN YOU CLICK THE FILTER BUTTON
+tba.setupHandlers = function() {
+
+	// Requests the page date when the Filter button is clicked
+	$('#dateFilter').click(function() {
+		// Get the full range of time, from the beginning of the start day to the end of the end day
+		var start_time = tba.getStartDate().startOf('day');
+		var end_time = tba.getEndDate().endOf('day');
+		var categorize_by = tba.getCategorizeValue();
+
+		tba.requestPageStats(start_time, end_time, categorize_by);
+	});
+
+	// Downloads the CSV when the download button is clicked, via javascript
+	$('#downloadButton').click(function(e) {
+		var start_time = tba.getStartDate();
+		var end_time = tba.getEndDate();
+
+		var validDates = start_time.isValid() && end_time.isValid();
+
+		if (validDates) {
+			start_time = start_time.startOf('day').valueOf(); // the unix offset (ms) of the start of the chosen day
+			end_time = end_time.endOf('day').valueOf(); // the unix offset (ms) of the end of the chosen day
+			var url = window.location + '?start_time=' + start_time + '&end_time=' + end_time + '&download=true';
+			window.downloadFile(url);
+		}
+	});
+
+	// Set the correct date ranges for the fast filters when clicked
+	$('.filter-btn').each(function(i, el) {
+		$(el).on('click', function() {
+			var val = $(this).attr('data-value');
+			var start_date = null;
+			var end_date = null;
+
+			switch (val) {
+				case '0':
+					start_date = moment().startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '1':
+					start_date = moment().subtract('days', 7).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '2':
+					start_date = moment().subtract('days', 30).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+				case '3':
+					start_date = moment().subtract('days', 90).startOf('day');
+					end_date = moment().endOf('day');
+					break;
+			}
+
+			tba.setStartDate(start_date);
+			tba.setEndDate(end_date);
+		});
+	});
+
+
+};
+
 /**
- * Gets stats for the overview page
+ * Gets the appropriate stats for the current page
  * @param  {Moment} start_time [Moment date representing start time]
  * @param  {Moment} end_time   [Moment date representing end time]
  */
-var getOverviewStats = function(start_time, end_time, categorize_by) {
+tba.requestPageStats = function(start_time, end_time, categorize_by) {
 	if (start_time == null || end_time == null || start_time > end_time) {
 		return;
 	}
 
-	// All API calls take a Javascript Date (string representation or number of milliseconds from unix epoch)
+	// All API calls take the number of milliseconds from unix epoch for date values
 	var params = {
 		start_time: start_time.valueOf(),
 		end_time: end_time.valueOf(),
@@ -110,20 +156,26 @@ var getOverviewStats = function(start_time, end_time, categorize_by) {
 		type: 'GET',
 		contentType: 'application/json'
 	}).done(function(response) {
-		updateDateRangeHeader(start_time, end_time);
-		updateStats(response.data); // for overview (stats)
-
-		// NOTE: WE REALLY NEED TO SEPARATE THIS STUFF OUT!
-		updateDataTable(response.data, categorize_by); // for games played page
+		tba.updateStats(response.data);
 	});
 };
 
-// !!!!! OVERVIEW SPECIFIC !!!!!!
+tba.updateStats = function(data) {
+	tba.updateDateRangeHeader();
+	var page = tba.getPage();
+
+	if (page == tba.PAGE.OVERVIEW) {
+		updateOverviewStats(data);
+	} else {
+		updateDataTable(data, tba.getCategorizeValue());
+	}
+};
+
 /**
  * Updates the stats boxes on the Overview page
  * @param  {Object} stats [Object with the following keys: 'sessions_initiated', 'sessions_completed', 'avg_completion_time', 'download_count']
  */
-var updateStats = function(stats) {
+var updateOverviewStats = function(stats) {
 	var stat_ids = ['sessions_initiated', 'sessions_completed', 'avg_completion_time', 'download_count'];
 
 	for (i = 0; i < stat_ids.length; i++) {
@@ -138,30 +190,34 @@ var updateStats = function(stats) {
 };
 
 /**
- * Given a start and end time, updates the date range header
+ * Given a start and end time, updates the date range header.
+ * If no start or end times are provided, uses the currently selected start and end times.
  * @param  {Moment} start_time [Moment date representing the start time]
  * @param  {Moment} end_time   [Moment date representing the end time]
  */
-var updateDateRangeHeader = function(start_time, end_time) {
-	var dateFormat = 'ddd, MMMM D, YYYY'; // Date formatting string (See http://momentjs.com/docs/#/displaying/format/)
+tba.updateDateRangeHeader = function(start_time, end_time) {
+	start_time = start_time || tba.getStartDate();
+	end_time = end_time || tba.getEndDate();
+
+	// Date formatting string (See http://momentjs.com/docs/#/displaying/format/)
+	var dateFormat = 'ddd, MMMM D, YYYY';
 
 	var date_range_text = start_time.format(dateFormat) + ' - ' + end_time.format(dateFormat);
 	$('#date-range-header').text(date_range_text);
 };
 
 /**
- * Creates the DataTable (https://datatables.net/) for the given set of analytics data
- * @param  {[type]} data [Object containing results of API call]
+ * Creates and updates the DataTable (https://datatables.net/) for the given set of analytics data
+ * @param  {[type]} data [Object corresponding to the 'data' key of the API response]
  */
 var updateDataTable = function(data, categorize_by) {
 	if (data.results == null) {
 		return;
 	}
 
-	var dataTable = $('#dataTable');
+	var dataTable = tba.dataTable;
 
-	$('#datatable-heading').text('Statistics (by ' + getColumnTitleForCategory(categorize_by) + ')');
-
+	$('#datatable-heading').text('Statistics (by ' + tba.getColumnTitleForCategory(categorize_by) + ')');
 
 	// DataTables v1.10 does not support dynamic column addition and removal so in order to refresh it, we destroy the table.
 	if ($.fn.DataTable.fnIsDataTable(dataTable)) {
@@ -179,34 +235,32 @@ var updateDataTable = function(data, categorize_by) {
 	}
 
 	// On table destruction, the existing data gets shifted into the DOM so we have to call .empty() on the datatable DOM element to clear it out completely
-	// In general, clear it out completely because DataTable will completely recreate the table DOM for us.
+	// In general, clear it out completely because DataTable will completely recreate the table DOM for us anyway.
 	dataTable.empty();
 
-	// How to use JSON objects as datatable entries instead of arrays
-	// http://stackoverflow.com/questions/14160483/sending-json-objects-in-datatables-aadata-instead-of-arrays
-
-	// !!!! PROBABLY GAMES PLAYED SPECIFIC; THIS WILL BE WEIRD WITH AGENT BUMPS
-	// Here, we take the first result and simply take its keys as the column titles of the datatable
+	// Here, we take the first result and simply take its keys as the column titles of the datatable, because all objects share the same set of keys
 	var first_result = data.results[0];
 
+	// Using the keys (i.e. columns) of the first result, we build the list of column defs for the data table.
 	var columnDefs = _.map(Object.keys(first_result), function(key, i) {
-		var page = window.location.pathname.split('/')[1];
+		var page = tba.getPage();
 
 		switch (page) {
-			case 'games-played':
-				return getColumnDefGamesPlayed(key, categorize_by);
+			case tba.PAGE.GAMES_PLAYED:
+				return tba.getColumnDefGamesPlayed(key, categorize_by);
 				break;
-			case 'gameplay-duration':
-				return getColumnDefGameplayDuration(key, categorize_by, i);
+			case tba.PAGE.GAME_DURATION:
+				return tba.getColumnDefGameplayDuration(key, categorize_by, i);
 				break;
-			case 'agent-bumps':
-				return getColumnDefAgentBump(key, categorize_by, i);
+			case tba.PAGE.AGENT_BUMPS:
+				return tba.getColumnDefAgentBump(key, categorize_by);
 				break;
-			case 'custom-events':
-				return getColumnDefCustomEvents(key, categorize_by, i);
+			case tba.PAGE.CUSTOM_EVENTS:
+				return tba.getColumnDefCustomEvents(key, categorize_by);
 				break;
 		}
 	});
+
 
 	dataTable.dataTable({
 		bDestroy: true,
@@ -216,29 +270,40 @@ var updateDataTable = function(data, categorize_by) {
 	});
 };
 
-var getColumnDefCustomEvents = function(key, categorization_type, i) {
+/**
+ * Returns a column def object for the given JSON key and categorization type for Custom Events data
+ * (See https://www.datatables.net/usage/columns)
+ *
+ *
+ * @param  {String} key                 [key in the JSON object corresponding to the data]
+ * @param  {String} categorization_type
+ *
+ * @return {Object} columnDef
+ *         {
+ *         		mData: // Key into the JSON object where the data for the column lives
+ *           	sTitle: // Title for the column in the table
+ *           	aTargets: // Array with a single integer element, corresponding to the index of the column in the table
+ *         }
+ */
+tba.getColumnDefCustomEvents = function(key, categorization_type) {
 	var columnDef = {
 		mData: key
 	};
 
-	var startOfAgentColIndex;
-	// Only here until we get version names in
-	if (categorization_type == CATEGORIZE_TYPE.DEFAULT) {
-		startOfDataColIndex = 1;
-	} else {
-		startOfDataColIndex = 2;
-	}
+	var sortedDefault = categorization_type == tba.CATEGORIZE_TYPE.DEFAULT;
 
-	var sortedDefault = categorization_type == CATEGORIZE_TYPE.DEFAULT;
+	// Determines where the actual custom events data columns start
+	// If we're sorting by the default (Date), then the data starts right after the Date column. Otherwise, we start after the entityName column
+	var startOfDataColIndex = sortedDefault ? 1 : 2;
 
 	switch (key) {
 		case categorization_type:
 			var suffix = sortedDefault ? '' : ' ID';
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // first column
 			break;
 		case 'entityName':
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + ' name';
 			columnDef.aTargets = [startOfDataColIndex - 1];
 			break;
 		case 'value':
@@ -259,33 +324,44 @@ var getColumnDefCustomEvents = function(key, categorization_type, i) {
 	return columnDef;
 };
 
-
-var getColumnDefAgentBump = function(key, categorization_type, i) {
+/**
+ * Returns a column def object for the given JSON key and categorization type for Agent Bumps data
+ * (See https://www.datatables.net/usage/columns)
+ *
+ *
+ * @param  {String} key                 [key in the JSON object corresponding to the data]
+ * @param  {String} categorization_type
+ *
+ * @return {Object} columnDef
+ *         {
+ *         		mData: // Key into the JSON object where the data for the column lives
+ *           	sTitle: // Title for the column in the table
+ *           	aTargets: // Array with a single integer element, corresponding to the index of the column in the table
+ *         }
+ */
+tba.getColumnDefAgentBump = function(key, categorization_type) {
 	var columnDef = {
 		mData: key
 	};
 
-	var startOfAgentColIndex;
-	// Only here until we get version names in
-	if (categorization_type == CATEGORIZE_TYPE.DEFAULT) {
-		startOfAgentColIndex = 1;
-	} else {
-		startOfAgentColIndex = 2;
-	}
+	var sortedDefault = categorization_type == tba.CATEGORIZE_TYPE.DEFAULT;
 
-	var sortedDefault = categorization_type == CATEGORIZE_TYPE.DEFAULT;
-	// When sorted by default (agent), the 'default' key provides the agent_id so there is no 'agent_id' key in the results
+	// Determines where the actual agent bumps data columns start
+	// If we're sorting by the default (Agent), then the data starts right after the Agent ID column. Otherwise, we start after the entityName column
+	var startOfAgentColIndex = sortedDefault ? 1 : 2;
+
+	// When sorted by default (Agent), the 'default' key provides the agent_id so there is no additional 'agent_id' key in the results
 	// This starting offset determines what index the agent_name and other columns belong in, based on that information
 	// i.e. if sorted by default, we use the 'default' key as the first column so 'agent_name' is the first column of agent data (placed at startOfAgentColIndex)
 	var startingOffset = sortedDefault ? 0 : 1;
 
 	switch (key) {
 		case categorization_type:
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' ID';
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + ' ID';
 			columnDef.aTargets = [0]; // first column
 			break;
 		case 'entityName':
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + ' name';
 			columnDef.aTargets = [startOfAgentColIndex - 1];
 			break;
 		case 'agent_id':
@@ -310,32 +386,44 @@ var getColumnDefAgentBump = function(key, categorization_type, i) {
 	return columnDef;
 };
 
-var getColumnDefGameplayDuration = function(key, categorization_type, i) {
+/**
+ * Returns a column def object for the given JSON key and categorization type for Gameplay Duration data
+ * (See https://www.datatables.net/usage/columns)
+ *
+ *
+ * @param  {String} key                 [key in the JSON object corresponding to the data]
+ * @param  {String} categorization_type
+ * @param  {Number} index 				[Index of the key in the loop]
+ *
+ * @return {Object} columnDef
+ *         {
+ *         		mData: // Key into the JSON object where the data for the column lives
+ *           	sTitle: // Title for the column in the table
+ *           	aTargets: // Array with a single integer element, corresponding to the index of the column in the table
+ *         }
+ */
+tba.getColumnDefGameplayDuration = function(key, categorization_type, index) {
 	var columnDef = {
 		mData: key
 	};
-	var entityIndex = null;
 
-	if (categorization_type == CATEGORIZE_TYPE.DEFAULT) {
-		entityIndex = 1;
-	} else {
-		entityIndex = 2;
-
-	}
+	var sortedDefault = categorization_type == tba.CATEGORIZE_TYPE.DEFAULT;
+	var startOfDurationColIndex = sortedDefault ? 1 : 2;
 
 	switch (key) {
 		case categorization_type:
-			var suffix = (categorization_type == CATEGORIZE_TYPE.DEFAULT) ? '' : ' ID';
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
+			var suffix = (categorization_type == tba.CATEGORIZE_TYPE.DEFAULT) ? '' : ' ID';
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // first column
 			break;
 		case 'entityName':
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
-			columnDef.aTargets = [entityIndex - 1];
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [startOfDurationColIndex - 1];
 			break;
 		default:
 			columnDef.sTitle = key + ' min';
-			columnDef.aTargets = [entityIndex + i];
+			// The gameplay duration keys are in order, so the index of the parent loop provides the offset from the start of the data,
+			columnDef.aTargets = [startOfDurationColIndex + index];
 			break;
 	}
 
@@ -343,69 +431,81 @@ var getColumnDefGameplayDuration = function(key, categorization_type, i) {
 	return columnDef;
 };
 
-// !!! DEFINITELY PAGE SPECIFIC FOR GAMES PLAYED !!!!
-// look at the fields returned by the API and map them to specific columns
-var getColumnDefGamesPlayed = function(key, categorization_type) {
+/**
+ * Returns a column def object for the given JSON key and categorization type for Games Played data
+ * (See https://www.datatables.net/usage/columns)
+ *
+ *
+ * @param  {String} key                 [key in the JSON object corresponding to the data]
+ * @param  {String} categorization_type
+ *
+ * @return {Object} columnDef
+ *         {
+ *         		mData: // Key into the JSON object where the data for the column lives
+ *           	sTitle: // Title for the column in the table
+ *           	aTargets: // Array with a single integer element, corresponding to the index of the column in the table
+ *         }
+ */
+tba.getColumnDefGamesPlayed = function(key, categorization_type) {
 	var columnDef = {
 		mData: key
 	};
-	var entityIndex = null;
 
-	if (categorization_type == CATEGORIZE_TYPE.DEFAULT) {
-		entityIndex = 1;
-	} else {
-		entityIndex = 2;
-
-	}
+	var sortedDefault = categorization_type == tba.CATEGORIZE_TYPE.DEFAULT;
+	var startOfPlayedColIndex = sortedDefault ? 1 : 2;
 
 	switch (key) {
 		case categorization_type:
-			var suffix = (categorization_type == CATEGORIZE_TYPE.DEFAULT) ? '' : ' ID';
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + suffix;
+			var suffix = sortedDefault ? '' : ' ID';
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + suffix;
 			columnDef.aTargets = [0]; // The first element
+			break;
+		case 'entityName':
+			columnDef.sTitle = tba.getColumnTitleForCategory(categorization_type) + ' name';
+			columnDef.aTargets = [startOfPlayedColIndex - 1];
 			break;
 		case 'initiated':
 			columnDef.sTitle = 'Games Initiated (Not Completed)';
-			columnDef.aTargets = [entityIndex + 1];
+			columnDef.aTargets = [startOfPlayedColIndex + 1];
 			break;
 		case 'completed':
 			columnDef.sTitle = 'Games Completed';
-			columnDef.aTargets = [entityIndex + 2];
+			columnDef.aTargets = [startOfPlayedColIndex + 2];
 			break;
 		case 'total':
 			columnDef.sTitle = 'Total Games Played';
-			columnDef.aTargets = [entityIndex];
-			break;
-		case 'entityName':
-			columnDef.sTitle = getColumnTitleForCategory(categorization_type) + ' name';
-			columnDef.aTargets = [entityIndex - 1];
-		default:
+			columnDef.aTargets = [startOfPlayedColIndex];
 			break;
 	}
 
 	return columnDef;
 };
 
-// !!! DEFINITELY GAMES PLAYED SPECIFIC
-var getColumnTitleForCategory = function(categorization_type) {
+/**
+ * Gets the human-readable column title for the table for a given categorization type
+ * @param  {String} categorization_type
+ *
+ * @return {String} column title   			[human-readable column title]
+ */
+tba.getColumnTitleForCategory = function(categorization_type) {
 	switch (categorization_type) {
-		case CATEGORIZE_TYPE.DEFAULT:
-			var page = window.location.pathname.split('/')[1];
+		case tba.CATEGORIZE_TYPE.DEFAULT:
+			var page = tba.getPage();
 
-			if (page == 'agent-bumps') {
+			if (page == tba.PAGE.AGENT_BUMPS) {
 				return 'Agent';
 			} else {
 				return 'Date';
 			}
 
 			break;
-		case CATEGORIZE_TYPE.GAME_VERSION:
+		case tba.CATEGORIZE_TYPE.GAME_VERSION:
 			return 'Game Version';
 			break;
-		case CATEGORIZE_TYPE.ROLE:
+		case tba.CATEGORIZE_TYPE.ROLE:
 			return 'Role';
 			break;
-		case CATEGORIZE_TYPE.SCENARIO:
+		case tba.CATEGORIZE_TYPE.SCENARIO:
 			return 'Scenario';
 			break;
 		default:
@@ -415,13 +515,88 @@ var getColumnTitleForCategory = function(categorization_type) {
 
 };
 
-var humanize = function(text) {
-	return text.replace(/_/g, ' ')
-		.replace(/(\w+)/g, function(match) {
-			return match.charAt(0).toUpperCase() + match.slice(1);
-		});
+/**
+ * Let's GO!
+ */
+$(document).ready(function() {
+	tba.initInputVars();
+	tba.initDatePicker();
+	tba.setupHandlers();
+	tba.initPage();
+});
+
+///////////////////////
+// Utility functions //
+///////////////////////
+
+/**
+ * Gets the identifying part of the URL for the page
+ * e.g. /overview/42 gives us 'overview'
+ *
+ * @return {String}
+ */
+tba.getPage = function() {
+	var page = window.location.pathname.split('/')[1];
+	return page;
 };
 
+/**
+ * Gets the currently chosen start date, as a Moment object
+ * @return {Moment} [start date]
+ */
+tba.getStartDate = function() {
+	return tba.startPicker.data('DateTimePicker').getDate();
+};
+
+/**
+ * Sets the start date for the start picker
+ * @param {Moment | Date} start [start date]
+ */
+tba.setStartDate = function(start_date) {
+	tba.startPicker.data('DateTimePicker').setDate(start_date);
+};
+
+/**
+ * Gets the currently chosen end date, as a Moment object
+ * @return {Moment} [end date]
+ */
+tba.getEndDate = function() {
+	return tba.endPicker.data('DateTimePicker').getDate();
+};
+
+/**
+ * Sets the end date for the end picker
+ * @param {Moment | Date} end_date
+ */
+tba.setEndDate = function(end_date) {
+	tba.endPicker.data('DateTimePicker').setDate(end_date);
+};
+
+/**
+ * Gets the currently chosen categorize option
+ * @return {String} [categorize type]
+ */
+tba.getCategorizeValue = function() {
+	return tba.categorizeSelect.val();
+};
+
+tba.updateSideMenu = function() {
+	// Make the side menu corresponding to the current page active
+	$('#side-menu li a').each(function(i, el) {
+		var href = $(el).attr('href');
+		if (href == window.location.pathname) {
+			$(el).addClass('active-menu');
+		}
+	});
+};
+
+/**
+ * Download file using Javascript
+ * From http://pixelscommander.com/en/javascript/javascript-file-download-ignore-content-type/
+ *
+ * @param  {[type]} sUrl [description]
+ * @return {[type]}      [description]
+ */
 window.downloadFile = function(sUrl) {
 
 	//iOS devices do not support downloading. We have to inform user about this.
@@ -456,75 +631,7 @@ window.downloadFile = function(sUrl) {
 
 	window.open(sUrl, '_self');
 	return true;
-}
+};
 
 window.downloadFile.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
 window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
-
-/**
- * Let's GO!
- */
-$(document).ready(function() {
-	initDatePicker();
-
-	$("#side-menu li a").each(function(i, el) {
-		var href = $(el).attr('href');
-		if (href == window.location.pathname) {
-			$(el).addClass("active-menu");
-		}
-	});
-
-	$("#downloadButton").click(function(e) {
-		var startPicker = $("#startPicker");
-		var endPicker = $("#endPicker");
-		var start_time = startPicker.data('DateTimePicker').getDate();
-		var end_time = endPicker.data('DateTimePicker').getDate();
-
-		var validDates = start_time.isValid() && end_time.isValid();
-
-		if (validDates) {
-			start_time = start_time.startOf('day').valueOf(); // the unix offset (ms) of the start of the chosen day
-			end_time = end_time.endOf('day').valueOf(); // the unix offset (ms) of the end of the chosen day
-			var url = window.location + '?start_time=' + start_time + '&end_time=' + end_time + '&download=true';
-			window.downloadFile(url);
-		} else {
-			// TODO: Flash an error message or something
-		}
-
-
-	});
-
-	$(".filter-btn").each(function(i, el) {
-		$(el).on("click", function() {
-			var val = $(this).attr('data-value');
-			var startPicker = $('#startPicker').data("DateTimePicker");
-			var endPicker = $('#endPicker').data("DateTimePicker");
-
-			var start_date = null;
-			var end_date = null;
-
-			switch (val) {
-				case '0':
-					start_date = moment().startOf('day');
-					end_date = moment().endOf('day');
-					break;
-				case '1':
-					start_date = moment().subtract('days', 7).startOf('day');
-					end_date = moment().endOf('day');
-					break;
-				case '2':
-					start_date = moment().subtract('days', 30).startOf('day');
-					end_date = moment().endOf('day');
-					break;
-				case '3':
-					start_date = moment().subtract('days', 90).startOf('day');
-					end_date = moment().endOf('day');
-					break;
-			}
-
-			startPicker.setDate(start_date);
-			endPicker.setDate(end_date);
-		})
-	});
-
-});
