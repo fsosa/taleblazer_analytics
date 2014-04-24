@@ -76,8 +76,7 @@ var renderPage = function(res, custom_event_id, page_vars) {
 		title: eventTitle,
 		draftStateTitle: page_vars.draft_title,
 		customEvents: page_vars.custom_events,
-		defaultCategorization: 'Date',
-		script: 'overview.js'
+		defaultCategorization: 'Date'
 	});
 };
 

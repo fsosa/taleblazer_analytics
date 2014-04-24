@@ -66,8 +66,7 @@ var renderPage = function(res, page_vars) {
 		title: 'Games Played',
 		draftStateTitle: page_vars.draft_title,
 		customEvents: page_vars.custom_events,
-		defaultCategorization: 'Date',
-		script: 'overview.js'
+		defaultCategorization: 'Date'
 	});
 
 };

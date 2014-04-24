@@ -92,8 +92,7 @@ var renderPage = function(res, page_vars) {
 		draft_id: page_vars.draft_id,
 		title: 'Download Data',
 		draftStateTitle: page_vars.draft_title,
-		customEvents: page_vars.custom_events,
-		script: 'overview.js'
+		customEvents: page_vars.custom_events
 	});
 };
 

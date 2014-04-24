@@ -69,8 +69,7 @@ var renderPage = function(res, page_vars) {
 		title: 'Agent Bumps',
 		draftStateTitle: page_vars.draft_title,
 		customEvents: page_vars.custom_events,
-		defaultCategorization: 'Agent',
-		script: 'overview.js'
+		defaultCategorization: 'Agent'
 	});
 };
 
