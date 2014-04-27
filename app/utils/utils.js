@@ -24,7 +24,12 @@ exports.getPageVariables = function(draft_id, callback) {
 				if (err) {
 					cb(err, null);
 				} else {
-					cb(null, draft_state.name);
+					if (draft_state) {
+						cb(null, draft_state.name);	
+					} else {
+						cb(null, null);
+					}
+					
 				}
 			});
 		},
@@ -33,7 +38,12 @@ exports.getPageVariables = function(draft_id, callback) {
 				if (err) {
 					cb(err, null);
 				} else {
-					cb(null, custom_events);
+					if (custom_events) {
+						cb(null, custom_events);	
+					} else {
+						cb(null, null);
+					}
+					
 				}
 			});
 		},

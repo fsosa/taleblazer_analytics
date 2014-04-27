@@ -37,7 +37,7 @@
                     <ul id="custom-events-menu" class="nav nav-second-level">
 
                         <% for event in @customEvents : %>
-                            <li><a href="/custom-events/4/<%- event.event_id %>"> <%- event.name %> </a>
+                            <li><a href="/custom-events/<%- @draft_id %>/<%- event.event_id %>"> <%- event.name %> </a>
                             </li>
                         <% end %>
 
