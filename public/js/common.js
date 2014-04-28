@@ -123,6 +123,9 @@ tba.setupHandlers = function() {
 					start_date = moment().subtract('days', 90).startOf('day');
 					end_date = moment().endOf('day');
 					break;
+				case '4':
+					start_date = global.draft_time_created;
+					end_date = moment().endOf('day');
 			}
 
 			tba.setStartDate(start_date);

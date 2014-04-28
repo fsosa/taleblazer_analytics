@@ -7,4 +7,12 @@
 <script src="/js/lib/moment.js"></script>
 <script src="/js/lib/bootstrap-datetimepicker.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+
+<script> 
+	// Set a global variable with the time that the draft was first created, so we can have an All-Time fast filter
+	var global = {};
+	global.draft_time_created = moment("<%- @draft_time_created %>");
+</script>
+
 <script src="/js/common.js"></script>
+

@@ -19,13 +19,13 @@ exports.getPageVariables = function(draft_id, callback) {
 	// See https://github.com/caolan/async for documentation
 
 	async.parallel({
-		draft_title: function(cb) {
-			getPublishedDraftState(draft_id, function(err, draft_state) {
+		draft_info: function(cb) {
+			getCurrentDraftInfo(draft_id, function(err, data) {
 				if (err) {
 					cb(err, null);
 				} else {
-					if (draft_state) {
-						cb(null, draft_state.name);	
+					if (data) {
+						cb(null, data);	
 					} else {
 						cb(null, null);
 					}
@@ -54,17 +54,20 @@ exports.getPageVariables = function(draft_id, callback) {
 };
 
 /**
- * Gets the published draft state for a given draft id
+ * Gets current information for a given draft_id e.g.
+ * 	- the title of the currently published draft state
+ * 	- the time that the draft was first created
+ * 	
  * @param  {String}   draft_id
  * @param  {Function} callback(err, results)
  */
-var getPublishedDraftState = exports.getPublishedDraftState = function(draft_id, callback) {
+var getCurrentDraftInfo = function(draft_id, callback) {
 	db.Draft
 		.find({
 			where: {
 				id: draft_id
 			},
-			attributes: ['publish_draft_state_id']
+			attributes: ['publish_draft_state_id', 'time_created']
 		})
 		.success(function(draft) {
 			if (draft == null) {
@@ -77,10 +80,17 @@ var getPublishedDraftState = exports.getPublishedDraftState = function(draft_id,
 					where: {
 						id: draft.publish_draft_state_id
 					},
-					attributes: ['name', 'image']
+					attributes: ['name']
 				})
 				.success(function(draft_state) {
-					callback(null, draft_state);
+					var title = (draft_state == null) ? null : draft_state.name;
+
+					data = {
+						title: title, 
+						time_created: draft.time_created
+					};
+
+					callback(null, data);
 				})
 				.error(function(error) {
 					callback(error, null);
@@ -96,7 +106,7 @@ var getPublishedDraftState = exports.getPublishedDraftState = function(draft_id,
  * @param  {String}   draft_id
  * @param  {Function} callback(results, error)
  */
-var getCustomEvents = exports.getCustomEvents = function(draft_id, callback) {
+var getCustomEvents = function(draft_id, callback) {
 	db.CustomEvent
 		.findAll({
 			where: {
