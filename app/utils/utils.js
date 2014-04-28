@@ -15,7 +15,8 @@ exports.getPageVariables = function(draft_id, callback) {
 	// Each function takes a callback(err, results) (named 'cb', in this case), where results is the value that you would like to return from the function call.
 	// The second argument to async.parallel is the final callback which will get called when all the parallel tasks complete,
 	// which has signature callback(error, results), where results is an object with the same named keys and values corresponding to the output of the function calls
-	// Takeaway: Future development should use this library as it increases readability and reduces nesting levels, of which there might be significantly many at points.
+	// 
+	// Key Takeaway: Future development should use this library as it increases readability and reduces nesting levels, of which there can be significantly many at points.
 	// See https://github.com/caolan/async for documentation
 
 	async.parallel({
