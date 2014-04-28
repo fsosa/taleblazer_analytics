@@ -71,10 +71,14 @@ var renderPage = function(res, custom_event_id, page_vars) {
 		}
 	});
 
+	var title = page_vars.draft_info == null ? null : page_vars.draft_info.title;
+	var draft_time_created = page_vars.draft_info == null ? null : page_vars.draft_info.time_created;
+
 	res.render('custom-events.ect', {
 		draft_id: page_vars.draft_id,
 		title: eventTitle,
-		draftStateTitle: page_vars.draft_title,
+		draftStateTitle: title,
+		draft_time_created: draft_time_created,
 		customEvents: page_vars.custom_events,
 		defaultCategorization: 'Date'
 	});
